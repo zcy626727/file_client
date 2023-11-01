@@ -100,7 +100,7 @@ class MultipartService {
               break;
             case 3:
               //调用数据库等操作必须初始化
-              // BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
+              BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
           }
         }
       }
@@ -174,17 +174,11 @@ class MultipartService {
         task.md5 = md5;
       }
 
-      task.statusMessage = "初始化上传";
-      sendPort.send([1, task.toJson()]);
-
       //初始化上传
-      var multipartInfo = await MultipartApi.initMultipartUpload(task.md5!,  fileStat.size, task.magicNumber!);
+      var multipartInfo = await MultipartApi.initMultipartUpload(task.md5!, fileStat.size, task.magicNumber!);
 
-      task.uploadedSize = multipartInfo.uploadedPartNum ?? 0 * multipartInfo.partSize!;
+      task.uploadedSize = (multipartInfo.uploadedPartNum ?? 0) * multipartInfo.partSize!;
       task.fileId = multipartInfo.fileId;
-
-      task.statusMessage = "开始上传";
-      sendPort.send([1, task.toJson()]);
     } catch (e) {
       rethrow;
     } finally {

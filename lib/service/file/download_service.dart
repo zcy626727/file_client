@@ -10,6 +10,7 @@ import '../../api/client/file/user_file_api.dart';
 import '../../api/client/file_http_config.dart';
 import '../../config/global.dart';
 import '../../domain/task/download_task.dart';
+import '../../domain/task/enum/download.dart';
 import '../../util/file_util.dart';
 
 class DownloadService {
@@ -37,7 +38,7 @@ class DownloadService {
               break;
             case 3:
               //调用数据库等操作必须初始化
-              // BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
+              BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
           }
         }
       }
@@ -97,6 +98,7 @@ class DownloadService {
     var file = File("${task.targetPath}${task.targetName}");
     var fileStat = file.statSync();
     task.statusMessage = "下载中";
+    task.status = DownloadTaskStatus.downloading;
     sendPort.send([1, task.toJson()]);
     int targetDownloadSize = 0;
     task.downloadedSize = fileStat.size;
@@ -118,6 +120,7 @@ class DownloadService {
     task.downloadedSize = task.totalSize!;
     await Global.downloadTaskProvider.insertOrUpdate(task);
     task.statusMessage = "下载完成";
+    task.status = DownloadTaskStatus.finished;
     sendPort.send([1, task.toJson()]);
   }
 }

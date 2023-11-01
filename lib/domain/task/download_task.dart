@@ -25,7 +25,7 @@ class DownloadTask {
     create table downloadTask ( 
       id integer primary key autoincrement, 
       userId integer not null, 
-      fileId integer not null,
+      userFileId integer not null, 
       targetPath text not null,
       targetName text not null,
       downloadUrl text,      
@@ -69,15 +69,6 @@ class DownloadTask {
       this.statusMessage,
       this.status,
       this.createTime});
-}
-
-enum DownloadTaskStatus {
-  //进行中任务的状态
-  downloading, //下载阶段
-  awaiting, //等待阶段
-  pause, //暂停阶段
-  finished, //完成阶段
-  error, //下载出错
 }
 
 class DownloadTaskProvider {

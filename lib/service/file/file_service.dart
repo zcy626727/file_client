@@ -86,7 +86,7 @@ class FileService {
             break;
           case 3:
           //调用数据库等操作必须初始化
-          //   BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
+            BackgroundIsolateBinaryMessenger.ensureInitialized(msg[1]);
         }
       }
     }

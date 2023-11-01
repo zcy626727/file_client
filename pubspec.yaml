@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   flutter_localizations: # 国际化
     sdk: flutter
-  tuple: ^2.0.1
   crypto: ^3.0.2
   # 全局状态管理
   provider:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/task/download_task.dart';
+import '../../../domain/task/enum/download.dart';
 import '../../../state/download_state.dart';
 import '../../../view/component/task/download_list_view_item.dart';
 
@@ -31,11 +32,9 @@ class _DownloadTaskPageState extends State<DownloadTaskPage> {
                     DownloadTask task = totalTaskList[index];
                     return DownloadListViewItem(
                       onStartOrPause: () {
-                        if (task.status ==
-                                DownloadTaskStatus.downloading.index ||
-                            task.status == DownloadTaskStatus.awaiting.index) {
+                        if (task.status == DownloadTaskStatus.downloading) {// 下载中，暂停
                           downloadState.pauseDownloadTask(task);
-                        } else {
+                        } else if(task.status == DownloadTaskStatus.pause) {// 暂停中，开始下载
                           downloadState.startPauseTask(task);
                         }
                         setState(() {});

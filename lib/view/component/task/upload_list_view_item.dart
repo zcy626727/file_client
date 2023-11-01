@@ -58,7 +58,7 @@ class _UploadListViewItemState extends State<UploadListViewItem> {
                     padding: EdgeInsets.zero,
                     iconSize: 20,
                     onPressed: widget.onStartOrPause,
-                    icon: widget.task.status == UploadTaskStatus.uploading || widget.task.status == UploadTaskStatus.awaiting ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+                    icon: widget.task.status == UploadTaskStatus.uploading ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
                   ),
                 if (!needStart) const SizedBox(width: 40),
                 IconButton(

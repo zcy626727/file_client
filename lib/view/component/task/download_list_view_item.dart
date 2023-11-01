@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/task/download_task.dart';
+import '../../../domain/task/enum/download.dart';
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/multipart_upload_task.dart';
 import '../../../util/file_util.dart';
@@ -21,7 +22,7 @@ class _DownloadListViewItemState extends State<DownloadListViewItem> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
 
-    bool needStart = widget.task.status != UploadTaskStatus.finished && widget.task.status != UploadTaskStatus.error;
+    bool needStart = widget.task.status != DownloadTaskStatus.finished && widget.task.status != DownloadTaskStatus.error;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7.0),
       child: Row(
@@ -59,7 +60,7 @@ class _DownloadListViewItemState extends State<DownloadListViewItem> {
                     padding: EdgeInsets.zero,
                     iconSize: 20,
                     onPressed: widget.onStartOrPause,
-                    icon: widget.task.status == UploadTaskStatus.uploading || widget.task.status == UploadTaskStatus.awaiting ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
+                    icon: widget.task.status == DownloadTaskStatus.downloading ? const Icon(Icons.pause) : const Icon(Icons.play_arrow),
                   ),
                 if (!needStart) const SizedBox(width: 40),
                 IconButton(
