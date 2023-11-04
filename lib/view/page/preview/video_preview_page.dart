@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/service/file/file_service.dart';
+import 'package:file_client/service/file/file_url_service.dart';
 import 'package:file_client/view/widget/common_media_player.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class _VideoPreviewPageState extends State<VideoPreviewPage> {
 
   Future<void> loadMediaUrl() async {
     try {
-      var (url, _) = await FileService.genGetFileUrl(widget.fileId);
+      var (url, _) = await FileUrlService.genGetFileUrl(widget.fileId);
       _currentUrl = url;
     } on DioException catch (e) {
       log(e.toString());

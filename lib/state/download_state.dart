@@ -147,63 +147,76 @@ class DownloadState extends ChangeNotifier {
   }
 
   Future<void> doDownload(DownloadTask task) async {
-    //消息接收器
-    var receivePort = ReceivePort();
-    RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
-    receivePort.listen(
-      (msg) async {
-        if (msg is SendPort) {
-          msg.send([1, task.toJson()]);
-          msg.send([2, Global.user, Global.database!]);
-          msg.send([3, rootIsolateToken]);
-          //表示结束
-          msg.send(null);
-          //获取发送器
-        } else if (msg is List) {
-          //过程消息
-          switch (msg[0]) {
-            case 1: //task
-              task.copy(DownloadTask.fromJson(msg[1]));
-              notifyListeners();
-              log("更新上传状态");
-              break;
-          }
-        } else if (msg is FormatException) {
-          //上传出现异常
-          task.status = DownloadTaskStatus.error;
-          task.statusMessage = msg.message;
-          //从上传队列移除
-          downloadingTaskList.remove(task);
-          //从上传map移除
-          downloadIsolateMap.remove(task);
-          //加入到错误队列
-          errorTaskList.add(task);
-          //持久化
-          await Global.downloadTaskProvider.insertOrUpdate(task);
-          receivePort.close();
-          notifyListeners();
-        } else if (msg == true) {
-          //上传结束
-          task.status = DownloadTaskStatus.finished;
-          //从上传队列移除
-          downloadingTaskList.remove(task);
-          //从上传map移除
-          downloadIsolateMap.remove(task);
-          //加入到完成队列
-          finishedTaskList.add(task);
-          //持久化
-          await Global.downloadTaskProvider.insertOrUpdate(task);
-          receivePort.close();
-          notifyListeners();
-          //开始下一个任务
-          startNextDownloadTask();
-        }
+
+    await DownloadService.doDownloadFile(
+      task: task,
+      onError: (newTask) async {
+        //上传出现异常
+        task.copy(newTask);
+        //从上传队列移除
+        downloadingTaskList.remove(task);
+        //从上传map移除
+        downloadIsolateMap.remove(task);
+        //加入到错误队列
+        errorTaskList.add(task);
+        //持久化
+        await Global.downloadTaskProvider.insertOrUpdate(task);
+        notifyListeners();
+      },
+      onSuccess: (_) async {
+        //上传结束
+        task.status = DownloadTaskStatus.finished;
+        //从上传队列移除
+        downloadingTaskList.remove(task);
+        //从上传map移除
+        downloadIsolateMap.remove(task);
+        //加入到完成队列
+        finishedTaskList.add(task);
+        //持久化
+        await Global.downloadTaskProvider.insertOrUpdate(task);
+        notifyListeners();
+        //开始下一个任务
+        startNextDownloadTask();
+      },
+      onDownloading: (newTask) async {
+        task.copy(newTask);
+        notifyListeners();
+        log("更新上传状态");
+      },
+      onAfterStart: (isolate) {
+        downloadIsolateMap[task] = isolate;
       },
     );
 
-    var isolate = await Isolate.spawn(DownloadService.startIsolate, receivePort.sendPort);
-    isolate.addOnExitListener(receivePort.sendPort);
-    //加入map
-    downloadIsolateMap[task] = isolate;
+    // //消息接收器
+    // var receivePort = ReceivePort();
+    // RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+    // receivePort.listen(
+    //   (msg) async {
+    //     if (msg is SendPort) {
+    //       msg.send([1, task.toJson()]);
+    //       msg.send([2, Global.user, Global.database!]);
+    //       msg.send([3, rootIsolateToken]);
+    //       //表示结束
+    //       msg.send(null);
+    //       //获取发送器
+    //     } else if (msg is List) {
+    //       //过程消息
+    //       switch (msg[0]) {
+    //         case 1: //task
+    //
+    //           break;
+    //       }
+    //     } else if (msg is FormatException) {
+    //
+    //     } else if (msg == true) {
+    //
+    //     }
+    //   },
+    // );
+    //
+    // var isolate = await Isolate.spawn(DownloadService.startIsolate, receivePort.sendPort);
+    // isolate.addOnExitListener(receivePort.sendPort);
+    // //加入map
   }
 }

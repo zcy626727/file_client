@@ -14,6 +14,61 @@ import '../../domain/task/enum/download.dart';
 import '../../util/file_util.dart';
 
 class DownloadService {
+
+  static Future<void> doDownloadFile({
+    //下载任务
+    required DownloadTask task,
+    //下载出错
+    required Function(DownloadTask) onError,
+    //下载成功
+    required Function(DownloadTask) onSuccess,
+    //下载中更新状态
+    required Function(DownloadTask) onDownloading,
+    //下载开始后
+    required Function(Isolate) onAfterStart,
+    ReceivePort? receivePort,
+  }) async {
+    //消息接收器
+    receivePort ??= ReceivePort();
+    RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+
+    receivePort.listen(
+          (msg) async {
+        if (msg is SendPort) {
+          msg.send([1, task.toJson()]);
+          msg.send([2, Global.user, Global.database!]);
+          msg.send([3, rootIsolateToken]);
+          //表示结束
+          msg.send(null);
+          //获取发送器
+        } else if (msg is List) {
+          //过程消息
+          switch (msg[0]) {
+            case 1: //task
+              task.copy(DownloadTask.fromJson(msg[1]));
+              await onDownloading(task);
+              break;
+          }
+        } else if (msg is FormatException) {
+          //上传出现异常
+          task.status = DownloadTaskStatus.error;
+          task.statusMessage = msg.message;
+          await onError(task);
+          receivePort!.close();
+        } else if (msg == true) {
+          //上传结束
+          task.status = DownloadTaskStatus.finished;
+          receivePort!.close();
+          await onSuccess(task);
+        }
+      },
+    );
+
+    var isolate = await Isolate.spawn(DownloadService.startIsolate, receivePort.sendPort);
+    isolate.addOnExitListener(receivePort.sendPort);
+    await onAfterStart(isolate);
+  }
+
   static Future<void> startIsolate(SendPort sendPort) async {
     try {
       var receivePort = ReceivePort();

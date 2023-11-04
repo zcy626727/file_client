@@ -38,7 +38,7 @@ dependencies:
   # 文件读写
   path_provider: 2.1.0
   # 网络请求
-  dio: 5.3.2
+  dio: ^5.3.2
   json_annotation:
   #svg图标
   flutter_svg: 2.0.7

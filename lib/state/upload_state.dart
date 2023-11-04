@@ -9,7 +9,7 @@ import '../config/global.dart';
 import '../domain/task/enum/upload.dart';
 import '../domain/task/multipart_upload_task.dart';
 import '../domain/upload_notion.dart';
-import '../service/file/multipart_service.dart';
+import '../service/file/upload_service.dart';
 
 //维护全局传输任务列表
 class UploadState extends ChangeNotifier {
@@ -163,7 +163,7 @@ class UploadState extends ChangeNotifier {
   }
 
   Future<void> doUpload(MultipartUploadTask task) async {
-    MultipartService.doUploadFile(
+    MultipartUploadService.doUploadFile(
       task: task,
       onError: (task) async {
         //从上传队列移除

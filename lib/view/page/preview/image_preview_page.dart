@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../../../service/file/file_service.dart';
+import '../../../service/file/file_url_service.dart';
 
 class ImagePreviewPage extends StatefulWidget {
   const ImagePreviewPage({super.key, required this.fileId});
@@ -22,7 +22,7 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
 
   Future<void> loadMediaUrl() async {
     try {
-      var t = await FileService.genGetFileUrl(widget.fileId);
+      var t = await FileUrlService.genGetFileUrl(widget.fileId);
       _currentUrl = t.$1;
     } on DioException catch (e) {
       log(e.toString());

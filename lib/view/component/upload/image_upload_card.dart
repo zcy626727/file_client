@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/single_upload_task.dart';
-import '../../../service/file/file_service.dart';
+import '../../../service/file/file_url_service.dart';
+import '../../../service/file/upload_service.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../show/show_snack_bar.dart';
 
@@ -49,7 +50,7 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
   Future<void> getImageUrl() async {
     try {
       if (widget.task.fileId != null) {
-        var (url, staticUrl) = await FileService.genGetFileUrl(widget.task.fileId!);
+        var (url, staticUrl) = await FileUrlService.genGetFileUrl(widget.task.fileId!);
         widget.task.coverUrl = staticUrl;
       }
     } on DioException catch (e) {
@@ -165,14 +166,14 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
   }
 
   Future<void> uploadImage(SingleUploadTask task) async {
-    await FileService.doUploadFile(
+    await SingleUploadService.doUploadFile(
       task: widget.task,
       onError: (task) {},
       onSuccess: (task) async {
         if (widget.onUpdateImage != null) {
           await widget.onUpdateImage!(task);
         }
-        var (link, staticUrl) = await FileService.genGetFileUrl(task.fileId!);
+        var (link, staticUrl) = await FileUrlService.genGetFileUrl(task.fileId!);
         widget.task.coverUrl = staticUrl;
         setState(() {});
       },

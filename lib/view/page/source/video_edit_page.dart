@@ -12,7 +12,7 @@ import '../../../domain/task/single_upload_task.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/share/video.dart';
-import '../../../service/file/file_service.dart';
+import '../../../service/file/file_url_service.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_media_player.dart';
 import '../../component/file/select_file_dialog.dart';
@@ -50,7 +50,7 @@ class _VideoEditPageState extends State<VideoEditPage> {
     try {
       var s = widget.initSource;
       if (s != null && s is Video) {
-        var (url, _) = await FileService.genGetFileUrl(s.fileId!);
+        var (url, _) = await FileUrlService.genGetFileUrl(s.fileId!);
         _currentUrl = url;
       }
     } on DioException catch (e) {
@@ -188,7 +188,7 @@ class _VideoEditPageState extends State<VideoEditPage> {
               } else if (res is UserFile) {
                 //拿到文件后
                 userFile = res;
-                var (url, _) = await FileService.genGetFileUrl(userFile!.fileId!);
+                var (url, _) = await FileUrlService.genGetFileUrl(userFile!.fileId!);
                 _currentUrl = url;
                 setState(() {});
               }
