@@ -55,6 +55,7 @@ class SecondNav {
   static const int workspace = 0;
   static const int task = 1;
   static const int trash = 2;
+
   //share
   static const int resourcePlaza = 3;
 

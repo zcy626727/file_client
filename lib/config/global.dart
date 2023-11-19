@@ -68,7 +68,6 @@ class Global {
     UserHttpConfig.init();
     FileHttpConfig.init();
     ShareHttpConfig.init();
-
   }
 
   //初始化相关数据数据（应用启动后调用）
@@ -117,8 +116,7 @@ class Global {
     if (user.token != null && user.phoneNumber != null) {
       //根据token尝试登录
       try {
-        user = await UserService.signInByToken(user.phoneNumber!)
-            .timeout(const Duration(seconds: 1));
+        user = await UserService.signInByToken(user.phoneNumber!).timeout(const Duration(seconds: 1));
       } on DioException catch (e) {
         //http错误
         if (e.response != null) {
@@ -132,6 +130,8 @@ class Global {
       } catch (e) {
         return "认证失败";
       }
+    } else {
+      user = User();
     }
 
     return null;

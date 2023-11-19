@@ -24,6 +24,7 @@ class UserService {
     var user = await UserApi.signInByToken(phoneNumber);
     //最新登录时间
     user.lastLoginTime = DateTime.now().toString();
+    user.phoneNumber = phoneNumber;
     if (kIsWeb) {
     } else {
       //插入或更新到数据库

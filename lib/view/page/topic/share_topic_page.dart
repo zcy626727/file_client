@@ -28,7 +28,7 @@ class _ShareTopicPageState extends State<ShareTopicPage> {
             return Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
+                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0,bottom: 5.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -46,30 +46,33 @@ class _ShareTopicPageState extends State<ShareTopicPage> {
                   ),
                 ),
                 Expanded(
-                  child: CommonItemList<Topic>(
-                    key: listKey,
-                    onLoad: (int page) async {
-                      var list = await TopicService.getUserTopicList(pageIndex: page, pageSize: 20);
-                      return list;
-                    },
-                    itemName: "主题",
-                    itemHeight: null,
-                    isGrip: true,
-                    enableScrollbar: true,
-                    itemBuilder: (ctx, topic, topicList, onFresh) {
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 2, left: 5, right: 5),
-                        child: TopicItem(
-                          topic: topic,
-                          onDeleteTopic: (t) {
-                            setState(() {
-                              topicList?.remove(t);
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                  child: Container(
+                    color: Theme.of(context).colorScheme.background,
+                    child: CommonItemList<Topic>(
+                      key: listKey,
+                      onLoad: (int page) async {
+                        var list = await TopicService.getUserTopicList(pageIndex: page, pageSize: 20);
+                        return list;
+                      },
+                      itemName: "主题",
+                      itemHeight: null,
+                      isGrip: true,
+                      enableScrollbar: true,
+                      itemBuilder: (ctx, topic, topicList, onFresh) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 2,bottom: 2,right: 5),
+                          child: TopicItem(
+                            topic: topic,
+                            onDeleteTopic: (t) {
+                              setState(() {
+                                topicList?.remove(t);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  )
                 )
               ],
             );
