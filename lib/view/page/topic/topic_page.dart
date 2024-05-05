@@ -3,32 +3,18 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:file_client/config/global.dart';
 import 'package:file_client/constant/album.dart';
-import 'package:file_client/model/file/user_file.dart';
-import 'package:file_client/model/file/user_folder.dart';
 import 'package:file_client/model/share/album.dart';
-import 'package:file_client/model/share/source.dart';
 import 'package:file_client/model/share/subscribe_topic.dart';
 import 'package:file_client/model/user/user.dart';
 import 'package:file_client/service/share/album_service.dart';
-import 'package:file_client/service/share/application_service.dart';
-import 'package:file_client/service/share/audio_service.dart';
-import 'package:file_client/service/share/gallery_service.dart';
-import 'package:file_client/service/share/subscribe_album_service.dart';
 import 'package:file_client/service/share/topic_service.dart';
 import 'package:file_client/service/user/user_service.dart';
-import 'package:file_client/util/mime_util.dart';
 import 'package:file_client/view/component/album/album_content_list_view.dart';
-import 'package:file_client/view/component/file/select_file_dialog.dart';
 import 'package:file_client/view/component/show/show_snack_bar.dart';
-import 'package:file_client/view/component/source/source_item.dart';
-import 'package:file_client/view/widget/common_item_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:intl/intl.dart';
 
 import '../../../model/share/topic.dart';
 import '../../../service/share/subscribe_topic_service.dart';
-import '../../../service/share/video_service.dart';
 import '../../component/album/album_edit_dialog.dart';
 import '../../component/topic/topic_edit_dialog.dart';
 import '../../widget/common_action_one_button.dart';
@@ -224,9 +210,11 @@ class _TopicPageState extends State<TopicPage> {
                                               } else {
                                                 //取消订阅
                                                 await SubscribeTopicService.deleteSubscribe(subscribeId: subscribeTopic!.id!);
+                                                subscribeTopic = null;
                                               }
+                                              setState(() {});
                                             } on Exception catch (e) {
-                                              ShowSnackBar.exception(context: context, e: e);
+                                              if (mounted) ShowSnackBar.exception(context: context, e: e);
                                             }
                                             setState(() {});
                                           },

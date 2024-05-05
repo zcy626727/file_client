@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 //界面状态
 class ScreenNavigatorState extends ChangeNotifier {
   //桌面索引
-  int _firstNav = FirstNav.file;
+  int _firstNav = FirstNav.space;
   int _secondNav = SecondNav.resourcePlaza;
 
   int get firstNavIndex {
@@ -48,6 +48,7 @@ class FirstNav {
   static const int file = 0;
   static const int share = 1;
   static const int account = 3;
+  static const int space = 4;
 }
 
 class SecondNav {

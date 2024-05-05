@@ -1,12 +1,13 @@
 import 'package:file_client/view/screen/share_screen.dart';
+import 'package:file_client/view/screen/space_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../state/screen_state.dart';
 import '../state/user_state.dart';
 import '../util/responsive.dart';
-import 'page/account/account_page.dart';
 import 'component/desktop_side_nav_bar.dart';
+import 'page/account/account_page.dart';
 import 'screen/file_screen.dart';
 
 //主界面，负责处理布局、加载配置
@@ -94,8 +95,12 @@ class MainScreenState extends State<MainScreen> {
         return const ShareScreen();
       case FirstNav.account:
         return const DesktopAccountScreen();
-      default:
+      case FirstNav.space:
+        return const SpaceScreen();
+      case FirstNav.file:
         return const FileScreen();
+      default:
+        return Container();
     }
   }
 }

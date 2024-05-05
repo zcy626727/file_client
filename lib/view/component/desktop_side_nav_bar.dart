@@ -27,6 +27,7 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Container(),
               Expanded(
                 child: Column(
                   children: [
@@ -34,17 +35,14 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
                       margin: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(
                         children: [
-                          //头像
+                          // 头像
                           Container(
                             padding: const EdgeInsets.all(4.0),
                             child: const Center(
-                              child: Image(
-                                image: AssetImage('assets/images/hei.jpg'),
-                                width: 50,
-                                height: 50,
-                              ),
+                              child: Icon(Icons.cloud, size: 30, color: Colors.blueAccent),
                             ),
                           ),
+
                           const SizedBox(height: 10.0),
                           SideMenuListTile(
                             iconData: Icons.source,
@@ -58,6 +56,15 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
                           SideMenuListTile(
                             iconData: Icons.screen_share_rounded,
                             index: FirstNav.share,
+                            selectedIndex: navState.firstNavIndex,
+                            press: (index) {
+                              navState.firstNavIndex = index;
+                            },
+                          ),
+                          const SizedBox(height: 5.0),
+                          SideMenuListTile(
+                            iconData: Icons.window,
+                            index: FirstNav.space,
                             selectedIndex: navState.firstNavIndex,
                             press: (index) {
                               navState.firstNavIndex = index;
@@ -102,7 +109,7 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
                           ),
                         ),
                         //亮暗模式
-                        LightDarkSwitch(isLarge: false),
+                        const LightDarkSwitch(isLarge: false),
                       ],
                     ),
                   ),

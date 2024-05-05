@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/share/topic.dart';
@@ -23,7 +22,7 @@ class _SubscribeTopicPageState extends State<SubscribeTopicPage> {
         return PageRouteBuilder(
           pageBuilder: (BuildContext nContext, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Container(
-              color: colorScheme.background,
+              color: Theme.of(context).colorScheme.background,
               child: CommonItemList<Topic>(
                 onLoad: (int page) async {
                   var list = await TopicService.getSubscribeTopicList(pageIndex: page, pageSize: 20);

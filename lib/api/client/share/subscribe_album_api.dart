@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:file_client/model/share/subscribe_album.dart';
 
-import '../../../model/share/subscribe_topic.dart';
 import '../share_http_config.dart';
 
 class SubscribeAlbumApi {
@@ -52,7 +51,7 @@ class SubscribeAlbumApi {
       }),
     );
     //获取数据
-    var json = r.data['subscribeTopic'];
+    var json = r.data['subscribeAlbum'];
     if (json == null) return null;
     return SubscribeAlbum.fromJson(json);
   }

@@ -1,16 +1,16 @@
-# file_client
+# 功能
 
-A new Flutter project.
+- 用户服务：
+- 文件服务
+  - 上传文件夹（todo）：新建文件夹，前端递归扫描文件夹文件，记录文件路径，创建上传任务（一个文件夹类型打任务和多个文件类型的任务，这里最多不可嵌套文件夹），每次上传文件时创建路径，
+  - 下载文件夹：后台递归查询所有文件，生成列表返回前台，前台创建依次下载
+- 分享服务
+-
 
-## Getting Started
+## 操作
 
-This project is a starting point for a Flutter application.
+### 生成json代码
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```shell
+flutter pub run build_runner build --delete-conflicting-outputs
+```

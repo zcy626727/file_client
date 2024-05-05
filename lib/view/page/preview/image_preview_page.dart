@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:file_client/config/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -18,7 +18,7 @@ class ImagePreviewPage extends StatefulWidget {
 
 class _ImagePreviewPageState extends State<ImagePreviewPage> {
   late Future _futureBuilderFuture;
-  late String _currentUrl;
+  String? _currentUrl;
 
   Future<void> loadMediaUrl() async {
     try {
@@ -53,7 +53,7 @@ class _ImagePreviewPageState extends State<ImagePreviewPage> {
             body: Stack(
               children: [
                 PhotoView(
-                  imageProvider: NetworkImage(_currentUrl),
+                  imageProvider: NetworkImage(_currentUrl ?? errImageUrl),
                 ),
                 Positioned(
                   left: 5,

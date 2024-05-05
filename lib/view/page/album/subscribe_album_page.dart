@@ -1,13 +1,9 @@
 import 'package:file_client/constant/album.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/share/album.dart';
-import '../../../model/share/topic.dart';
 import '../../../service/share/album_service.dart';
-import '../../../service/share/topic_service.dart';
 import '../../component/album/album_item.dart';
-import '../../component/share/share_resource_grid_item.dart';
 import '../../widget/common_item_list.dart';
 import '../../widget/common_tab_bar.dart';
 
@@ -37,7 +33,7 @@ class _SubscribeAlbumPageState extends State<SubscribeAlbumPage> {
                   ),
                   Expanded(
                     child: Container(
-                      color: colorScheme.background,
+                      color: Theme.of(context).colorScheme.background,
                       child: TabBarView(
                         physics: const NeverScrollableScrollPhysics(),
                         children: [

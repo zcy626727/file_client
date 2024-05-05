@@ -7,7 +7,6 @@ import 'package:file_client/service/share/subscribe_album_service.dart';
 import 'package:file_client/view/component/album/album_edit_dialog.dart';
 import 'package:file_client/view/widget/common_action_one_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 
 import '../../../config/global.dart';
@@ -16,7 +15,7 @@ import '../../../model/user/user.dart';
 import '../../../service/share/album_service.dart';
 import '../../../service/user/user_service.dart';
 import '../../component/album/album_content_list_view.dart';
-import '../../component/share/share_resource_grid_item.dart';
+import '../../component/show/show_snack_bar.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({Key? key, required this.album, required this.onDeleteAlbum}) : super(key: key);
@@ -180,15 +179,19 @@ class _AlbumPageState extends State<AlbumPage> {
                                     )
                                   : CommonActionOneButton(
                                       onTap: () async {
-                                        if (subscribeAlbum == null) {
-                                          //订阅
-                                          subscribeAlbum = await SubscribeAlbumService.createSubscribe(albumId: widget.album.id!);
-                                        } else {
-                                          //取消订阅
-                                          await SubscribeAlbumService.deleteSubscribe(subscribeId: subscribeAlbum!.id!);
-                                          subscribeAlbum = null;
+                                        try {
+                                          if (subscribeAlbum == null) {
+                                            //订阅
+                                            subscribeAlbum = await SubscribeAlbumService.createSubscribe(albumId: widget.album.id!);
+                                          } else {
+                                            //取消订阅
+                                            await SubscribeAlbumService.deleteSubscribe(subscribeId: subscribeAlbum!.id!);
+                                            subscribeAlbum = null;
+                                          }
+                                          setState(() {});
+                                        } on Exception catch (e) {
+                                          if (mounted) ShowSnackBar.exception(context: context, e: e);
                                         }
-                                        setState(() {});
                                       },
                                       title: subscribeAlbum == null ? "订阅" : "取消订阅",
                                       backgroundColor: colorScheme.primary,

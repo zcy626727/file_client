@@ -12,8 +12,7 @@ const int initPageIndex = 0;
 //容器间距
 const double desktopContainerMargin = 5;
 
-
-const String testImageUrl = "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg";
+const String errImageUrl = "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg";
 
 //系统状态栏颜色
 const SystemUiOverlayStyle systemUILight = SystemUiOverlayStyle(
