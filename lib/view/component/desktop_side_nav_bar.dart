@@ -90,26 +90,22 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
                             selector: (context, userState) => userState.user,
                             shouldRebuild: (pre, next) => pre.id != next.id,
                             builder: (context, user, child) {
-                              return TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primaryContainer),
-                                ),
+                              return OutlinedButton(
+                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primaryContainer), padding: MaterialStateProperty.all(EdgeInsets.zero)),
                                 onPressed: () {
                                   navState.firstNavIndex = FirstNav.account;
                                 },
-                                child: Center(
-                                  child: CircleAvatar(
-                                    //头像半径
-                                    radius: 16,
-                                    backgroundImage: user.avatarUrl == null ? null : NetworkImage(user.avatarUrl!),
-                                  ),
+                                child: CircleAvatar(
+                                  //头像半径
+                                  radius: 30,
+                                  backgroundImage: user.avatarUrl == null ? null : NetworkImage(user.avatarUrl!),
                                 ),
                               );
                             },
                           ),
                         ),
                         //亮暗模式
-                        const LightDarkSwitch(isLarge: false),
+                        LightDarkSwitch(isLarge: false),
                       ],
                     ),
                   ),
