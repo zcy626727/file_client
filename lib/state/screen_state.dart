@@ -66,4 +66,6 @@ class SecondNav {
 
   static const int topicSubscribe = 7;
   static const int albumSubscribe = 8;
+
+// space
 }
