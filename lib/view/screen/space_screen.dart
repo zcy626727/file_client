@@ -27,8 +27,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
           pageBuilder: (BuildContext nContext, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Row(
               children: [
-                Container(
-                  color: colorScheme.surface,
+                SizedBox(
                   width: 180,
                   child: Row(
                     children: [
@@ -72,7 +71,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                       //搜索栏
                       Container(
                         height: 40,
-                        margin: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0, bottom: 20.0),
+                        margin: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0, bottom: 10.0),
                         child: CupertinoSearchTextField(
                           style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
                           placeholder: "",
@@ -89,6 +88,27 @@ class _SpaceScreenState extends State<SpaceScreen> {
                         ),
                       ),
                       // 搜索到的空间列表，searchSpaceList
+                      Expanded(
+                          child: Container(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: GridView.builder(
+                          padding: const EdgeInsets.only(right: 15),
+                          controller: ScrollController(),
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 5,
+                          ),
+                          itemCount: 11,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 100,
+                              height: 300,
+                              color: colorScheme.primaryContainer,
+                            );
+                          },
+                        ),
+                      ))
                     ],
                   ),
                 ),
