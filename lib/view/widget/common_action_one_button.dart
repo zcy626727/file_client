@@ -9,7 +9,7 @@ class CommonActionOneButton extends StatefulWidget {
     this.backgroundColor,
     this.textColor,
     this.height = 40,
-    this.radius = 0,
+    this.radius = 5,
   }) : super(key: key);
 
   //返回值代表是否调用pop

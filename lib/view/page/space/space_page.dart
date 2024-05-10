@@ -1,6 +1,10 @@
+import 'package:file_client/view/page/space/space_menber_page.dart';
+import 'package:file_client/view/page/space/space_message_page.dart';
+import 'package:file_client/view/page/space/space_setting_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/constants.dart';
+import '../../../constant/space.dart';
 import '../../widget/desktop_nav_button.dart';
 
 class SpacePage extends StatefulWidget {
@@ -12,6 +16,7 @@ class SpacePage extends StatefulWidget {
 
 class _SpacePageState extends State<SpacePage> {
   late Future _futureBuilderFuture;
+  int _pageIndex = -1;
 
   @override
   void initState() {
@@ -94,17 +99,37 @@ class _SpacePageState extends State<SpacePage> {
 
                       // 成员
                       NavButton(
-                        title: "设置",
+                        title: "空间设置",
                         iconData: Icons.settings,
-                        onPress: () {},
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.setting;
+                          });
+                        },
                         height: 30,
                         index: 0,
                         selectedIndex: 1,
                       ),
                       NavButton(
-                        title: "成员",
+                        title: "成员管理",
                         iconData: Icons.person,
-                        onPress: () {},
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.member;
+                          });
+                        },
+                        height: 30,
+                        index: 0,
+                        selectedIndex: 1,
+                      ),
+                      NavButton(
+                        title: "申请信息",
+                        iconData: Icons.add_box,
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.message;
+                          });
+                        },
                         height: 30,
                         index: 0,
                         selectedIndex: 1,
@@ -148,7 +173,7 @@ class _SpacePageState extends State<SpacePage> {
                 VerticalDivider(color: Colors.grey.withAlpha(100), width: 1),
 
                 //文件
-                Expanded(child: Container())
+                Expanded(child: _getPage())
               ],
             ),
           );
@@ -160,5 +185,18 @@ class _SpacePageState extends State<SpacePage> {
         }
       },
     );
+  }
+
+  Widget _getPage() {
+    switch (_pageIndex) {
+      case SpaceNav.setting:
+        return const SpaceSettingPage();
+      case SpaceNav.member:
+        return SpaceMemberPage();
+      case SpaceNav.message:
+        return SpaceMessagePage();
+      default:
+        return Container();
+    }
   }
 }

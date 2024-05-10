@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../state/screen_state.dart';
+import '../component/space/space_grid_item.dart';
 import '../widget/desktop_nav_button.dart';
 
 class SpaceScreen extends StatefulWidget {
@@ -37,8 +38,8 @@ class _SpaceScreenState extends State<SpaceScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 8.0),
-                              child: const Text("团队空间", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              margin: const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 5.0),
+                              child: const Text("我的空间", style: TextStyle(color: Colors.grey, fontSize: 12)),
                             ),
                             // 根据mySpaceList生成的导航列表
                             NavButton(
@@ -77,7 +78,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                           placeholder: "",
                           prefixIcon: Icon(
                             CupertinoIcons.search,
-                            color: colorScheme.onSurface,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           prefixInsets: const EdgeInsets.only(top: 1, left: 5, right: 2),
                           suffixIcon: Icon(
@@ -89,26 +90,24 @@ class _SpaceScreenState extends State<SpaceScreen> {
                       ),
                       // 搜索到的空间列表，searchSpaceList
                       Expanded(
-                          child: Container(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: GridView.builder(
-                          padding: const EdgeInsets.only(right: 15),
-                          controller: ScrollController(),
-                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5,
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: GridView.builder(
+                            padding: const EdgeInsets.only(right: 15),
+                            controller: ScrollController(),
+                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 240,
+                              childAspectRatio: 2.5,
+                              mainAxisSpacing: 5,
+                              crossAxisSpacing: 5,
+                            ),
+                            itemCount: 11,
+                            itemBuilder: (context, index) {
+                              return SpaceGridItem();
+                            },
                           ),
-                          itemCount: 11,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              width: 100,
-                              height: 300,
-                              color: colorScheme.primaryContainer,
-                            );
-                          },
                         ),
-                      ))
+                      ),
                     ],
                   ),
                 ),

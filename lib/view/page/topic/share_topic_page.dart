@@ -1,9 +1,7 @@
 import 'package:file_client/model/share/topic.dart';
-import 'package:file_client/view/component/album/album_edit_dialog.dart';
 import 'package:file_client/view/component/topic/topic_item.dart';
 import 'package:flutter/material.dart';
 
-import '../../../model/share/source.dart';
 import '../../../service/share/topic_service.dart';
 import '../../component/topic/topic_edit_dialog.dart';
 import '../../widget/common_action_one_button.dart';
@@ -34,7 +32,7 @@ class _ShareTopicPageState extends State<ShareTopicPage> {
                     children: [
                       SizedBox(
                         height: 30,
-                        width: 100,
+                        width: 120,
                         child: CommonActionOneButton(
                           title: "新建主题",
                           onTap: () async {

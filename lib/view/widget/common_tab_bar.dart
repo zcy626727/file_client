@@ -33,6 +33,7 @@ class _CommonTabBarState extends State<CommonTabBar> {
                   _currentPage = index;
                 });
               },
+              tabAlignment: TabAlignment.start,
               //指示器大小设置为和label一致
               indicatorSize: TabBarIndicatorSize.label,
               //启动滚动

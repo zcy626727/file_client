@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:file_client/service/file/bulk_service.dart';
@@ -13,29 +12,29 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../config/global.dart';
+import '../../../constant/resource.dart';
 import '../../../domain/resource.dart';
 import '../../../domain/task/download_task.dart';
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/multipart_upload_task.dart';
 import '../../../domain/upload_notion.dart';
-import '../../../constant/resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/resource_service.dart';
-import '../../../service/file/user_file_service.dart';
 import '../../../service/file/share_service.dart';
+import '../../../service/file/user_file_service.dart';
 import '../../../service/file/user_folder_service.dart';
 import '../../../state/download_state.dart';
 import '../../../state/path_state.dart';
 import '../../../state/upload_state.dart';
+import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
 import '../../component/file/select_folder_dialog.dart';
-import '../../component/file/file_list_tile.dart';
 import '../../component/share/create_share_dialog.dart';
-import '../link/share_context_page.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../../widget/input_alert_dialog.dart';
+import '../link/share_context_page.dart';
 
 class WorkspacePage extends StatefulWidget {
   const WorkspacePage({Key? key}) : super(key: key);
@@ -58,7 +57,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
 
   Future<void> loadFileAndFolderList(int parentId) async {
     try {
-      _resourceList = await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]);
+      _resourceList = await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]).timeout(Duration(seconds: 2));
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -153,14 +152,18 @@ class _WorkspacePageState extends State<WorkspacePage> {
                   colorScheme.primary.withAlpha(220),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   Icon(
                     Icons.file_upload,
                     size: 18,
+                    color: colorScheme.onPrimary,
                   ),
                   SizedBox(width: 5.0),
-                  Text("上传文件")
+                  Text(
+                    "上传文件",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  )
                 ],
               ),
             ),
@@ -205,14 +208,18 @@ class _WorkspacePageState extends State<WorkspacePage> {
                   colorScheme.primary.withAlpha(220),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   Icon(
                     Icons.create_new_folder,
                     size: 18,
+                    color: colorScheme.onPrimary,
                   ),
                   SizedBox(width: 5.0),
-                  Text("新建文件夹")
+                  Text(
+                    "新建文件夹",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  ),
                 ],
               ),
             ),
@@ -269,8 +276,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                   colorScheme.primary.withAlpha(220),
                 ),
               ),
-              child: const Row(
-                children: [Icon(Icons.link, size: 18), SizedBox(width: 5.0), Text("访问分享")],
+              child: Row(
+                children: [
+                  Icon(Icons.link, size: 18, color: colorScheme.onPrimary),
+                  SizedBox(width: 5.0),
+                  Text(
+                    "访问分享",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  )
+                ],
               ),
             ),
           ),
@@ -291,12 +305,16 @@ class _WorkspacePageState extends State<WorkspacePage> {
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.view_module,
                     size: 18,
+                    color: colorScheme.onPrimary,
                   ),
                   const SizedBox(width: 5.0),
-                  Text(_checkMode ? "取消批量操作" : "批量操作")
+                  Text(
+                    _checkMode ? "取消批量操作" : "批量操作",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  )
                 ],
               ),
             ),

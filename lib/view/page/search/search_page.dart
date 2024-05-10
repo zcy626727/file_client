@@ -118,6 +118,7 @@ class _SearchPageState extends State<SearchPage> {
             TabBar(
               labelPadding: EdgeInsets.zero,
               padding: EdgeInsets.zero,
+              tabAlignment: TabAlignment.center,
               tabs: [
                 buildTab("主题"),
                 buildTab("合集"),

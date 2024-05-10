@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:file_client/constant/album.dart';
 import 'package:file_client/model/share/album.dart';
 import 'package:file_client/service/share/album_service.dart';
-import 'package:file_client/view/component/album/album_item.dart';
 import 'package:file_client/view/component/album/album_edit_dialog.dart';
+import 'package:file_client/view/component/album/album_item.dart';
 import 'package:file_client/view/widget/common_item_list.dart';
 import 'package:flutter/material.dart';
 
@@ -82,7 +82,7 @@ class _ShareAlbumPageState extends State<ShareAlbumPage> {
                                             ),
                                             SizedBox(
                                               height: 30,
-                                              width: 100,
+                                              width: 120,
                                               child: CommonActionOneButton(
                                                 title: "创建合集",
                                                 textColor: Theme.of(context).colorScheme.primary,
