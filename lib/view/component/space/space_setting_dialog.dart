@@ -42,7 +42,7 @@ class _SpaceSettingDialogState extends State<SpaceSettingDialog> {
             Navigator.pop(context);
           },
           onRightTap: () {},
-          rightTitle: "发送",
+          rightTitle: "确定",
         )
       ],
     );
