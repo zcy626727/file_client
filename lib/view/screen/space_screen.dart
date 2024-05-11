@@ -1,6 +1,6 @@
 import 'package:file_client/model/space/space.dart';
 import 'package:file_client/view/page/space/space_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:file_client/view/widget/common_search_text_field.dart';
 import 'package:flutter/material.dart';
 
 import '../../state/screen_state.dart';
@@ -70,24 +70,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                   child: Column(
                     children: [
                       //搜索栏
-                      Container(
-                        height: 40,
-                        margin: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0, bottom: 10.0),
-                        child: CupertinoSearchTextField(
-                          style: TextStyle(color: colorScheme.onSurface, fontSize: 16),
-                          placeholder: "",
-                          prefixIcon: Icon(
-                            CupertinoIcons.search,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          prefixInsets: const EdgeInsets.only(top: 1, left: 5, right: 2),
-                          suffixIcon: Icon(
-                            CupertinoIcons.xmark_circle_fill,
-                            color: colorScheme.onSurface,
-                          ),
-                          onSubmitted: (value) {},
-                        ),
-                      ),
+                      CommonSearchTextField(height: 65),
                       // 搜索到的空间列表，searchSpaceList
                       Expanded(
                         child: Container(

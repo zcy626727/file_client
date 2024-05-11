@@ -5,4 +5,5 @@ part 'group.g.dart';
 @JsonSerializable()
 class Group {
   String? id;
+  String? name;
 }

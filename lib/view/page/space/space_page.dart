@@ -1,6 +1,7 @@
-import 'package:file_client/view/page/space/space_menber_page.dart';
+import 'package:file_client/view/component/space/space_setting_dialog.dart';
+import 'package:file_client/view/page/space/space_group_page.dart';
+import 'package:file_client/view/page/space/space_member_page.dart';
 import 'package:file_client/view/page/space/space_message_page.dart';
-import 'package:file_client/view/page/space/space_setting_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/constants.dart';
@@ -102,9 +103,13 @@ class _SpacePageState extends State<SpacePage> {
                         title: "空间设置",
                         iconData: Icons.settings,
                         onPress: () {
-                          setState(() {
-                            _pageIndex = SpaceNav.setting;
-                          });
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return SpaceSettingDialog();
+                            },
+                          );
                         },
                         height: 30,
                         index: 0,
@@ -123,7 +128,19 @@ class _SpacePageState extends State<SpacePage> {
                         selectedIndex: 1,
                       ),
                       NavButton(
-                        title: "申请信息",
+                        title: "分组管理",
+                        iconData: Icons.group,
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.group;
+                          });
+                        },
+                        height: 30,
+                        index: 0,
+                        selectedIndex: 1,
+                      ),
+                      NavButton(
+                        title: "消息管理",
                         iconData: Icons.add_box,
                         onPress: () {
                           setState(() {
@@ -189,12 +206,12 @@ class _SpacePageState extends State<SpacePage> {
 
   Widget _getPage() {
     switch (_pageIndex) {
-      case SpaceNav.setting:
-        return const SpaceSettingPage();
       case SpaceNav.member:
         return SpaceMemberPage();
       case SpaceNav.message:
         return SpaceMessagePage();
+      case SpaceNav.group:
+        return SpaceGroupPage();
       default:
         return Container();
     }
