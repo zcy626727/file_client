@@ -4,6 +4,13 @@ part 'group.g.dart';
 
 @JsonSerializable()
 class Group {
-  String? id;
+  int? id;
   String? name;
+
+  Group();
+
+  Group.testGroup() {
+    id = 1;
+    name = "一个组";
+  }
 }

@@ -36,7 +36,7 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
     return AlertDialog(
       backgroundColor: colorScheme.surface,
       contentPadding: dialogContentPadding,
-      title: Text("添加组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
+      title: Text("选择组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: Container(
         height: 200,
         width: 100,

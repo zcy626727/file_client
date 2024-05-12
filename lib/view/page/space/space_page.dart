@@ -154,6 +154,18 @@ class _SpacePageState extends State<SpacePage> {
                         index: 0,
                         selectedIndex: 1,
                       ),
+                      NavButton(
+                        title: "文件列表",
+                        iconData: Icons.folder,
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.workspace;
+                          });
+                        },
+                        height: 30,
+                        index: 0,
+                        selectedIndex: 1,
+                      ),
                       Container(
                         margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 2.0),
                         child: const Text("空间", style: TextStyle(color: Colors.grey, fontSize: 12)),

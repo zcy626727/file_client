@@ -1,3 +1,4 @@
+import 'package:file_client/config/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,6 +26,13 @@ class User {
 
   //0：跟随系统，1：亮，2：暗
   int themeMode = 0;
+
+  User.testUser() {
+    id = 1;
+    phoneNumber = "121331";
+    name = "名字";
+    avatarUrl = errImageUrl;
+  }
 
   static String createSql = '''
     create table user ( 
@@ -149,7 +157,6 @@ class UserProvider {
   }
 
   Future<int> update(User user) async {
-    return await db
-        .update("user", user.toJson(), where: 'id = ?', whereArgs: [user.id]);
+    return await db.update("user", user.toJson(), where: 'id = ?', whereArgs: [user.id]);
   }
 }

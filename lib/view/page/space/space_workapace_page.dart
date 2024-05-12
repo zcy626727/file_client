@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:file_client/model/space/space_folder.dart';
+import 'package:file_client/view/component/resource/resource_detail_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -380,7 +381,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
       color: colorScheme.surface,
       context: context,
       position: RelativeRect.fromLTRB(
-        globalPosition.dx - 240,
+        globalPosition.dx - 180,
         globalPosition.dy,
         globalPosition.dx,
         globalPosition.dy,
@@ -410,7 +411,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
             style: TextStyle(color: colorScheme.onBackground.withAlpha(200), fontSize: 14),
           ),
         ),
-        if (res is UserFile)
+        if (res is SpaceFile)
           PopupMenuItem(
             height: 35,
             value: 'download',
@@ -419,6 +420,14 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               style: TextStyle(color: colorScheme.onBackground.withAlpha(200), fontSize: 14),
             ),
           ),
+        PopupMenuItem(
+          height: 35,
+          value: 'detail',
+          child: Text(
+            '详情',
+            style: TextStyle(color: colorScheme.onBackground.withAlpha(200), fontSize: 14),
+          ),
+        ),
       ],
     ).then(
       (value) async {
@@ -472,6 +481,15 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                 });
             break;
           case "download":
+            break;
+          case "detail":
+            await showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return ResourceDetailDialog(resource: res);
+              },
+            );
             break;
         }
       },
