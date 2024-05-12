@@ -7,28 +7,28 @@ part of 'user_file.dart';
 // **************************************************************************
 
 UserFile _$UserFileFromJson(Map<String, dynamic> json) => UserFile(
-      json['id'],
-      json['name'],
-      json['status'],
-      json['userId'] as int?,
-      json['parentId'] as int?,
-      json['fileId'] as int?,
-      json['fileSize'] as int?,
-      json['createTime'] == null
-          ? null
-          : DateTime.parse(json['createTime'] as String),
-      json['coverUrl'] as String?,
-    )..mimeType = json['mimeType'] as String?;
+      userId: (json['userId'] as num?)?.toInt(),
+      id: json['id'],
+      name: json['name'],
+      status: json['status'],
+      parentId: json['parentId'],
+      createTime: json['createTime'],
+      coverUrl: json['coverUrl'],
+      mimeType: json['mimeType'],
+      fileId: json['fileId'],
+      fileSize: json['fileSize'],
+    );
 
-Map<String, dynamic> _$UserFileToJson(UserFile instance) => <String, dynamic>{
+Map<String, dynamic> _$UserFileToJson(UserFile instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'status': instance.status,
-      'userId': instance.userId,
       'parentId': instance.parentId,
-      'fileId': instance.fileId,
-      'fileSize': instance.fileSize,
       'createTime': instance.createTime?.toIso8601String(),
       'coverUrl': instance.coverUrl,
       'mimeType': instance.mimeType,
+      'fileId': instance.fileId,
+      'fileSize': instance.fileSize,
+      'userId': instance.userId,
     };

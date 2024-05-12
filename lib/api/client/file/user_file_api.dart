@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-import '../../../domain/resource.dart';
 import '../../../model/file/user_file.dart';
 import '../file_http_config.dart';
 

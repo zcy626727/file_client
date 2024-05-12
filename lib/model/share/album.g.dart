@@ -9,14 +9,12 @@ part of 'album.dart';
 Album _$AlbumFromJson(Map<String, dynamic> json) => Album()
   ..id = json['id'] as String?
   ..topicId = json['topicId'] as String?
-  ..userId = json['userId'] as int?
+  ..userId = (json['userId'] as num?)?.toInt()
   ..title = json['title'] as String?
   ..introduction = json['introduction'] as String?
   ..coverUrl = json['coverUrl'] as String?
-  ..albumType = json['albumType'] as int?
-  ..createTime = json['createTime'] == null
-      ? null
-      : DateTime.parse(json['createTime'] as String);
+  ..albumType = (json['albumType'] as num?)?.toInt()
+  ..createTime = json['createTime'] == null ? null : DateTime.parse(json['createTime'] as String);
 
 Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'id': instance.id,

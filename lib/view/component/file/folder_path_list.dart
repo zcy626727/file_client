@@ -1,15 +1,21 @@
+import 'package:file_client/model/common/common_folder.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/file/user_folder.dart';
 
-
 class FolderPathList extends StatelessWidget {
-  const FolderPathList({Key? key, required this.folderList, this.onTap, this.margin, this.onCurrentTap}) : super(key: key);
+  const FolderPathList({
+    Key? key,
+    required this.folderList,
+    this.onTap,
+    this.margin,
+    this.onCurrentTap,
+  }) : super(key: key);
 
-  final List<UserFolder> folderList;
+  final List<CommonFolder> folderList;
   final EdgeInsetsGeometry? margin;
-  final Function(UserFolder)? onTap;
-  final Function(UserFolder)? onCurrentTap;
+  final Function(CommonFolder)? onTap;
+  final Function(CommonFolder)? onCurrentTap;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +41,7 @@ class FolderPathList extends StatelessWidget {
           ),
           ...List.generate(
             folderList.length,
-            (index) => PathItem(
+                (index) => PathItem(
               pathName: folderList[index].name!,
               current: index == folderList.length - 1,
               onTap: () async {
@@ -57,7 +63,7 @@ class FolderPathList extends StatelessWidget {
 }
 
 class PathItem extends StatelessWidget {
-  const PathItem({Key? key, required this.pathName, required this.current, required this.onTap,required this.onCurrentTap}) : super(key: key);
+  const PathItem({Key? key, required this.pathName, required this.current, required this.onTap, required this.onCurrentTap}) : super(key: key);
 
   final String pathName;
   final bool current;
@@ -85,15 +91,15 @@ class PathItem extends StatelessWidget {
                   pathName,
                   style: current
                       ? TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.primary.withAlpha(190),
-                        )
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.primary.withAlpha(190),
+                  )
                       : const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                        ),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),

@@ -2,6 +2,7 @@ import 'package:file_client/view/component/space/space_setting_dialog.dart';
 import 'package:file_client/view/page/space/space_group_page.dart';
 import 'package:file_client/view/page/space/space_member_page.dart';
 import 'package:file_client/view/page/space/space_message_page.dart';
+import 'package:file_client/view/page/space/space_workapace_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/constants.dart';
@@ -9,7 +10,9 @@ import '../../../constant/space.dart';
 import '../../widget/desktop_nav_button.dart';
 
 class SpacePage extends StatefulWidget {
-  const SpacePage({super.key});
+  const SpacePage({super.key, required this.spaceId});
+
+  final int spaceId;
 
   @override
   State<SpacePage> createState() => _SpacePageState();
@@ -158,15 +161,11 @@ class _SpacePageState extends State<SpacePage> {
                       NavButton(
                         title: "文件夹1",
                         iconData: Icons.folder,
-                        onPress: () {},
-                        height: 30,
-                        index: 0,
-                        selectedIndex: 1,
-                      ),
-                      NavButton(
-                        title: "文件夹2",
-                        iconData: Icons.folder,
-                        onPress: () {},
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.workspace;
+                          });
+                        },
                         height: 30,
                         index: 0,
                         selectedIndex: 1,
@@ -178,7 +177,11 @@ class _SpacePageState extends State<SpacePage> {
                       NavButton(
                         title: "文件夹2",
                         iconData: Icons.folder,
-                        onPress: () {},
+                        onPress: () {
+                          setState(() {
+                            _pageIndex = SpaceNav.workspace;
+                          });
+                        },
                         height: 30,
                         index: 0,
                         selectedIndex: 1,
@@ -212,6 +215,8 @@ class _SpacePageState extends State<SpacePage> {
         return SpaceMessagePage();
       case SpaceNav.group:
         return SpaceGroupPage();
+      case SpaceNav.workspace:
+        return SpaceWorkspacePage(spaceId: widget.spaceId);
       default:
         return Container();
     }

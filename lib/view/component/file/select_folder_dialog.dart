@@ -38,7 +38,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
   Future<void> loadFolderList(int parentId) async {
     try {
       _folderList = await UserFolderService.getFolderList(parentId, <int>[ResourceStatus.normal.index]);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
       log(e.toString());
@@ -105,6 +105,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                   margin: const EdgeInsets.only(),
                   folderList: _folderPath,
                   onTap: (userFolder) async {
+                    if (userFolder is! UserFolder) return;
                     setState(() {
                       _loadingMoveFolderList = true;
                     });
@@ -123,6 +124,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                     });
                   },
                   onCurrentTap: (userFolder){//点击当前的路径文件夹不需要重新获取数据
+                    if (userFolder is! UserFolder) return;
                     setState(() {
                       _loadingMoveFolderList = true;
                     });
@@ -144,7 +146,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                           itemCount: _folderList.length,
                           itemExtent: 45,
                           itemBuilder: (BuildContext context, int index) {
-                            return FileListItem(
+                            return ResourceListItem(
                               isGrid: false,
                               onPreTap: () {
                                 //选择当前文件夹

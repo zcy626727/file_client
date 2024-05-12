@@ -51,7 +51,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                   nContext,
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return SpacePage();
+                                      return SpacePage(spaceId: 1);
                                     },
                                   ),
                                 );

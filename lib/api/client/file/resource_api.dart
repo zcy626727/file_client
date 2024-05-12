@@ -1,10 +1,10 @@
-import '../../../domain/resource.dart';
+import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../file_http_config.dart';
 
 class ResourceApi {
-  static Future<List<Resource>> getFileAndFolderList({
+  static Future<List<CommonResource>> getFileAndFolderList({
     required int parentId,
     required List<int> statusList,
     required int fileType,
@@ -23,7 +23,7 @@ class ResourceApi {
         },
       ),
     );
-    var resourceList = <Resource>[];
+    var resourceList = <CommonResource>[];
     for (var map in r.data["fileList"]) {
       resourceList.add(UserFile.fromJson(map));
     }

@@ -3,14 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import '../../../api/http_status_code.dart';
-import '../../../domain/resource.dart';
+import '../../../model/common/common_resource.dart';
 import '../../../model/file/share.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/share_service.dart';
+import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
 import '../../component/file/select_folder_dialog.dart';
-import '../../component/file/file_list_tile.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_one_button.dart';
 import '../../widget/input_text_field.dart';
@@ -32,7 +32,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
   //文件路径
   List<UserFolder> _pathList = <UserFolder>[];
 
-  List<Resource> _resourceList = <Resource>[];
+  List<CommonResource> _resourceList = <CommonResource>[];
 
   late Future _futureBuilderFuture;
 
@@ -226,7 +226,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
               var res = _resourceList[idx];
               return Container(
                 margin: const EdgeInsets.all(2.0),
-                child: FileListItem(
+                child: ResourceListItem(
                   onPreTap: () async {
                     setState(
                       () {
@@ -266,7 +266,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
           );
   }
 
-  void moreOpera(BuildContext context, TapDownDetails details, Resource res) {
+  void moreOpera(BuildContext context, TapDownDetails details, CommonResource res) {
     var globalPosition = details.globalPosition;
     var colorScheme = Theme.of(context).colorScheme;
     showMenu(

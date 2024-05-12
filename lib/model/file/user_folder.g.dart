@@ -7,13 +7,12 @@ part of 'user_folder.dart';
 // **************************************************************************
 
 UserFolder _$UserFolderFromJson(Map<String, dynamic> json) => UserFolder(
+  userId: (json['userId'] as num?)?.toInt(),
       id: json['id'],
       name: json['name'],
       status: json['status'],
-      parentId: json['parentId'] as int?,
-      createTime: json['createTime'] == null
-          ? null
-          : DateTime.parse(json['createTime'] as String),
+      parentId: json['parentId'],
+      createTime: json['createTime'],
     );
 
 Map<String, dynamic> _$UserFolderToJson(UserFolder instance) =>
@@ -23,4 +22,5 @@ Map<String, dynamic> _$UserFolderToJson(UserFolder instance) =>
       'status': instance.status,
       'parentId': instance.parentId,
       'createTime': instance.createTime?.toIso8601String(),
+      'userId': instance.userId,
     };

@@ -1,12 +1,11 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/domain/resource.dart';
-import 'package:file_client/model/file/user_file.dart';
 import 'package:file_client/service/file/user_file_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constant/resource.dart';
+import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/user_folder_service.dart';
 import '../../widget/common_action_two_button.dart';
@@ -20,7 +19,7 @@ class SelectUserFileDialog extends StatefulWidget {
   final int? folderId;
   final int fileType;
   final String title;
-  final Function(Resource) onConfirm;
+  final Function(CommonResource) onConfirm;
 
   @override
   State<SelectUserFileDialog> createState() => _SelectUserFileDialogState();
@@ -33,9 +32,9 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
   List<UserFolder> _folderPath = <UserFolder>[];
 
   //当前路径的文件夹列表
-  List<Resource> _resList = <Resource>[];
+  List<CommonResource> _resList = <CommonResource>[];
 
-  Resource _selectedFolder = UserFolder.rootFolder();
+  CommonResource _selectedFolder = UserFolder.rootFolder();
 
   bool _loadingMoveFolderList = false;
 
@@ -157,7 +156,7 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
                           itemCount: _resList.length,
                           itemExtent: 45,
                           itemBuilder: (BuildContext context, int index) {
-                            return FileListItem(
+                            return ResourceListItem(
                               isGrid: false,
                               onPreTap: () {
                                 setState(() {

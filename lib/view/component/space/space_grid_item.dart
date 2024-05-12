@@ -28,7 +28,7 @@ class SpaceGridItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const SpacePage();
+                return const SpacePage(spaceId: 1);
               },
             ),
           );

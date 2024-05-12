@@ -2,26 +2,59 @@
 import 'package:flutter/cupertino.dart';
 
 import '../model/file/user_folder.dart';
+import '../model/space/space_folder.dart';
 
+class PathState extends ChangeNotifier {
+  List<UserFolder> mainPathList = <UserFolder>[];
+  Map<int, List<SpaceFolder>> spacePathMap = {};
 
-class PathState extends ChangeNotifier{
-
-  List<UserFolder> workplaceFolderList = <UserFolder>[];
-
-  void appendWorkspacePlace(UserFolder userFolder){
-    workplaceFolderList.add(userFolder);
+  void addMainFolder(UserFolder userFolder) {
+    mainPathList.add(userFolder);
     notifyListeners();
   }
 
-  void turnToWorkspacePlace(UserFolder userFolder){
-    while(workplaceFolderList.last.id!=userFolder.id){
-      workplaceFolderList.removeLast();
+  void turnToMainFolder(UserFolder userFolder) {
+    while (mainPathList.last.id != userFolder.id) {
+      mainPathList.removeLast();
     }
     notifyListeners();
   }
 
-  void clearWorkspacePlace(){
-    workplaceFolderList.clear();
+  void clearMainPath() {
+    mainPathList.clear();
+    notifyListeners();
+  }
+
+  List<SpaceFolder> getSpaceFolder({required int spaceId}) {
+    if (spacePathMap[spaceId] == null) {
+      //为null就先初始化
+      spacePathMap[spaceId] = [];
+    }
+    return spacePathMap[spaceId]!;
+  }
+
+  void addSpaceFolder({required int spaceId, required SpaceFolder spaceFolder}) {
+    if (spacePathMap[spaceId] == null) {
+      //为null就先初始化
+      spacePathMap[spaceId] = [];
+    }
+    spacePathMap[spaceId]!.add(spaceFolder);
+    notifyListeners();
+  }
+
+  void turnToSpaceFolder({required int spaceId, required SpaceFolder spaceFolder}) {
+    var pathList = spacePathMap[spaceId];
+    if (pathList == null) return;
+    while (pathList.last.id != spaceFolder.id) {
+      pathList.removeLast();
+      notifyListeners();
+    }
+  }
+
+  void clearSpacePath(int spaceId) {
+    var pathList = spacePathMap[spaceId];
+    if (pathList == null) return;
+    pathList.clear();
     notifyListeners();
   }
 }

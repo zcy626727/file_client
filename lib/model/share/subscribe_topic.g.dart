@@ -6,11 +6,10 @@ part of 'subscribe_topic.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SubscribeTopic _$SubscribeTopicFromJson(Map<String, dynamic> json) =>
-    SubscribeTopic()
-      ..id = json['id'] as String?
-      ..albumId = json['albumId'] as String?
-      ..userId = json['userId'] as int?;
+SubscribeTopic _$SubscribeTopicFromJson(Map<String, dynamic> json) => SubscribeTopic()
+  ..id = json['id'] as String?
+  ..albumId = json['albumId'] as String?
+  ..userId = (json['userId'] as num?)?.toInt();
 
 Map<String, dynamic> _$SubscribeTopicToJson(SubscribeTopic instance) =>
     <String, dynamic>{

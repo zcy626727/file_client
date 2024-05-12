@@ -9,16 +9,14 @@ part of 'application.dart';
 Application _$ApplicationFromJson(Map<String, dynamic> json) => Application()
   ..id = json['id'] as String?
   ..albumId = json['albumId'] as String?
-  ..userId = json['userId'] as int?
+  ..userId = (json['userId'] as num?)?.toInt()
   ..title = json['title'] as String?
   ..coverUrl = json['coverUrl'] as String?
-  ..createTime = json['createTime'] == null
-      ? null
-      : DateTime.parse(json['createTime'] as String)
-  ..order = json['order'] as int?
-  ..fileId = json['fileId'] as int?
+  ..createTime = json['createTime'] == null ? null : DateTime.parse(json['createTime'] as String)
+  ..order = (json['order'] as num?)?.toInt()
+  ..fileId = (json['fileId'] as num?)?.toInt()
   ..introduction = json['introduction'] as String?
-  ..version = json['version'] as int?;
+  ..version = (json['version'] as num?)?.toInt();
 
 Map<String, dynamic> _$ApplicationToJson(Application instance) =>
     <String, dynamic>{

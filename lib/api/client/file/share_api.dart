@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import '../../../config/http_status_code.dart';
-import '../../../domain/resource.dart';
+import '../../../model/common/common_resource.dart';
 import '../../../model/file/share.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
@@ -128,7 +128,7 @@ class ShareApi {
     return Share.fromJson(r.data['share']);
   }
 
-  static Future<(String, List<Resource>)> getShareData(
+  static Future<(String, List<CommonResource>)> getShareData(
     int shareId,
     String? code,
     int? folderId,
@@ -146,7 +146,7 @@ class ShareApi {
       }),
     );
 
-    List<Resource> resourceList = [];
+    List<CommonResource> resourceList = [];
     if (r.data['code'] != HttpStatusCode.success) {
       return (r.data['code'] as String, resourceList);
     }

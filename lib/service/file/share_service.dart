@@ -1,6 +1,6 @@
 
 import '../../api/client/file/share_api.dart';
-import '../../domain/resource.dart';
+import '../../model/common/common_resource.dart';
 import '../../model/file/share.dart';
 import '../../model/file/user_file.dart';
 import '../../model/file/user_folder.dart';
@@ -32,7 +32,7 @@ class ShareService {
     return await ShareApi.updateShareStatus(shareId, newStatus);
   }
 
-  static Future<(String, List<Resource>)> getShareData(
+  static Future<(String, List<CommonResource>)> getShareData(
     int shareId,
     String? code,
     int? folderId,

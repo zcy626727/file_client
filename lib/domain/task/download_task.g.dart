@@ -7,19 +7,17 @@ part of 'download_task.dart';
 // **************************************************************************
 
 DownloadTask _$DownloadTaskFromJson(Map<String, dynamic> json) => DownloadTask()
-  ..id = json['id'] as int?
-  ..userId = json['userId'] as int?
-  ..userFileId = json['userFileId'] as int?
+  ..id = (json['id'] as num?)?.toInt()
+  ..userId = (json['userId'] as num?)?.toInt()
+  ..userFileId = (json['userFileId'] as num?)?.toInt()
   ..targetPath = json['targetPath'] as String?
   ..targetName = json['targetName'] as String?
   ..downloadUrl = json['downloadUrl'] as String?
-  ..totalSize = json['totalSize'] as int?
-  ..downloadedSize = json['downloadedSize'] as int
+  ..totalSize = (json['totalSize'] as num?)?.toInt()
+  ..downloadedSize = (json['downloadedSize'] as num).toInt()
   ..statusMessage = json['statusMessage'] as String?
-  ..status = json['status'] as int?
-  ..createTime = json['createTime'] == null
-      ? null
-      : DateTime.parse(json['createTime'] as String);
+  ..status = (json['status'] as num?)?.toInt()
+  ..createTime = json['createTime'] == null ? null : DateTime.parse(json['createTime'] as String);
 
 Map<String, dynamic> _$DownloadTaskToJson(DownloadTask instance) =>
     <String, dynamic>{

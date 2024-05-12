@@ -12,7 +12,7 @@ class CreateGroupDialog extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
-      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surface,
       title: Text("空间设置", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: SizedBox(
         width: 80,

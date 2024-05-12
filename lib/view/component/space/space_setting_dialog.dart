@@ -18,6 +18,7 @@ class _SpaceSettingDialogState extends State<SpaceSettingDialog> {
 
     return AlertDialog(
       backgroundColor: colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
       title: Text("空间设置", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: SizedBox(
         width: 80,

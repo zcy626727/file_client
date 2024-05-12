@@ -8,12 +8,12 @@ part of 'multipart_info.dart';
 
 MultipartInfo _$MultipartInfoFromJson(Map<String, dynamic> json) =>
     MultipartInfo(
-      json['fileId'] as int?,
+      (json['fileId'] as num?)?.toInt(),
       json['finished'] as bool?,
-      json['totalPartNum'] as int?,
-      json['uploadedPartNum'] as int?,
-      json['fileSize'] as int?,
-      json['partSize'] as int?,
+      (json['totalPartNum'] as num?)?.toInt(),
+      (json['uploadedPartNum'] as num?)?.toInt(),
+      (json['fileSize'] as num?)?.toInt(),
+      (json['partSize'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MultipartInfoToJson(MultipartInfo instance) =>

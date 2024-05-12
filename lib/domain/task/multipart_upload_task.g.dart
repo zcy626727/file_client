@@ -8,22 +8,20 @@ part of 'multipart_upload_task.dart';
 
 MultipartUploadTask _$MultipartUploadTaskFromJson(Map<String, dynamic> json) =>
     MultipartUploadTask()
-      ..id = json['id'] as int?
-      ..fileName = json['fileName'] as String?
-      ..srcPath = json['srcPath'] as String?
-      ..totalSize = json['totalSize'] as int?
-      ..uploadedSize = json['uploadedSize'] as int
-      ..md5 = json['md5'] as String?
-      ..status = json['status'] as int?
-      ..statusMessage = json['statusMessage'] as String?
-      ..createTime = json['createTime'] == null
-          ? null
-          : DateTime.parse(json['createTime'] as String)
-      ..fileId = json['fileId'] as int?
-      ..private = json['private'] as bool?
-      ..mediaType = json['mediaType'] as int?
-      ..parentId = json['parentId'] as int?
-      ..userId = json['userId'] as int?;
+  ..id = (json['id'] as num?)?.toInt()
+  ..fileName = json['fileName'] as String?
+  ..srcPath = json['srcPath'] as String?
+  ..totalSize = (json['totalSize'] as num?)?.toInt()
+  ..uploadedSize = (json['uploadedSize'] as num).toInt()
+  ..md5 = json['md5'] as String?
+  ..status = (json['status'] as num?)?.toInt()
+  ..statusMessage = json['statusMessage'] as String?
+  ..createTime = json['createTime'] == null ? null : DateTime.parse(json['createTime'] as String)
+  ..fileId = (json['fileId'] as num?)?.toInt()
+  ..private = json['private'] as bool?
+  ..mediaType = (json['mediaType'] as num?)?.toInt()
+  ..parentId = (json['parentId'] as num?)?.toInt()
+  ..userId = (json['userId'] as num?)?.toInt();
 
 Map<String, dynamic> _$MultipartUploadTaskToJson(
         MultipartUploadTask instance) =>

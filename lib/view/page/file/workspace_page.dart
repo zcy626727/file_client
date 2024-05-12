@@ -13,11 +13,11 @@ import 'package:provider/provider.dart';
 
 import '../../../config/global.dart';
 import '../../../constant/resource.dart';
-import '../../../domain/resource.dart';
 import '../../../domain/task/download_task.dart';
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/multipart_upload_task.dart';
 import '../../../domain/upload_notion.dart';
+import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/resource_service.dart';
@@ -51,13 +51,14 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _loadingResourceList = false;
   bool _checkMode = false;
 
-  final List<Resource> _selectedResourceList = [];
+  final List<CommonResource> _selectedResourceList = [];
 
-  List<Resource> _resourceList = <Resource>[];
+  List<CommonResource> _resourceList = <CommonResource>[];
 
   Future<void> loadFileAndFolderList(int parentId) async {
     try {
-      _resourceList = await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]).timeout(Duration(seconds: 2));
+      _resourceList =
+          await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]).timeout(const Duration(seconds: 2));
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -66,7 +67,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   }
 
   Future getData() async {
-    var folderList = Provider.of<PathState>(context, listen: false).workplaceFolderList;
+    var folderList = Provider.of<PathState>(context, listen: false).mainPathList;
     var folderId = 0;
     if (folderList.isNotEmpty) {
       folderId = folderList.last.id!;
@@ -159,7 +160,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     size: 18,
                     color: colorScheme.onPrimary,
                   ),
-                  SizedBox(width: 5.0),
+                  const SizedBox(width: 5.0),
                   Text(
                     "上传文件",
                     style: TextStyle(color: colorScheme.onPrimary),
@@ -326,23 +327,25 @@ class _WorkspacePageState extends State<WorkspacePage> {
 
   Widget _buildPathList() {
     var folderPath = Provider.of<PathState>(context, listen: true);
-    var folderList = folderPath.workplaceFolderList;
+    var folderList = folderPath.mainPathList;
     return FolderPathList(
       margin: const EdgeInsets.only(left: 13.0, top: 1.0),
       folderList: folderList,
       onTap: (userFolder) async {
-        if (userFolder.id == 0) {
-          //根目录
-          folderPath.clearWorkspacePlace();
-        } else {
-          folderPath.turnToWorkspacePlace(userFolder);
-        }
-        await loadFileAndFolderList(userFolder.id!);
-        _currentFolder = userFolder;
-        _loadingResourceList = false;
+        if (userFolder is UserFolder) {
+          if (userFolder.id == 0) {
+            //根目录
+            folderPath.clearMainPath();
+          } else {
+            folderPath.turnToMainFolder(userFolder);
+          }
+          await loadFileAndFolderList(userFolder.id!);
+          _currentFolder = userFolder;
+          _loadingResourceList = false;
 
-        cancelCheck();
-        setState(() {});
+          cancelCheck();
+          setState(() {});
+        }
       },
     );
   }
@@ -388,7 +391,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                       return Container(
                         key: ValueKey("${res.id}-$_checkMode"),
                         margin: const EdgeInsets.all(2.0),
-                        child: FileListItem(
+                        child: ResourceListItem(
                           onPreTap: () async {
                             setState(() {
                               _selectedIndex = idx;
@@ -409,7 +412,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                               //双击进入文件夹
                               if (res.id != null) {
                                 _resourceList = await ResourceService.getFileAndFolderList(parentId: res.id!, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]);
-                                pathState.appendWorkspacePlace(res);
+                                pathState.addMainFolder(res);
                                 _currentFolder = res;
                               }
                               cancelCheck();
@@ -581,7 +584,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
     );
   }
 
-  void moreOpera(BuildContext context, TapDownDetails details, Resource res) {
+  void moreOpera(BuildContext context, TapDownDetails details, CommonResource res) {
     var globalPosition = details.globalPosition;
     var colorScheme = Theme.of(context).colorScheme;
     showMenu(
@@ -766,7 +769,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
     );
   }
 
-  void moveFileOrFolder(Resource selectedRes) {
+  void moveFileOrFolder(CommonResource selectedRes) {
     showDialog(
       barrierDismissible: false,
       context: context,

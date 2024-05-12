@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import '../../api/client/file/file_api.dart';
 import '../../api/client/file/user_file_api.dart';
 import '../../config/file_config.dart';
 import '../../constant/file.dart';
-import '../../domain/resource.dart';
 import '../../domain/task/download_task.dart';
 import '../../domain/task/multipart_upload_task.dart';
 import '../../model/file/user_file.dart';

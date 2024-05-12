@@ -132,7 +132,7 @@ class _TrashPageState extends State<TrashPage> {
                   var trash = _trashList[idx];
                   return Container(
                     margin: const EdgeInsets.all(2.0),
-                    child: FileListItem(
+                    child: ResourceListItem(
                       key: ValueKey("${trash.id}-$_checkMode"),
                       isCheckMode: _checkMode,
                       onPreTap: () async {

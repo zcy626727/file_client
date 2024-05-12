@@ -6,11 +6,10 @@ part of 'subscribe_album.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SubscribeAlbum _$SubscribeAlbumFromJson(Map<String, dynamic> json) =>
-    SubscribeAlbum()
-      ..id = json['id'] as String?
-      ..albumId = json['albumId'] as String?
-      ..userId = json['userId'] as int?;
+SubscribeAlbum _$SubscribeAlbumFromJson(Map<String, dynamic> json) => SubscribeAlbum()
+  ..id = json['id'] as String?
+  ..albumId = json['albumId'] as String?
+  ..userId = (json['userId'] as num?)?.toInt();
 
 Map<String, dynamic> _$SubscribeAlbumToJson(SubscribeAlbum instance) =>
     <String, dynamic>{

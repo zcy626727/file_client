@@ -19,10 +19,11 @@ class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     return AlertDialog(
-      surfaceTintColor: colorScheme.surface,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
       contentPadding: dialogContentPadding,
       title: Text("编辑分组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
-      content: Container(
+      content: SizedBox(
         width: 300,
         height: 400,
         child: Column(
