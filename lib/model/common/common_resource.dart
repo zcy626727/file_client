@@ -1,4 +1,6 @@
 // 文件和文件夹
+
+
 class CommonResource {
   // id
   int? id;
@@ -9,8 +11,12 @@ class CommonResource {
   // 文件/文件夹的状态，普通，删除等
   int? status;
 
+  int? userId;
+
   // 文件夹id
   int? parentId;
+
+  int? fileType;
 
   // 创建时间
   DateTime? createTime;
@@ -21,5 +27,7 @@ class CommonResource {
     this.status,
     this.parentId,
     this.createTime,
+    this.fileType,
+    this.userId,
   });
 }

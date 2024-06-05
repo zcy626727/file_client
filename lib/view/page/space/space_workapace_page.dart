@@ -6,12 +6,15 @@ import 'package:file_client/view/component/resource/resource_detail_dialog.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constant/file.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
+import '../../../model/file/user_folder.dart';
 import '../../../model/space/space_file.dart';
 import '../../../state/path_state.dart';
 import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
+import '../../component/file/select_file_dialog.dart';
 import '../../component/file/select_folder_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
@@ -105,7 +108,9 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           SizedBox(
             height: 25,
             child: ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                await addFile();
+              },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all(
@@ -115,13 +120,13 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               child: Row(
                 children: [
                   Icon(
-                    Icons.file_upload,
+                    Icons.upload_file,
                     size: 18,
                     color: colorScheme.onPrimary,
                   ),
-                  SizedBox(width: 5.0),
+                  const SizedBox(width: 5.0),
                   Text(
-                    "上传文件",
+                    "添加文件",
                     style: TextStyle(color: colorScheme.onPrimary),
                   )
                 ],
@@ -529,6 +534,33 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
       context: context,
       builder: (BuildContext context) {
         return Container();
+      },
+    );
+  }
+
+  Future<void> addFile() async {
+    //其他类型直接选择文件即可（单资源类型）
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SelectUserFileDialog(
+          title: "选择文件",
+          fileType: FileType.any,
+          onConfirm: (res) async {
+            try {
+              if (res is UserFolder) {
+                throw const FormatException("请选择文件");
+              } else if (res is UserFile) {
+                //拿到文件后保存到本地目录
+              }
+            } on Exception catch (e) {
+              ShowSnackBar.exception(context: context, e: e, defaultValue: "选择文件出错");
+            } finally {
+              Navigator.pop(context);
+            }
+          },
+        );
       },
     );
   }

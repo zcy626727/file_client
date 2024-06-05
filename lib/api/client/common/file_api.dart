@@ -32,7 +32,7 @@ class FileApi {
 
   //获取getUrl，文件下载
   static Future<void> completePutFile(int fileId) async {
-    var r = await FileHttpConfig.dio.post(
+    await FileHttpConfig.dio.post(
       "/file/completePutFile",
       data: FormData.fromMap({
         "fileId": fileId,
@@ -44,9 +44,6 @@ class FileApi {
         },
       ),
     );
-
-    //获取数据
-    return;
   }
 
   //获取getUrl，文件下载

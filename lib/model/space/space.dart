@@ -4,7 +4,10 @@ part 'space.g.dart';
 
 @JsonSerializable()
 class Space {
-  String? id;
+  int? id;
+  int? creatorId;
+  String? name;
+  String? avatarUrl;
 
   factory Space.fromJson(Map<String, dynamic> json) => _$SpaceFromJson(json);
 

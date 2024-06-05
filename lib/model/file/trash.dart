@@ -11,9 +11,6 @@ class Trash extends CommonResource {
   int? itemId;
   int? type;
 
-  // @override
-  // @JsonKey(includeFromJson: false, includeToJson: true)
-  // int? status = ResourceStatus.deleted.index;
 
   Trash({
     id,

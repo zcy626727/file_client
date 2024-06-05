@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../../config/constants.dart';
 import '../../../constant/space.dart';
+import '../../component/common/common_side_title.dart';
 import '../../widget/desktop_nav_button.dart';
 
 class SpacePage extends StatefulWidget {
@@ -166,10 +167,7 @@ class _SpacePageState extends State<SpacePage> {
                         index: 0,
                         selectedIndex: 1,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 2.0),
-                        child: const Text("空间", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ),
+                      const CommonSideTitle(value: "空间"),
                       NavButton(
                         title: "文件夹1",
                         iconData: Icons.folder,
@@ -182,10 +180,7 @@ class _SpacePageState extends State<SpacePage> {
                         index: 0,
                         selectedIndex: 1,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 2.0),
-                        child: const Text("我的", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ),
+                      const CommonSideTitle(value: "我的"),
                       NavButton(
                         title: "文件夹2",
                         iconData: Icons.folder,

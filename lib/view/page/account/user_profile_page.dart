@@ -3,7 +3,7 @@ import 'package:file_client/view/page/account/reset_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/client/file/file_api.dart';
+import '../../../api/client/common/file_api.dart';
 import '../../../config/global.dart';
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/single_upload_task.dart';

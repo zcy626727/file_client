@@ -19,30 +19,7 @@ class SpaceFile extends CommonFile {
     this.groupId,
     this.groupPermission,
     this.otherPermission,
-    id,
-    name,
-    status,
-    parentId,
-    createTime,
-    coverUrl,
-    mimeType,
-    fileId,
-    fileSize,
-  }) : super(
-          id: id,
-          name: name,
-          status: status,
-          parentId: parentId,
-          createTime: createTime,
-          coverUrl: coverUrl,
-          mimeType: mimeType,
-          fileId: fileId,
-          fileSize: fileSize,
-        );
-
-  factory SpaceFile.fromJson(Map<String, dynamic> json) => _$SpaceFileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SpaceFileToJson(this);
+  });
 
   SpaceFile.testFile() {
     spaceId = 1;
@@ -59,6 +36,10 @@ class SpaceFile extends CommonFile {
     fileId = 11;
     fileSize = 1000;
   }
+
+  factory SpaceFile.fromJson(Map<String, dynamic> json) => _$SpaceFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpaceFileToJson(this);
 
   @override
   String toString() {

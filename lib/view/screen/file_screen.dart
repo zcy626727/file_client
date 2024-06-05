@@ -1,11 +1,11 @@
-import 'package:file_client/view/page/task/task_page.dart';
 import 'package:file_client/view/page/file/trash_page.dart';
+import 'package:file_client/view/page/task/task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../state/screen_state.dart';
-import '../widget/desktop_nav_button.dart';
 import '../page/file/workspace_page.dart';
+import '../widget/desktop_nav_button.dart';
 
 class FileScreen extends StatefulWidget {
   const FileScreen({Key? key}) : super(key: key);
@@ -58,10 +58,10 @@ class _FileScreenState extends State<FileScreen> {
                       index: SecondNav.trash,
                       selectedIndex: navState.secondNavIndex,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 8.0),
-                      child: const Text("媒体", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 8.0),
+                    //   child: const Text("媒体", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    // ),
                   ],
                 ),
               ),

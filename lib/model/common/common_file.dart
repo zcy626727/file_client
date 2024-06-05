@@ -14,20 +14,9 @@ class CommonFile extends CommonResource {
   int? fileSize;
 
   CommonFile({
-    id,
-    name,
-    status,
-    parentId,
-    createTime,
     this.coverUrl,
     this.mimeType,
     this.fileId,
     this.fileSize,
-  }) : super(
-          id: id,
-          name: name,
-          status: status,
-          parentId: parentId,
-          createTime: createTime,
-        );
+  });
 }

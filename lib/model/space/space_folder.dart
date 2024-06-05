@@ -1,12 +1,12 @@
-import 'package:file_client/model/file/user_folder.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../constant/resource.dart';
+import '../common/common_folder.dart';
 
 part 'space_folder.g.dart';
 
 @JsonSerializable()
-class SpaceFolder extends UserFolder {
+class SpaceFolder extends CommonFolder {
   int? spaceId;
 
   // 权限相关
@@ -19,22 +19,7 @@ class SpaceFolder extends UserFolder {
     this.otherPermission,
     this.groupId,
     this.groupPermission,
-    id,
-    name,
-    status,
-    parentId,
-    createTime,
-  }) : super(
-          id: id,
-          name: name,
-          status: status,
-          parentId: parentId,
-          createTime: createTime,
-        );
-
-  factory SpaceFolder.fromJson(Map<String, dynamic> json) => _$SpaceFolderFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SpaceFolderToJson(this);
+  }) : super();
 
   SpaceFolder.testFolder() {
     spaceId = 1;
@@ -48,14 +33,17 @@ class SpaceFolder extends UserFolder {
     createTime = DateTime.now();
   }
 
-  SpaceFolder.rootFolder()
-      : super(
-          id: 0,
-          name: "根目录",
-          status: ResourceStatus.normal.index,
-          parentId: 0,
-          createTime: null,
-        );
+  SpaceFolder.rootFolder() {
+    id = 0;
+    name = "根目录";
+    status = ResourceStatus.normal.index;
+    parentId = 0;
+    createTime = null;
+  }
+
+  factory SpaceFolder.fromJson(Map<String, dynamic> json) => _$SpaceFolderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpaceFolderToJson(this);
 }
 
 class SpaceFolderPermission {

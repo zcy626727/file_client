@@ -56,7 +56,7 @@ SPEC CHECKSUMS:
   media_kit_native_event_loop: 81fd5b45192b72f8b5b69eaf5b540f45777eb8d5
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
   package_info_plus: fa739dd842b393193c5ca93c26798dff6e3d0e0c
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269

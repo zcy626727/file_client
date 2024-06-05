@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,8 +8,8 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/task/enum/upload.dart';
 import '../../../domain/task/single_upload_task.dart';
-import '../../../service/file/file_url_service.dart';
-import '../../../service/file/upload_service.dart';
+import '../../../service/common/file_url_service.dart';
+import '../../../service/common/upload_service.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../show/show_snack_bar.dart';
 

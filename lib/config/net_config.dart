@@ -10,12 +10,17 @@ class NetConfig{
   //最大连接数
   int maxCount;
 
-  //用户服务
-  static String userApiUrl = 'http://192.168.2.105:26201';
+  static const int commonPageSize = 20;
 
   //用户服务
-  static String fileApiUrl = 'http://192.168.2.105:26211';
+  static String userApiUrl = 'http://192.168.200.148:26201';
+
+  //用户服务
+  static String fileApiUrl = 'http://192.168.200.148:26211';
 
   //分享服务
-  static String shareApiUrl = 'http://192.168.2.105:26221';
+  static String shareApiUrl = 'http://192.168.200.148:26221';
+
+  //团队服务
+  static String teamApiUrl = 'http://192.168.200.148:26231';
 }

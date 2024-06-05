@@ -1,4 +1,4 @@
-import 'package:file_client/api/client/file/file_api.dart';
+import 'package:file_client/api/client/common/file_api.dart';
 
 // var (getUrl, staticUrl) = await FileApi.genGetFileUrl(task.fileId!);
 // task.getUrl = getUrl;

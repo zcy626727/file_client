@@ -37,7 +37,7 @@ class _UploadListViewItemState extends State<UploadListViewItem> {
           Expanded(
             flex: 1,
             child: Text(
-              FileUtil.getUploadPercentage(widget.task.uploadedSize ?? 0, widget.task.totalSize!),
+              FileUtil.getUploadPercentage(widget.task.uploadedSize ?? 0, widget.task.totalSize ?? 0),
               style: TextStyle(color: colorScheme.onSurface),
             ),
           ),

@@ -4,10 +4,7 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
-
-import '../../api/client/file/file_api.dart';
 import '../../api/client/file/user_file_api.dart';
-import '../../api/client/file_http_config.dart';
 import '../../config/global.dart';
 import '../../domain/task/download_task.dart';
 import '../../domain/task/enum/download.dart';
@@ -144,7 +141,7 @@ class DownloadService {
     sendPort.send([1, task.toJson()]);
 
     //获取url
-    var url = await UserFileApi.genGetFileUrl(task.userFileId!);
+    var url = await UserFileApi.getDownloadUrl(task.userFileId!);
     task.downloadUrl = url;
   }
 

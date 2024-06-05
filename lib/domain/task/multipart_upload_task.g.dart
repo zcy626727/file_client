@@ -6,8 +6,7 @@ part of 'multipart_upload_task.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MultipartUploadTask _$MultipartUploadTaskFromJson(Map<String, dynamic> json) =>
-    MultipartUploadTask()
+MultipartUploadTask _$MultipartUploadTaskFromJson(Map<String, dynamic> json) => MultipartUploadTask()
   ..id = (json['id'] as num?)?.toInt()
   ..fileName = json['fileName'] as String?
   ..srcPath = json['srcPath'] as String?

@@ -6,8 +6,7 @@ part of 'single_upload_task.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SingleUploadTask _$SingleUploadTaskFromJson(Map<String, dynamic> json) =>
-    SingleUploadTask()
+SingleUploadTask _$SingleUploadTaskFromJson(Map<String, dynamic> json) => SingleUploadTask()
   ..id = (json['id'] as num?)?.toInt()
   ..srcPath = json['srcPath'] as String?
   ..totalSize = (json['totalSize'] as num?)?.toInt()

@@ -4,10 +4,173 @@ import '../../../model/file/user_file.dart';
 import '../file_http_config.dart';
 
 class UserFileApi {
-  //获取getUrl，文件下载
-  static Future<String> genGetFileUrl(int userFileId) async {
+  static Future<UserFile> createFile({
+    required String filename,
+    required int fileId,
+    required int parentId,
+  }) async {
+    var r = await FileHttpConfig.dio.post(
+      "/userFile/createFile",
+      data: FormData.fromMap({
+        "filename": filename,
+        "fileId": fileId,
+        "parentId": parentId,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return UserFile.fromJson(r.data["userFile"]);
+  }
+
+  static Future<UserFile> createFolder({
+    required String folderName,
+    required int parentId,
+  }) async {
+    var r = await FileHttpConfig.dio.post(
+      "/userFile/createFile",
+      data: FormData.fromMap({
+        "folderName": folderName,
+        "parentId": parentId,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return UserFile.fromJson(r.data["userFolder"]);
+  }
+
+  //删除文件
+  static Future<void> deleteFile({
+    required int userFileId,
+  }) async {
+    var _ = await FileHttpConfig.dio.delete(
+      "/userFile/deleteFile",
+      queryParameters: {
+        "userFileId": userFileId,
+      },
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+  }
+
+  //删除文件
+  static Future<void> deleteFileList({
+    required List<int> userFileIdList,
+  }) async {
+    var _ = await FileHttpConfig.dio.delete(
+      "/userFile/deleteFileList",
+      queryParameters: {
+        "userFileIdList": userFileIdList,
+      },
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+  }
+
+  //文件重命名
+  static Future<void> renameFile({
+    required int userFileId,
+    required String newFilename,
+  }) async {
+    var _ = await FileHttpConfig.dio.put(
+      "/userFile/renameFile",
+      data: FormData.fromMap({
+        "userFileId": userFileId,
+        "newFilename": newFilename,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+  }
+
+  //移动文件夹
+  static Future<void> moveFile({
+    required int fileId,
+    required int newParentId,
+    required int keepUnique,
+  }) async {
+    await FileHttpConfig.dio.put(
+      "/userFile/moveFile",
+      data: FormData.fromMap({
+        "fileId": fileId,
+        "newParentId": newParentId,
+        "keepUnique": keepUnique,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+  }
+
+  static Future<void> moveFileList({
+    required List<int> userFileIdList,
+    required int newParentId,
+    required int keepUnique,
+  }) async {
+    await FileHttpConfig.dio.put(
+      "/userFile/moveFileList",
+      data: FormData.fromMap({
+        "userFileIdList": userFileIdList,
+        "newParentId": newParentId,
+        "keepUnique": keepUnique,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+  }
+
+  static Future<List<UserFile>> getNormalFileList({
+    required int parentId,
+    required int pageIndex,
+    required int pageSize,
+  }) async {
     var r = await FileHttpConfig.dio.get(
-      "/userFile/genGetFileUrl",
+      "/userFile/getNormalFileList",
+      queryParameters: {
+        "parentId": parentId,
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return _parseUserFileList(r);
+  }
+
+  //获取getUrl，文件下载
+  static Future<String> getDownloadUrl(int userFileId) async {
+    var r = await FileHttpConfig.dio.get(
+      "/userFile/getDownloadUrl",
       queryParameters: {
         "userFileId": userFileId,
       },
@@ -23,101 +186,16 @@ class UserFileApi {
     return r.data["getFileUrl"];
   }
 
-  static Future<UserFile> createFile(String fileName, int fileId, int parentId) async {
-    var r = await FileHttpConfig.dio.post(
-      "/userFile/createFile",
-      data: FormData.fromMap({
-        "fileName": fileName,
-        "fileId": fileId,
-        "parentId": parentId,
-      }),
-      options: FileHttpConfig.options.copyWith(
-        extra: {
-          "noCache": true,
-          "withToken": true,
-        },
-      ),
-    );
-    return UserFile.fromJson(r.data["userFile"]);
-  }
-
-  //删除文件
-  static Future<void> deleteFile(int fileId) async {
-    var _ = await FileHttpConfig.dio.post(
-      "/userFile/deleteFile",
-      data: FormData.fromMap({
-        "fileId": fileId,
-      }),
-      options: FileHttpConfig.options.copyWith(
-        extra: {
-          "noCache": true,
-          "withToken": true,
-        },
-      ),
-    );
-  }
-
-  //文件重命名
-  static Future<void> renameFile(
-    int folderId,
-    String newFolderName,
-    String oldFolderName,
-  ) async {
-    var _ = await FileHttpConfig.dio.post(
-      "/userFile/renameFile",
-      data: FormData.fromMap({
-        "folderId": folderId,
-        "newFolderName": newFolderName,
-        "oldFolderName": oldFolderName,
-      }),
-      options: FileHttpConfig.options.copyWith(
-        extra: {
-          "noCache": true,
-          "withToken": true,
-        },
-      ),
-    );
-  }
-
-  static Future<List<UserFile>> getFileList({
-    required int parentId,
-    required List<int> statusList,
-    required int fileType,
+  //判断文件是否在目标文件夹下存在同名冲突
+  static Future<bool> isFileNameUnique({
+    required int userFileId,
+    required int targetFolderId,
   }) async {
-    var r = await FileHttpConfig.dio.get(
-      "/userFile/getFileList",
-      queryParameters: {
-        "parentId": parentId,
-        "statusList": statusList,
-        "fileType": fileType,
-      },
-      options: FileHttpConfig.options.copyWith(
-        extra: {
-          "noCache": true,
-          "withToken": true,
-        },
-      ),
-    );
-
-    var fileList = <UserFile>[];
-    for (var map in r.data["fileList"]) {
-      fileList.add(UserFile.fromJson(map));
-    }
-    return fileList;
-  }
-
-  //移动文件夹
-  static Future<void> moveFile(
-    int fileId,
-    int oldParentId,
-    int newParentId,
-  ) async {
-    var _ = await FileHttpConfig.dio.post(
-      "/userFile/moveFile",
+    var r = await FileHttpConfig.dio.post(
+      "/userFile/isFileNameUnique",
       data: FormData.fromMap({
-        "fileId": fileId,
-        "newParentId": newParentId,
-        "oldParentId": oldParentId,
+        "userFileId": userFileId,
+        "targetFolderId": targetFolderId,
       }),
       options: FileHttpConfig.options.copyWith(
         extra: {
@@ -126,5 +204,35 @@ class UserFileApi {
         },
       ),
     );
+    return r.data['isUnique'];
+  }
+
+  //判断文件列表是否在目标文件夹下存在同名冲突
+  static Future<bool> isFileListNameUnique({
+    required List<int> userFileIdList,
+    required int targetFolderId,
+  }) async {
+    var r = await FileHttpConfig.dio.post(
+      "/userFile/isFileListNameUnique",
+      data: FormData.fromMap({
+        "userFileIdList": userFileIdList,
+        "targetFolderId": targetFolderId,
+      }),
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return r.data['isUnique'];
+  }
+
+  static List<UserFile> _parseUserFileList(Response<dynamic> r) {
+    List<UserFile> list = [];
+    for (var map in r.data["userFileList"]) {
+      list.add(UserFile.fromJson(map));
+    }
+    return list;
   }
 }

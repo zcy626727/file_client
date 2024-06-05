@@ -4,8 +4,8 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
-import '../../api/client/file/file_api.dart';
-import '../../api/client/file/multipart_api.dart';
+import '../../api/client/common/file_api.dart';
+import '../../api/client/common/multipart_api.dart';
 import '../../config/file_config.dart';
 import '../../config/global.dart';
 import '../../domain/task/enum/upload.dart';

@@ -9,7 +9,7 @@ import '../config/global.dart';
 import '../domain/task/enum/upload.dart';
 import '../domain/task/multipart_upload_task.dart';
 import '../domain/upload_notion.dart';
-import '../service/file/upload_service.dart';
+import '../service/common/upload_service.dart';
 
 //维护全局传输任务列表
 class UploadState extends ChangeNotifier {
@@ -187,7 +187,8 @@ class UploadState extends ChangeNotifier {
         finishedTaskList.add(task);
         //持久化
         await Global.uploadTaskProvider.insertOrUpdate(task);
-        var userFile = await UserFileService.createFile(task.fileName!, task.fileId!, task.parentId!);
+        // 创建文件
+        var userFile = await UserFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!);
         sendUploadNotion(UploadNotion(userFile, UploadNotionType.completeUpload));
         notifyListeners();
         //开始下一个任务

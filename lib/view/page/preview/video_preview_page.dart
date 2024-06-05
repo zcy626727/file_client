@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/service/file/file_url_service.dart';
+import 'package:file_client/service/common/file_url_service.dart';
 import 'package:file_client/view/widget/common_media_player.dart';
 import 'package:flutter/material.dart';
 

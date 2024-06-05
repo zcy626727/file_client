@@ -1,7 +1,6 @@
 import 'package:file_client/config/constants.dart';
+import 'package:file_client/model/common/common_file.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../common/common_file.dart';
 
 part 'user_file.g.dart';
 
@@ -11,30 +10,7 @@ class UserFile extends CommonFile {
 
   UserFile({
     this.userId,
-    id,
-    name,
-    status,
-    parentId,
-    createTime,
-    coverUrl,
-    mimeType,
-    fileId,
-    fileSize,
-  }) : super(
-          id: id,
-          name: name,
-          status: status,
-          parentId: parentId,
-          createTime: createTime,
-          coverUrl: coverUrl,
-          mimeType: mimeType,
-          fileId: fileId,
-          fileSize: fileSize,
-        );
-
-  factory UserFile.fromJson(Map<String, dynamic> json) => _$UserFileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserFileToJson(this);
+  });
 
   UserFile.testUser() {
     userId = 1;
@@ -48,6 +24,10 @@ class UserFile extends CommonFile {
     fileId = 11;
     fileSize = 1000;
   }
+
+  factory UserFile.fromJson(Map<String, dynamic> json) => _$UserFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserFileToJson(this);
 
   @override
   String toString() {

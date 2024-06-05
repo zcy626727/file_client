@@ -12,11 +12,11 @@ import '../../../domain/task/single_upload_task.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/share/video.dart';
-import '../../../service/file/file_url_service.dart';
-import '../../widget/common_action_two_button.dart';
-import '../../widget/common_media_player.dart';
+import '../../../service/common/file_url_service.dart';
 import '../../component/file/select_file_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
+import '../../widget/common_action_two_button.dart';
+import '../../widget/common_media_player.dart';
 import '../../widget/common_text_field.dart';
 
 class VideoEditPage extends StatefulWidget {

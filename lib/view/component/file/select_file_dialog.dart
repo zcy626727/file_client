@@ -41,8 +41,8 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
   Future<void> loadFolderAndFileList(int parentId) async {
     try {
       _resList.clear();
-      var folderList = await UserFolderService.getFolderList(parentId, <int>[ResourceStatus.normal.index]);
-      var fileList = await UserFileService.getFileList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index], fileType: widget.fileType);
+      var folderList = await UserFolderService.getFolderList(parentId, <int>[ResourceStatus.normal.index]).timeout(const Duration(seconds: 2));
+      var fileList = await UserFileService.getFileList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index], fileType: widget.fileType).timeout(const Duration(seconds: 2));
       _resList.addAll(folderList);
       _resList.addAll(fileList);
     } on DioException catch (e) {

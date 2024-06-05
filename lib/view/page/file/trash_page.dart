@@ -100,12 +100,16 @@ class _TrashPageState extends State<TrashPage> {
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.view_module,
                     size: 18,
+                    color: colorScheme.onPrimary,
                   ),
                   const SizedBox(width: 5.0),
-                  Text(_checkMode ? "取消批量操作" : "批量操作")
+                  Text(
+                    _checkMode ? "取消批量操作" : "批量操作",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  )
                 ],
               ),
             ),

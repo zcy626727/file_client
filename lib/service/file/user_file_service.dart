@@ -1,66 +1,70 @@
-import 'dart:io';
+import 'package:file_client/config/net_config.dart';
 
 import '../../api/client/file/user_file_api.dart';
-import '../../config/file_config.dart';
-import '../../constant/file.dart';
-import '../../domain/task/download_task.dart';
-import '../../domain/task/multipart_upload_task.dart';
 import '../../model/file/user_file.dart';
-import '../../util/file_util.dart';
 
 class UserFileService {
-  static Future<void> uploadFile(MultipartUploadTask task) async {
-    final file = File(task.srcPath!);
-    var md5 = await FileUtil.getFileChecksum(file);
-    if (md5 == null) {
-      throw Exception("文件解析失败");
-    }
-    //文件不能过大
-    var fileStat = await file.stat();
-    if (fileStat.size > FileConfig.maxUploadFileSize) {
-      //todo 标记文件过大
-      throw Exception("文件不能大于4G");
-    }
-    FileUtil.uploadFile(file.path, file.readAsBytesSync());
-    task.md5 = md5;
-  }
-
-  static Future<String> genGetFileUrl(int userFileId) async {
-    return await UserFileApi.genGetFileUrl(userFileId);
-  }
-
-  static Future<UserFile> createFile(String fileName, int fileId, int parentId) async {
-    var userFile = await UserFileApi.createFile(fileName, fileId, parentId);
+  static Future<UserFile> createFile({
+    required String filename,
+    required int fileId,
+    required int parentId,
+  }) async {
+    var userFile = await UserFileApi.createFile(filename: filename, fileId: fileId, parentId: parentId);
     return userFile;
   }
 
-  static Future<void> downloadFile(DownloadTask task) async {}
+  static Future<UserFile> createFolder({
+    required String folderName,
+    required int parentId,
+  }) async {
+    var userFile = await UserFileApi.createFolder(folderName: folderName, parentId: parentId);
+    return userFile;
+  }
 
-  static Future<void> deleteFile(int folderId) async {
-    await UserFileApi.deleteFile(folderId);
+  static Future<void> deleteFile({
+    required int userFileId,
+  }) async {
+    await UserFileApi.deleteFile(userFileId: userFileId);
+  }
+
+  static Future<void> deleteFileList({
+    required List<int> userFileIdList,
+  }) async {
+    await UserFileApi.deleteFileList(userFileIdList: userFileIdList);
   }
 
   static Future<void> renameFile({
-    required int folderId,
-    required String newFolderName,
-    required String oldFolderName,
+    required int userFileId,
+    required String newFilename,
   }) async {
-    await UserFileApi.renameFile(folderId, newFolderName, oldFolderName);
-  }
-
-  static Future<List<UserFile>> getFileList({
-    required int parentId,
-    required List<int> statusList,
-    int fileType = FileType.any,
-  }) async {
-    return await UserFileApi.getFileList(parentId: parentId, statusList: statusList, fileType: fileType);
+    await UserFileApi.renameFile(userFileId: userFileId, newFilename: newFilename);
   }
 
   static Future<void> moveFile({
     required int fileId,
-    required int oldParentId,
     required int newParentId,
+    required int keepUnique,
   }) async {
-    await UserFileApi.moveFile(fileId, oldParentId, newParentId);
+    await UserFileApi.moveFile(fileId: fileId, newParentId: newParentId, keepUnique: keepUnique);
+  }
+
+  static Future<void> moveFileList({
+    required List<int> userFileIdList,
+    required int newParentId,
+    required int keepUnique,
+  }) async {
+    await UserFileApi.moveFileList(userFileIdList: userFileIdList, newParentId: newParentId, keepUnique: keepUnique);
+  }
+
+  static Future<List<UserFile>> getNormalFileList({
+    required int parentId,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await UserFileApi.getNormalFileList(parentId: parentId, pageIndex: pageIndex, pageSize: pageSize);
+  }
+
+  static Future<String> getDownloadUrl(int userFileId) async {
+    return await UserFileApi.getDownloadUrl(userFileId);
   }
 }
