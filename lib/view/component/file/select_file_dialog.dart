@@ -4,10 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:file_client/service/file/user_file_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constant/resource.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_folder.dart';
-import '../../../service/file/user_folder_service.dart';
 import '../../widget/common_action_two_button.dart';
 import 'file_list_tile.dart';
 import 'folder_path_list.dart';
@@ -29,22 +27,21 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
   late Future _futureBuilderFuture;
 
   //移动文件路径
-  List<UserFolder> _folderPath = <UserFolder>[];
+  final List<UserFolder> _folderPath = <UserFolder>[];
 
   //当前路径的文件夹列表
-  List<CommonResource> _resList = <CommonResource>[];
+  final List<CommonResource> _userFileList = <CommonResource>[];
 
   CommonResource _selectedFolder = UserFolder.rootFolder();
 
   bool _loadingMoveFolderList = false;
 
-  Future<void> loadFolderAndFileList(int parentId) async {
+  Future<void> loadFileList(int parentId) async {
     try {
-      _resList.clear();
-      var folderList = await UserFolderService.getFolderList(parentId, <int>[ResourceStatus.normal.index]).timeout(const Duration(seconds: 2));
-      var fileList = await UserFileService.getFileList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index], fileType: widget.fileType).timeout(const Duration(seconds: 2));
-      _resList.addAll(folderList);
-      _resList.addAll(fileList);
+      _userFileList.clear();
+
+      var fileList = await UserFileService.getNormalFileList(parentId: parentId).timeout(const Duration(seconds: 2));
+      _userFileList.addAll(fileList);
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -53,7 +50,7 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
   }
 
   Future getData() async {
-    return Future.wait([loadFolderAndFileList(widget.folderId ?? 0)]);
+    return Future.wait([loadFileList(widget.folderId ?? 0)]);
   }
 
   @override
@@ -124,11 +121,9 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
                         _folderPath.removeLast();
                       }
                     }
-                    _resList.clear();
-                    var folderList = await UserFolderService.getFolderList(userFolder.id!, <int>[ResourceStatus.normal.index]);
-                    var fileList = await UserFileService.getFileList(parentId: userFolder.id!, statusList: <int>[ResourceStatus.normal.index], fileType: widget.fileType);
-                    _resList.addAll(folderList);
-                    _resList.addAll(fileList);
+                    _userFileList.clear();
+                    var fileList = await UserFileService.getNormalFileList(parentId: userFolder.id!);
+                    _userFileList.addAll(fileList);
                     setState(() {
                       _loadingMoveFolderList = false;
                     });
@@ -153,18 +148,18 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
                           child: CircularProgressIndicator(),
                         )
                       : ListView.builder(
-                          itemCount: _resList.length,
+                    itemCount: _userFileList.length,
                           itemExtent: 45,
                           itemBuilder: (BuildContext context, int index) {
                             return ResourceListItem(
                               isGrid: false,
                               onPreTap: () {
                                 setState(() {
-                                  _selectedFolder = _resList[index];
+                                  _selectedFolder = _userFileList[index];
                                 });
                               },
                               onDoubleTap: () async {
-                                var res = _resList[index];
+                                var res = _userFileList[index];
                                 if (res is UserFolder) {
                                   setState(() {
                                     _loadingMoveFolderList = true;
@@ -176,18 +171,16 @@ class _SelectUserFileDialogState extends State<SelectUserFileDialog> {
                                   //更新路径
                                   _folderPath.add(folder);
                                   //更新列表
-                                  _resList.clear();
-                                  var folderList = await UserFolderService.getFolderList(folder.id!, <int>[ResourceStatus.normal.index]);
-                                  var fileList = await UserFileService.getFileList(parentId: folder.id!, statusList: <int>[ResourceStatus.normal.index], fileType: widget.fileType);
-                                  _resList.addAll(folderList);
-                                  _resList.addAll(fileList);
+                                  _userFileList.clear();
+                                  var fileList = await UserFileService.getNormalFileList(parentId: folder.id!);
+                                  _userFileList.addAll(fileList);
                                   setState(() {
                                     _loadingMoveFolderList = false;
                                   });
                                 }
                               },
-                              resource: _resList[index],
-                              selected: _selectedFolder.id == _resList[index].id,
+                              resource: _userFileList[index],
+                              selected: _selectedFolder.id == _userFileList[index].id,
                             );
                           },
                         ),

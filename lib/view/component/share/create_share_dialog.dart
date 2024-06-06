@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/file/user_file.dart';
-import '../../../model/file/user_folder.dart';
 import '../../../service/file/share_service.dart';
 import '../../../util/share.dart';
 import '../../widget/common_action_two_button.dart';
@@ -10,13 +8,11 @@ import '../../widget/input_text_field.dart';
 class CreateShareDialog extends StatefulWidget {
   const CreateShareDialog({
     Key? key,
-    required this.userFileList,
-    required this.userFolderList,
+    required this.userFileIdList,
     required this.shareName,
   }) : super(key: key);
 
-  final List<UserFile> userFileList;
-  final List<UserFolder> userFolderList;
+  final List<int> userFileIdList;
   final String shareName;
 
   @override
@@ -123,8 +119,8 @@ class _CreateShareDialogState extends State<CreateShareDialog> {
           rightTextColor: colorScheme.onPrimary,
           backgroundRightColor: colorScheme.primary,
           onRightTap: () async {
-            var share = await ShareService.createShare(widget.userFileList, widget.userFolderList, endTime, codeController.text, widget.shareName);
-            if (mounted) Navigator.of(context).pop(share);
+            var share = await ShareService.createShare(userFileIdList: widget.userFileIdList, endTime: endTime, name: widget.shareName, code: codeController.text);
+            Navigator.of(context).pop(share);
           },
         )
       ],

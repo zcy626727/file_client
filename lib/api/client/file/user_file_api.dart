@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:file_client/constant/file.dart';
+import 'package:file_client/model/common/common_resource.dart';
+import 'package:file_client/model/file/user_folder.dart';
 
 import '../../../model/file/user_file.dart';
 import '../file_http_config.dart';
@@ -106,7 +109,7 @@ class UserFileApi {
   static Future<void> moveFile({
     required int fileId,
     required int newParentId,
-    required int keepUnique,
+    required bool keepUnique,
   }) async {
     await FileHttpConfig.dio.put(
       "/userFile/moveFile",
@@ -127,7 +130,7 @@ class UserFileApi {
   static Future<void> moveFileList({
     required List<int> userFileIdList,
     required int newParentId,
-    required int keepUnique,
+    required bool keepUnique,
   }) async {
     await FileHttpConfig.dio.put(
       "/userFile/moveFileList",
@@ -145,7 +148,7 @@ class UserFileApi {
     );
   }
 
-  static Future<List<UserFile>> getNormalFileList({
+  static Future<List<CommonResource>> getNormalFileList({
     required int parentId,
     required int pageIndex,
     required int pageSize,
@@ -228,10 +231,16 @@ class UserFileApi {
     return r.data['isUnique'];
   }
 
-  static List<UserFile> _parseUserFileList(Response<dynamic> r) {
-    List<UserFile> list = [];
+  static List<CommonResource> _parseUserFileList(Response<dynamic> r) {
+    List<CommonResource> list = [];
     for (var map in r.data["userFileList"]) {
-      list.add(UserFile.fromJson(map));
+      if (map['fileType'] == FileType.direction) {
+        //文件夹
+        list.add(UserFolder.fromJson(map));
+      } else {
+        //文件
+        list.add(UserFile.fromJson(map));
+      }
     }
     return list;
   }

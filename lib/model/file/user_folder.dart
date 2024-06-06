@@ -7,14 +7,10 @@ part 'user_folder.g.dart';
 
 @JsonSerializable()
 class UserFolder extends CommonFolder {
-  int? userId;
 
-  UserFolder({
-    this.userId,
-  }) : super();
+  UserFolder() : super();
 
   UserFolder.testFolder() {
-    userId = 1;
     id = 1;
     name = "名字";
     status = 1;
@@ -25,7 +21,7 @@ class UserFolder extends CommonFolder {
   UserFolder.rootFolder() {
     id = 0;
     name = "根目录";
-    status = ResourceStatus.normal.index;
+    status = FileStatus.normal.index;
     parentId = 0;
     createTime = null;
   }

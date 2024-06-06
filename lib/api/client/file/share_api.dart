@@ -94,7 +94,7 @@ class ShareApi {
   }
 
   // 访问分享链接，校验并返回文件列表，如果出错可以根据状态码判断错误
-  static Future<List<UserFile>> accessShare({
+  static Future<(int, Share?, List<UserFile>)> accessShare({
     required String token,
     String? code,
     int? folderId,
@@ -115,7 +115,9 @@ class ShareApi {
         "withToken": true,
       }),
     );
-    return _parseUserFileList(r);
+    Share share = Share.fromJson(r.data['share']);
+    int status = r.data['status'];
+    return (status, share, _parseUserFileList(r));
   }
 
   // 将文件列表保存到自己的网盘中

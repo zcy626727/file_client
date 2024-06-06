@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/service/file/bulk_service.dart';
 import 'package:file_client/util/mime_util.dart';
 import 'package:file_client/view/page/preview/image_preview_page.dart';
 import 'package:file_client/view/page/preview/video_preview_page.dart';
@@ -20,10 +19,7 @@ import '../../../domain/upload_notion.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
-import '../../../service/file/resource_service.dart';
-import '../../../service/file/share_service.dart';
 import '../../../service/file/user_file_service.dart';
-import '../../../service/file/user_folder_service.dart';
 import '../../../state/download_state.dart';
 import '../../../state/path_state.dart';
 import '../../../state/upload_state.dart';
@@ -51,14 +47,13 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _loadingResourceList = false;
   bool _checkMode = false;
 
-  final List<CommonResource> _selectedResourceList = [];
+  final List<CommonResource> _selectedFileList = [];
 
-  List<CommonResource> _resourceList = <CommonResource>[];
+  List<CommonResource> _fileList = <CommonResource>[];
 
   Future<void> loadFileAndFolderList(int parentId) async {
     try {
-      _resourceList =
-          await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]).timeout(const Duration(seconds: 2));
+      _fileList = await UserFileService.getNormalFileList(parentId: parentId).timeout(const Duration(seconds: 2));
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -182,15 +177,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                       onConfirm: (String value) async {
                         if (value.isNotEmpty) {
                           try {
-                            var userFolder = await UserFolderService.createFolder(
-                              _currentFolder.id!,
-                              value,
+                            var userFolder = await UserFileService.createFolder(
+                              folderName: value,
+                              parentId: _currentFolder.id!,
                             );
-                            _resourceList.add(userFolder);
+                            _fileList.add(userFolder);
+                            if (context.mounted) Navigator.of(context).pop();
                             setState(() {});
-                            if (mounted) Navigator.of(context).pop();
                           } on Exception catch (e) {
-                            ShowSnackBar.exception(context: context, e: e, defaultValue: "新建文件夹失败");
+                            if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "新建文件夹失败");
                           }
                         }
                       },
@@ -216,7 +211,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     size: 18,
                     color: colorScheme.onPrimary,
                   ),
-                  SizedBox(width: 5.0),
+                  const SizedBox(width: 5.0),
                   Text(
                     "新建文件夹",
                     style: TextStyle(color: colorScheme.onPrimary),
@@ -251,16 +246,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                 if (token != null) {
                   //发送请求获取share
                   try {
-                    var share = await ShareService.getShareByToken(token);
                     //跳转分享文件内容
-                    if (mounted) {
+                    if (pageContext.mounted) {
                       Navigator.push(
                         pageContext,
                         MaterialPageRoute(
                           builder: (context) {
                             return Scaffold(
                               backgroundColor: colorScheme.surface,
-                              body: ShareContextPage(share: share),
+                              body: ShareContextPage(token: token),
                             );
                           },
                         ),
@@ -280,7 +274,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
               child: Row(
                 children: [
                   Icon(Icons.link, size: 18, color: colorScheme.onPrimary),
-                  SizedBox(width: 5.0),
+                  const SizedBox(width: 5.0),
                   Text(
                     "访问分享",
                     style: TextStyle(color: colorScheme.onPrimary),
@@ -295,7 +289,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
             child: ElevatedButton(
               onPressed: () async {
                 _checkMode = !_checkMode;
-                _selectedResourceList.clear();
+                _selectedFileList.clear();
                 setState(() {});
               },
               style: ButtonStyle(
@@ -372,12 +366,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     var notion = uploadNotionList.removeAt(0);
                     switch (notion.type) {
                       case UploadNotionType.createUpload:
-                        _resourceList.insert(0, notion.userFile);
+                        _fileList.insert(0, notion.userFile);
                         break;
                       case UploadNotionType.completeUpload:
-                        for (var res in _resourceList) {
+                        for (var res in _fileList) {
                           if (res.id == notion.userFile.id) {
-                            res.status = ResourceStatus.normal.index;
+                            res.status = FileStatus.normal.index;
                             break;
                           }
                         }
@@ -387,7 +381,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                   return GridView.builder(
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
                     itemBuilder: (ctx, idx) {
-                      var res = _resourceList[idx];
+                      var res = _fileList[idx];
                       return Container(
                         key: ValueKey("${res.id}-$_checkMode"),
                         margin: const EdgeInsets.all(2.0),
@@ -410,12 +404,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                             //是文件夹
                             if (res is UserFolder) {
                               //双击进入文件夹
-                              if (res.id != null) {
-                                _resourceList = await ResourceService.getFileAndFolderList(parentId: res.id!, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]);
+                              try {
+                                if (res.id == null) throw const FormatException("文件夹异常，请刷新后重试");
+                                _fileList = await UserFileService.getNormalFileList(parentId: res.id!);
                                 pathState.addMainFolder(res);
                                 _currentFolder = res;
+                                cancelCheck();
+                              } on Exception catch (e) {
+                                if (context.mounted) ShowSnackBar.exception(context: context, e: e);
                               }
-                              cancelCheck();
                             } else if (res is UserFile) {
                               var mimeType = lookupMimeType(res.name ?? "");
                               if (mimeType != null) {
@@ -446,9 +443,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
                           },
                           onCheck: (b) {
                             if (b) {
-                              _selectedResourceList.add(res);
+                              _selectedFileList.add(res);
                             } else {
-                              _selectedResourceList.remove(res);
+                              _selectedFileList.remove(res);
                             }
                           },
                           isCheckMode: _checkMode,
@@ -457,7 +454,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                         ),
                       );
                     },
-                    itemCount: _resourceList.length,
+                    itemCount: _fileList.length,
                   );
                 },
               ),
@@ -474,25 +471,23 @@ class _WorkspacePageState extends State<WorkspacePage> {
                       IconButton(
                         splashRadius: 18,
                         onPressed: () async {
-                          if (_selectedResourceList.isEmpty) {
+                          if (_selectedFileList.isEmpty) {
                             return;
                           }
                           try {
-                            List<UserFile> userFileList = [];
-                            List<UserFolder> userFolderList = [];
-                            for (var res in _selectedResourceList) {
-                              if (res is UserFile) {
-                                userFileList.add(res);
-                              } else if (res is UserFolder) {
-                                userFolderList.add(res);
+                            List<int> userFileIdList = [];
+                            for (var res in _selectedFileList) {
+                              if (res.id != null) {
+                                userFileIdList.add(res.id!);
                               }
                             }
-                            await createShare(userFileList, userFolderList, "批量分享");
+                            if (userFileIdList.isEmpty) throw const FormatException("未选择文件");
+                            await createShare(userFileIdList, "批量分享");
                             cancelCheck();
                             setState(() {});
                             if (mounted) ShowSnackBar.info(context: context, message: "分享成功");
                           } on DioException catch (e) {
-                            ShowSnackBar.exception(context: context, e: e, defaultValue: "分享失败");
+                            if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "分享失败");
                           }
                         },
                         icon: Icon(
@@ -511,34 +506,28 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                   text: "是否确定删除？",
                                   onConfirm: () async {
                                     try {
-                                      if (_selectedResourceList.isEmpty) {
+                                      if (_selectedFileList.isEmpty) {
                                         return;
                                       }
                                       List<int> userFileIdList = <int>[];
-                                      List<int> userFolderIdList = <int>[];
 
-                                      for (var res in _selectedResourceList) {
+                                      for (var res in _selectedFileList) {
                                         if (res is UserFile) {
                                           if (res.id != null) {
                                             userFileIdList.add(res.id!);
                                           }
-                                        } else if (res is UserFolder) {
-                                          if (res.id != null) {
-                                            userFolderIdList.add(res.id!);
-                                          }
                                         }
                                       }
-
-                                      await BulkService.deleteResourceList(userFileIdList: userFileIdList, userFolderIdList: userFolderIdList);
-                                      for (var res in _selectedResourceList) {
-                                        _resourceList.remove(res);
+                                      await UserFileService.deleteFileList(userFileIdList: userFileIdList);
+                                      for (var res in _selectedFileList) {
+                                        _fileList.remove(res);
                                       }
                                       cancelCheck();
                                       setState(() {});
                                     } on DioException catch (e) {
-                                      ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                                      if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
                                     } finally {
-                                      Navigator.pop(context);
+                                      if (context.mounted) Navigator.pop(context);
                                     }
                                   },
                                   onCancel: () {
@@ -565,7 +554,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                       IconButton(
                         splashRadius: 18,
                         onPressed: () {
-                          if (_selectedResourceList.isEmpty) {
+                          if (_selectedFileList.isEmpty) {
                             return;
                           }
                           moveResourceList();
@@ -659,26 +648,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     initValue: res.name!,
                     onConfirm: (value) async {
                       try {
-                        if (res is UserFolder) {
-                          await UserFolderService.renameFolder(
-                            folderId: res.id!,
-                            newFolderName: value,
-                            oldFolderName: res.name!,
-                          );
-                        } else {
-                          await UserFileService.renameFile(
-                            folderId: res.id!,
-                            newFolderName: value,
-                            oldFolderName: res.name!,
-                          );
-                        }
+                        if (res.id == null) throw const FormatException("重命名失败");
+                        await UserFileService.renameFile(userFileId: res.id!, newFilename: value);
                         setState(() {
                           res.name = value;
                         });
                       } on DioException catch (e) {
-                        ShowSnackBar.exception(context: context, e: e, defaultValue: "重命名失败");
+                        if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "重命名失败");
                       } finally {
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       }
                     },
                     onCancel: () {
@@ -700,18 +678,15 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     text: "是否确定删除？",
                     onConfirm: () async {
                       try {
-                        if (res is UserFolder) {
-                          await UserFolderService.deleteFolder(res.id!);
-                        } else {
-                          await UserFileService.deleteFile(res.id!);
-                        }
+                        if (res.id == null) throw const FormatException("删除失败");
+                        await UserFileService.deleteFile(userFileId: res.id!);
                         setState(() {
-                          _resourceList.remove(res);
+                          _fileList.remove(res);
                         });
                       } on DioException catch (e) {
-                        ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                        if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
                       } finally {
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       }
                     },
                     onCancel: () {
@@ -721,14 +696,11 @@ class _WorkspacePageState extends State<WorkspacePage> {
                 });
             break;
           case "share":
-            List<UserFile> userFileList = [];
-            List<UserFolder> userFolderList = [];
-            if (res is UserFile) {
-              userFileList.add(res);
-            } else if (res is UserFolder) {
-              userFolderList.add(res);
+            List<int> userFileIdList = [];
+            if (res.id != null) {
+              userFileIdList.add(res.id!);
             }
-            await createShare(userFileList, userFolderList, res.name!);
+            await createShare(userFileIdList, res.name!);
             cancelCheck();
             setState(() {});
             break;
@@ -736,7 +708,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
             if (res is UserFile) {
               var directory = await getDownloadsDirectory();
               if (directory != null) {
-                if (mounted) {
+                if (context.mounted) {
                   var downloadState = Provider.of<DownloadState>(context, listen: false);
                   downloadState.addDownloadTask(DownloadTask.all(
                     userId: Global.user.id,
@@ -755,14 +727,13 @@ class _WorkspacePageState extends State<WorkspacePage> {
     );
   }
 
-  Future<void> createShare(List<UserFile> userFileList, List<UserFolder> userFolderList, String shareName) async {
+  Future<void> createShare(List<int> userFileIdList, String shareName) async {
     await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return CreateShareDialog(
-          userFileList: userFileList,
-          userFolderList: userFolderList,
+          userFileIdList: userFileIdList,
           shareName: shareName,
         );
       },
@@ -779,23 +750,16 @@ class _WorkspacePageState extends State<WorkspacePage> {
           onConfirm: (targetFolder) async {
             try {
               //移动文件或文件夹
-              if (selectedRes is UserFolder) {
-                if (selectedRes.parentId == targetFolder.id) {
-                  throw const FormatException("文件夹已存在于该路径");
-                }
-                await UserFolderService.moveFolder(folderId: selectedRes.id!, oldParentId: selectedRes.parentId!, newParentId: targetFolder.id!);
-              } else if (selectedRes is UserFile) {
-                if (selectedRes.parentId == targetFolder.id) {
-                  throw const FormatException("文件已存在于该路径");
-                }
-                await UserFileService.moveFile(fileId: selectedRes.id!, oldParentId: selectedRes.parentId!, newParentId: targetFolder.id!);
-              }
-              _resourceList.remove(selectedRes);
+              if (selectedRes.parentId == targetFolder.id) throw const FormatException("文件夹已存在于该路径");
+              if (selectedRes.id == null || selectedRes.parentId == null) throw const FormatException("文件夹信息错误，刷新后再试");
+
+              await UserFileService.moveFile(fileId: selectedRes.id!, newParentId: selectedRes.parentId!, keepUnique: true);
+              _fileList.remove(selectedRes);
               setState(() {});
             } on Exception catch (e) {
-              ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
             } finally {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             }
           },
         );
@@ -812,34 +776,27 @@ class _WorkspacePageState extends State<WorkspacePage> {
           title: "移动到",
           onConfirm: (targetFolder) async {
             try {
-              if (_currentFolder.id == targetFolder.id) {
-                throw const FormatException("文件夹已存在于该路径");
-              }
+              if (_currentFolder.id == targetFolder.id) throw const FormatException("文件夹已存在于该路径");
 
               List<int> userFileIdList = <int>[];
-              List<int> userFolderIdList = <int>[];
 
-              for (var res in _selectedResourceList) {
-                if (res is UserFile) {
-                  if (res.id != null) {
-                    userFileIdList.add(res.id!);
-                  }
-                } else if (res is UserFolder) {
-                  if (res.id != null) {
-                    userFolderIdList.add(res.id!);
-                  }
+              for (var res in _selectedFileList) {
+                if (res.id != null) {
+                  userFileIdList.add(res.id!);
                 }
               }
-              await BulkService.moveResourceList(oldParentId: _currentFolder.id!, newParentId: targetFolder.id!, userFileIdList: userFileIdList, userFolderIdList: userFolderIdList);
-              for (var res in _selectedResourceList) {
-                _resourceList.remove(res);
+              if (userFileIdList.isEmpty) throw const FormatException("选择文件为空");
+              if (targetFolder.id == null) throw const FormatException("获取目标文件夹失败");
+              await UserFileService.moveFileList(userFileIdList: userFileIdList, newParentId: targetFolder.id!, keepUnique: true);
+              for (var res in _selectedFileList) {
+                _fileList.remove(res);
               }
               cancelCheck();
               setState(() {});
             } on Exception catch (e) {
-              ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
             } finally {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             }
           },
         );
@@ -848,7 +805,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   }
 
   void cancelCheck() {
-    _selectedResourceList.clear();
+    _selectedFileList.clear();
     _checkMode = false;
   }
 }

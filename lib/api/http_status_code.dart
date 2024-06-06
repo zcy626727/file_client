@@ -1,6 +1,6 @@
-class AppHttpStatusCode{
-  static const String success = "20000";
-  static const String error = "20001";
-  static const String unableShareCode = "20002";
-  static const String needShareCode = "20003";
+class AppHttpStatusCode {
+  static const int success = 20000;
+  static const int error = 20001;
+  static const int unableShareCode = 20002;
+  static const int needShareCode = 20003;
 }

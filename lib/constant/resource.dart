@@ -1,4 +1,4 @@
-enum ResourceStatus{
+enum FileStatus {
   normal,
   deleted,
   hidden,

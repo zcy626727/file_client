@@ -36,7 +36,7 @@ class SpaceFolder extends CommonFolder {
   SpaceFolder.rootFolder() {
     id = 0;
     name = "根目录";
-    status = ResourceStatus.normal.index;
+    status = FileStatus.normal.index;
     parentId = 0;
     createTime = null;
   }

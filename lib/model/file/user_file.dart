@@ -2,18 +2,15 @@ import 'package:file_client/config/constants.dart';
 import 'package:file_client/model/common/common_file.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../constant/resource.dart';
+
 part 'user_file.g.dart';
 
 @JsonSerializable()
 class UserFile extends CommonFile {
-  int? userId;
-
-  UserFile({
-    this.userId,
-  });
+  UserFile();
 
   UserFile.testUser() {
-    userId = 1;
     id = 1;
     name = "名字";
     status = 1;
@@ -32,5 +29,13 @@ class UserFile extends CommonFile {
   @override
   String toString() {
     return _$UserFileToJson(this).toString();
+  }
+
+  UserFile.rootFolder() {
+    id = 0;
+    name = "根目录";
+    status = FileStatus.normal.index;
+    parentId = 0;
+    createTime = null;
   }
 }

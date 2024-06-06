@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/service/file/bulk_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/file/trash.dart';
@@ -191,7 +190,8 @@ class _TrashPageState extends State<TrashPage> {
                                       for (var trash in _selectedTrashList) {
                                         trashIdList.add(trash.id!);
                                       }
-                                      await BulkService.recoverTrashItemList(trashIdList: trashIdList);
+
+                                      await TrashService.deleteTrashList(trashIdList: trashIdList);
 
                                       for (var trash in _selectedTrashList) {
                                         _trashList.remove(trash);
@@ -230,7 +230,7 @@ class _TrashPageState extends State<TrashPage> {
                                       for (var trash in _selectedTrashList) {
                                         trashIdList.add(trash.id!);
                                       }
-                                      await BulkService.deleteTrashItemList(trashIdList: trashIdList);
+                                      await TrashService.deleteTrashList(trashIdList: trashIdList);
                                       for (var trash in _selectedTrashList) {
                                         _trashList.remove(trash);
                                       }
@@ -304,7 +304,8 @@ class _TrashPageState extends State<TrashPage> {
       switch (value) {
         case "recover": //恢复
           try {
-            await TrashService.recoverItem(trash.id!);
+            if (trash.id == null) throw const FormatException("恢复失败");
+            await TrashService.recoverTrash(trashId: trash.id!);
             setState(() {
               _trashList.remove(trash);
             });
@@ -338,7 +339,8 @@ class _TrashPageState extends State<TrashPage> {
                     text: "确定彻底删除？",
                     onConfirm: () async {
                       try {
-                        await TrashService.deleteItem(trash.id!);
+                        if (trash.id == null) throw const FormatException("删除失败，请刷新重试");
+                        await TrashService.deleteTrash(trashId: trash.id!);
                         setState(() {
                           _trashList.remove(trash);
                         });

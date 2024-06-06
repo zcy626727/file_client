@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../api/http_status_code.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/share.dart';
-import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/share_service.dart';
 import '../../component/file/file_list_tile.dart';
@@ -16,8 +15,8 @@ import '../../widget/common_action_one_button.dart';
 import '../../widget/input_text_field.dart';
 
 class ShareContextPage extends StatefulWidget {
-  const ShareContextPage({Key? key, required this.share, this.code, this.initFolderId}) : super(key: key);
-  final Share share;
+  const ShareContextPage({Key? key, required this.token, this.code, this.initFolderId}) : super(key: key);
+  final String token;
   final String? code;
   final int? initFolderId;
 
@@ -32,24 +31,20 @@ class _ShareContextPageState extends State<ShareContextPage> {
   //文件路径
   List<UserFolder> _pathList = <UserFolder>[];
 
-  List<CommonResource> _resourceList = <CommonResource>[];
+  List<CommonResource> _fileList = <CommonResource>[];
 
   late Future _futureBuilderFuture;
 
   //提取码，由外部传入，内部可以更改
   late String? _code;
   final _codeInputController = TextEditingController(text: "");
+  Share? _share;
 
-  //-1：正常，0：访问失败，1：需要提取码
-  String status = "";
+  //-1：访问失败，0：正在访问，1：需要提取码，2：提取码错误，3：访问成功
+  int _status = -1;
 
   Future<void> loadShareData() async {
-    var (s, r) = await ShareService.getShareData(widget.share.id!, _code, widget.initFolderId);
-    if (widget.initFolderId != null) {
-      _pathList = await ShareService.getFolderPathInShare(widget.share.id!, _code, widget.initFolderId!);
-    }
-    status = s;
-    _resourceList = r;
+    await accessShare(token: widget.token, code: _code);
   }
 
   Future getData() async {
@@ -70,7 +65,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
       future: _futureBuilderFuture,
       builder: (BuildContext context, AsyncSnapshot snapShot) {
         if (snapShot.connectionState == ConnectionState.done) {
-          if (status == AppHttpStatusCode.success) {
+          if (_status == AppHttpStatusCode.success) {
             return Column(
               children: [
                 _buildTopBar(),
@@ -83,8 +78,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
                 ),
               ],
             );
-          } else if (status == AppHttpStatusCode.needShareCode || status == AppHttpStatusCode.unableShareCode) {
-            //一个输入框
+          } else if (_status == AppHttpStatusCode.needShareCode || _status == AppHttpStatusCode.unableShareCode) {
+            //需要提取码
             return Center(
               child: SizedBox(
                 height: 200,
@@ -97,13 +92,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
                       title: "确定",
                       onTap: () async {
                         _code = _codeInputController.text;
-                        var (s, r) = await ShareService.getShareData(widget.share.id!, _code, widget.initFolderId);
-                        if (widget.initFolderId != null) {
-                          _pathList = await ShareService.getFolderPathInShare(widget.share.id!, _code, widget.initFolderId!);
-                        }
-                        status = s;
-                        _resourceList = r;
-                        if (status == AppHttpStatusCode.unableShareCode) {
+                        await accessShare(token: widget.token, code: _code);
+                        if (_status == AppHttpStatusCode.unableShareCode) {
                           if (mounted) ShowSnackBar.error(context: context, message: "提取码错误");
                         }
                         setState(() {});
@@ -165,8 +155,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
                 colorScheme.primary.withAlpha(220),
               ),
             ),
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(
                   Icons.save,
                   size: 18,
@@ -200,13 +190,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
               _pathList.removeLast();
             }
           }
-
-          var (s, r) = await ShareService.getShareData(widget.share.id!, _code, userFolder.id!);
-          if (s == AppHttpStatusCode.success) {
-            _resourceList = r;
-          } else {
-            //todo 处理错误
-          }
+          await accessShare(token: widget.token, code: _code);
           setState(() {
             _loadingResourceList = false;
           });
@@ -223,7 +207,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
         : GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
             itemBuilder: (ctx, idx) {
-              var res = _resourceList[idx];
+              var res = _fileList[idx];
               return Container(
                 margin: const EdgeInsets.all(2.0),
                 child: ResourceListItem(
@@ -248,9 +232,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
                     if (res is UserFolder) {
                       //双击进入文件夹
                       if (res.id != null) {
-                        var (_, r) = await ShareService.getShareData(widget.share.id!, _code, res.id!);
+                        await accessShare(token: widget.token, code: _code);
                         _pathList.add(res);
-                        _resourceList = r;
                       }
                     }
                     setState(() {
@@ -262,7 +245,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
                 ),
               );
             },
-            itemCount: _resourceList.length,
+            itemCount: _fileList.length,
           );
   }
 
@@ -306,14 +289,14 @@ class _ShareContextPageState extends State<ShareContextPage> {
               return SelectFolderDialog(
                   title: "保存到",
                   onConfirm: (targetFolder) {
-                    var folderList = <UserFolder>[];
-                    var fileList = <UserFile>[];
-                    if (res is UserFile) {
-                      fileList.add(res);
-                    } else if (res is UserFolder) {
-                      folderList.add(res);
+                    try {
+                      var fileIdList = <int>[];
+                      if (res.id == null || targetFolder.id == null) throw const FormatException("保存失败");
+                      fileIdList.add(res.id!);
+                      ShareService.saveFileList(token: widget.token, code: _code, userFileIdList: fileIdList, targetFolderId: targetFolder.id!);
+                    } on Exception catch (e) {
+                      ShowSnackBar.exception(context: context, e: e);
                     }
-                    ShareService.saveResourceList(fileList, folderList, widget.share.id!, _code, targetFolder.id!, _pathList.isEmpty);
                     Navigator.pop(context);
                   });
             },
@@ -321,5 +304,23 @@ class _ShareContextPageState extends State<ShareContextPage> {
           break;
       }
     });
+  }
+
+  Future<bool> accessShare({
+    required String token,
+    String? code,
+    int? folderId,
+    int page = 0,
+  }) async {
+    var (s, share, fileList) = await ShareService.accessShare(token: token, code: code, folderId: folderId, pageIndex: page);
+    if (share != null) {
+      _share = share;
+    }
+    _status = s;
+    if (s == AppHttpStatusCode.success) {
+      _fileList = fileList;
+      return true;
+    }
+    return false;
   }
 }

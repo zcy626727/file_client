@@ -47,7 +47,7 @@ class ShareService {
     return await ShareApi.getShare(shareId: shareId);
   }
 
-  static Future<List<UserFile>> accessShare({
+  static Future<(int, Share?, List<UserFile>)> accessShare({
     required String token,
     String? code,
     int? folderId,

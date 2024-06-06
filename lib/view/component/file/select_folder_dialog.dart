@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:file_client/model/common/common_resource.dart';
+import 'package:file_client/model/file/user_file.dart';
+import 'package:file_client/service/file/user_file_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constant/resource.dart';
 import '../../../model/file/user_folder.dart';
-import '../../../service/file/user_folder_service.dart';
 import '../../widget/common_action_two_button.dart';
 import 'file_list_tile.dart';
 import 'folder_path_list.dart';
@@ -16,7 +17,7 @@ class SelectFolderDialog extends StatefulWidget {
   //初始文件夹，默认为用户根目录
   final int? folderId;
   final String title;
-  final Function(UserFolder) onConfirm;
+  final Function(CommonResource) onConfirm;
 
   @override
   State<SelectFolderDialog> createState() => _SelectFolderDialogState();
@@ -26,18 +27,18 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
   late Future _futureBuilderFuture;
 
   //移动文件路径
-  List<UserFolder> _folderPath = <UserFolder>[];
+  final List<CommonResource> _folderPath = <CommonResource>[];
 
   //当前路径的文件夹列表
-  List<UserFolder> _folderList = <UserFolder>[];
+  List<CommonResource> _fileList = <UserFile>[];
 
-  UserFolder _selectedFolder = UserFolder.rootFolder();
+  CommonResource _selectedFile = UserFile.rootFolder();
 
   bool _loadingMoveFolderList = false;
 
   Future<void> loadFolderList(int parentId) async {
     try {
-      _folderList = await UserFolderService.getFolderList(parentId, <int>[ResourceStatus.normal.index]);
+      _fileList = await UserFileService.getNormalFileList(parentId: parentId);
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -109,7 +110,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                     setState(() {
                       _loadingMoveFolderList = true;
                     });
-                    _selectedFolder = userFolder;
+                    _selectedFile = userFolder;
                     //更新路径和列表
                     if (userFolder.id == 0) {
                       _folderPath.clear();
@@ -118,17 +119,18 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                         _folderPath.removeLast();
                       }
                     }
-                    _folderList = await UserFolderService.getFolderList(userFolder.id!, <int>[ResourceType.folder.index]);
+                    _fileList = await UserFileService.getNormalFileList(parentId: userFolder.id!);
                     setState(() {
                       _loadingMoveFolderList = false;
                     });
                   },
-                  onCurrentTap: (userFolder){//点击当前的路径文件夹不需要重新获取数据
+                  onCurrentTap: (userFolder) {
+                    //点击当前的路径文件夹不需要重新获取数据
                     if (userFolder is! UserFolder) return;
                     setState(() {
                       _loadingMoveFolderList = true;
                     });
-                    _selectedFolder = userFolder;
+                    _selectedFile = userFolder;
                     setState(() {
                       _loadingMoveFolderList = false;
                     });
@@ -143,7 +145,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                           child: CircularProgressIndicator(),
                         )
                       : ListView.builder(
-                          itemCount: _folderList.length,
+                    itemCount: _fileList.length,
                           itemExtent: 45,
                           itemBuilder: (BuildContext context, int index) {
                             return ResourceListItem(
@@ -151,26 +153,26 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
                               onPreTap: () {
                                 //选择当前文件夹
                                 setState(() {
-                                  _selectedFolder = _folderList[index];
+                                  _selectedFile = _fileList[index];
                                 });
                               },
                               onDoubleTap: () async {
                                 setState(() {
                                   _loadingMoveFolderList = true;
                                 });
-                                var folder = _folderList[index];
+                                var folder = _fileList[index];
                                 //选择当前文件夹
-                                _selectedFolder = folder;
+                                _selectedFile = folder;
                                 //更新路径
                                 _folderPath.add(folder);
                                 //更新列表
-                                _folderList = await UserFolderService.getFolderList(folder.id!, <int>[ResourceType.folder.index]);
+                                _fileList = await UserFileService.getNormalFileList(parentId: folder.id!);
                                 setState(() {
                                   _loadingMoveFolderList = false;
                                 });
                               },
-                              resource: _folderList[index],
-                              selected: _selectedFolder.id == _folderList[index].id,
+                              resource: _fileList[index],
+                              selected: _selectedFile.id == _fileList[index].id,
                             );
                           },
                         ),
@@ -187,7 +189,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
             Navigator.pop(context);
           },
           onRightTap: () async {
-            await widget.onConfirm(_selectedFolder);
+            await widget.onConfirm(_selectedFile);
           },
         )
       ],

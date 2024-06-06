@@ -21,7 +21,7 @@ class Trash extends CommonResource {
   }) : super(
           id: id,
           name: name,
-          status: ResourceStatus.deleted.index,
+          status: FileStatus.deleted.index,
         );
 
   factory Trash.fromJson(Map<String, dynamic> json) => _$TrashFromJson(json);

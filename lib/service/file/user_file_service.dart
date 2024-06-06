@@ -1,6 +1,7 @@
 import 'package:file_client/config/net_config.dart';
 
 import '../../api/client/file/user_file_api.dart';
+import '../../model/common/common_resource.dart';
 import '../../model/file/user_file.dart';
 
 class UserFileService {
@@ -43,7 +44,7 @@ class UserFileService {
   static Future<void> moveFile({
     required int fileId,
     required int newParentId,
-    required int keepUnique,
+    required bool keepUnique,
   }) async {
     await UserFileApi.moveFile(fileId: fileId, newParentId: newParentId, keepUnique: keepUnique);
   }
@@ -51,12 +52,12 @@ class UserFileService {
   static Future<void> moveFileList({
     required List<int> userFileIdList,
     required int newParentId,
-    required int keepUnique,
+    required bool keepUnique,
   }) async {
     await UserFileApi.moveFileList(userFileIdList: userFileIdList, newParentId: newParentId, keepUnique: keepUnique);
   }
 
-  static Future<List<UserFile>> getNormalFileList({
+  static Future<List<CommonResource>> getNormalFileList({
     required int parentId,
     int pageIndex = 0,
     int pageSize = NetConfig.commonPageSize,

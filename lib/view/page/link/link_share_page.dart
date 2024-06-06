@@ -38,7 +38,6 @@ class _LinkSharePageState extends State<LinkSharePage> {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
     return FutureBuilder(
       future: _futureBuilderFuture,
       builder: (BuildContext context, AsyncSnapshot snapShot) {
@@ -143,12 +142,13 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                           text: "确认删除",
                                           onConfirm: () async {
                                             try {
-                                              await ShareService.deleteShare(share.id!);
+                                              if (share.id == null) throw const FormatException("分享信息异常，刷新后再试");
+                                              await ShareService.deleteShare(shareId: share.id!);
                                               _shareList.remove(share);
-                                              if (mounted) Navigator.pop(context);
+                                              if (context.mounted) Navigator.pop(context);
                                               setState(() {});
                                             } on Exception catch (e) {
-                                              ShowSnackBar.exception(context: context, e: e, defaultValue: "取消分享失败");
+                                              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "取消分享失败");
                                             }
                                           },
                                           onCancel: () {
@@ -167,11 +167,12 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                   height: 35,
                                   onTap: () async {
                                     try {
-                                      await ShareService.updateShareStatus(share.id!, ShareStatus.cancel.index);
+                                      if (share.id == null) throw const FormatException("分享信息异常，刷新后再试");
+                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.cancel.index);
                                       share.status = ShareStatus.cancel.index;
                                       setState(() {});
                                     } on Exception catch (e) {
-                                      ShowSnackBar.exception(context: context, e: e, defaultValue: "关闭分享失败");
+                                      if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "关闭分享失败");
                                     }
                                   },
                                   child: Text(
@@ -184,11 +185,12 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                   height: 35,
                                   onTap: () async {
                                     try {
-                                      await ShareService.updateShareStatus(share.id!, ShareStatus.normal.index);
+                                      if (share.id == null) throw const FormatException("分享信息异常，刷新后再试");
+                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.normal.index);
                                       share.status = ShareStatus.normal.index;
                                       setState(() {});
                                     } on Exception catch (e) {
-                                      ShowSnackBar.exception(context: context, e: e, defaultValue: "打开分享失败");
+                                      if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "打开分享失败");
                                     }
                                   },
                                   child: Text(
@@ -198,7 +200,10 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                 ),
                             ];
                           },
-                          icon:  Icon(Icons.more_horiz,color: colorScheme.onSurface,),
+                          icon: Icon(
+                            Icons.more_horiz,
+                            color: colorScheme.onSurface,
+                          ),
                           splashRadius: 16,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

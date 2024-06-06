@@ -82,7 +82,7 @@ class _ResourceListItemState extends State<ResourceListItem> {
     }
 
     Color iconColor = Colors.orange;
-    if (file.status == ResourceStatus.uploading.index) {
+    if (file.status == FileStatus.uploading.index) {
       iconColor = iconColor.withAlpha(100);
     }
 

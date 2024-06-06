@@ -1,4 +1,4 @@
-import 'package:file_client/model/common/common_folder.dart';
+import 'package:file_client/model/common/common_resource.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/file/user_folder.dart';
@@ -12,10 +12,10 @@ class FolderPathList extends StatelessWidget {
     this.onCurrentTap,
   }) : super(key: key);
 
-  final List<CommonFolder> folderList;
+  final List<CommonResource> folderList;
   final EdgeInsetsGeometry? margin;
-  final Function(CommonFolder)? onTap;
-  final Function(CommonFolder)? onCurrentTap;
+  final Function(CommonResource)? onTap;
+  final Function(CommonResource)? onCurrentTap;
 
   @override
   Widget build(BuildContext context) {
