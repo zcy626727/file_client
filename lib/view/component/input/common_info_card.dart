@@ -1,12 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-import '../../../domain/task/single_upload_task.dart';
-import '../upload/image_upload_card.dart';
+import '../../../common/upload/task/single_upload_task.dart';
+import '../../../common/upload/widget/image_upload_card.dart';
 
 class CommonInfoCard extends StatefulWidget {
-  const CommonInfoCard({super.key, required this.coverUploadImage, required this.titleController, this.introductionController, this.onRefresh});
+  const CommonInfoCard({
+    super.key,
+    required this.coverUploadImage,
+    required this.titleController,
+    this.introductionController,
+    this.onRefresh,
+  });
 
   final SingleUploadTask coverUploadImage;
   final TextEditingController titleController;

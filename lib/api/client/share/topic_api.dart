@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:file_client/model/share/album.dart';
 
 import '../../../model/share/topic.dart';
 import '../share_http_config.dart';
@@ -32,7 +31,7 @@ class TopicApi {
   static Future<void> deleteTopic({
     required String topicId,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/topic/deleteTopic",
       data: FormData.fromMap({
         "topicId": topicId,
@@ -50,7 +49,7 @@ class TopicApi {
     required String introduction,
     required String coverUrl,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/topic/updateTopic",
       data: FormData.fromMap({
         "topicId": topicId,

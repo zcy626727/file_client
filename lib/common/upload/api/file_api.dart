@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../file_http_config.dart';
+import '../../../api/client/file_http_config.dart';
 
 class FileApi {
   //获取putUrl，小文件上传

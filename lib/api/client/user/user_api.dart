@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 
 import '../../../model/user/user.dart';
@@ -39,7 +38,8 @@ class UserApi {
     return user;
   }
 
-  static Future<User> signUp(String phoneNumber, String password, String name) async {
+  static Future<User> signUp(
+      String phoneNumber, String password, String name) async {
     var r = await UserHttpConfig.dio.post(
       "/user/signUp",
       data: FormData.fromMap({
@@ -62,32 +62,38 @@ class UserApi {
       queryParameters: {
         "targetUserId": targetUserId,
       },
-      options: UserHttpConfig.options.copyWith(extra: {"noCache": true, "withToken": false}),
+      options: UserHttpConfig.options
+          .copyWith(extra: {"noCache": true, "withToken": false}),
     );
 
     return User.fromJson(r.data["user"]);
   }
 
   static Future<void> updateUser({String? avatarUrl, String? name}) async {
-    var r = await UserHttpConfig.dio.post(
+    await UserHttpConfig.dio.post(
       "/user/updateUser",
       data: FormData.fromMap({
         "avatarUrl": avatarUrl,
         "name": name,
       }),
-      options: UserHttpConfig.options.copyWith(extra: {"noCache": true, "withToken": true}),
+      options: UserHttpConfig.options
+          .copyWith(extra: {"noCache": true, "withToken": true}),
     );
   }
 
-  static Future<void> updatePassword({required String phoneNumber, required String oldPassword, required String newPassword}) async {
-    var r = await UserHttpConfig.dio.post(
+  static Future<void> updatePassword(
+      {required String phoneNumber,
+      required String oldPassword,
+      required String newPassword}) async {
+    await UserHttpConfig.dio.post(
       "/user/updatePassword",
       data: FormData.fromMap({
         "phoneNumber": phoneNumber,
         "oldPassword": oldPassword,
         "newPassword": newPassword,
       }),
-      options: UserHttpConfig.options.copyWith(extra: {"noCache": true, "withToken": true}),
+      options: UserHttpConfig.options
+          .copyWith(extra: {"noCache": true, "withToken": true}),
     );
   }
 }

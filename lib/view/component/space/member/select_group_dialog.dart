@@ -16,14 +16,11 @@ class SelectGroupDialog extends StatefulWidget {
 }
 
 class _SelectGroupDialogState extends State<SelectGroupDialog> {
-  List<Group> _groupList = <Group>[];
-
-  late Future _futureBuilderFuture;
+  final List<Group> _groupList = <Group>[];
 
   @override
   void initState() {
     super.initState();
-    _futureBuilderFuture = getData();
   }
 
   Future getData() async {
@@ -36,8 +33,10 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
     return AlertDialog(
       backgroundColor: colorScheme.surface,
       contentPadding: dialogContentPadding,
-      title: Text("选择组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
-      content: Container(
+      title: Text("选择组",
+          style: TextStyle(
+              color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
+      content: SizedBox(
         height: 200,
         width: 100,
         child: Column(

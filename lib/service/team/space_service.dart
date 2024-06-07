@@ -3,11 +3,12 @@ import 'package:file_client/model/space/space.dart';
 import '../../api/client/team/space_api.dart';
 
 class SpaceService {
-  static Future<Space> createFile({
-    required String name,
-    required String avatarUrl,
+  static Future<Space> createCreate({
+     String? name,
+     String? avatarUrl,
+     String? description,
   }) async {
-    var space = await SpaceApi.createSpace(name: name, avatarUrl: avatarUrl);
+    var space = await SpaceApi.createSpace(name: name, avatarUrl: avatarUrl, description: description);
     return space;
   }
 
@@ -19,8 +20,8 @@ class SpaceService {
 
   static Future<void> updateSpace({
     required int spaceId,
-    required String newName,
-    required String newAvatarUrl,
+    String? newName,
+    String? newAvatarUrl,
   }) async {
     await SpaceApi.updateSpace(spaceId: spaceId, newName: newName, newAvatarUrl: newAvatarUrl);
   }

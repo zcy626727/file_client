@@ -37,7 +37,7 @@ class ApplicationApi {
   static Future<void> deleteApplication({
     required int applicationId,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/application/deleteApplication",
       data: FormData.fromMap({
         "applicationId": applicationId,
@@ -56,7 +56,7 @@ class ApplicationApi {
     required String coverUrl,
     required int order,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/application/updateApplication",
       data: FormData.fromMap({
         "applicationId": applicationId,

@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../model/file/user_file.dart';
 
 
+
 part 'upload_notion.g.dart';
 
 @JsonSerializable(explicitToJson: true)

@@ -5,14 +5,16 @@ import '../team_http_config.dart';
 
 class SpaceApi {
   static Future<Space> createSpace({
-    required String name,
-    required String avatarUrl,
+    String? name,
+    String? avatarUrl,
+    String? description,
   }) async {
     var r = await TeamHttpConfig.dio.post(
       "/space/createSpace",
       data: FormData.fromMap({
         "name": name,
         "avatarUrl": avatarUrl,
+        "description": description,
       }),
       options: TeamHttpConfig.options.copyWith(
         extra: {
@@ -43,10 +45,10 @@ class SpaceApi {
 
   static Future<void> updateSpace({
     required int spaceId,
-    required String newName,
-    required String newAvatarUrl,
+    String? newName,
+    String? newAvatarUrl,
   }) async {
-    var r = await TeamHttpConfig.dio.put(
+    await TeamHttpConfig.dio.put(
       "/space/deleteSpace",
       data: FormData.fromMap({
         "spaceId": spaceId,

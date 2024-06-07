@@ -5,7 +5,7 @@ import 'package:file_client/config/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../../../service/common/file_url_service.dart';
+import '../../../common/upload/service/file_url_service.dart';
 
 class ImagePreviewPage extends StatefulWidget {
   const ImagePreviewPage({super.key, required this.fileId});

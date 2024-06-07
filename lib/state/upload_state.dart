@@ -4,12 +4,12 @@ import 'dart:isolate';
 import 'package:file_client/service/file/user_file_service.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../common/upload/constant/upload.dart';
+import '../common/upload/service/upload_service.dart';
+import '../common/upload/task/multipart_upload_task.dart';
 import '../config/file_config.dart';
 import '../config/global.dart';
-import '../domain/task/enum/upload.dart';
-import '../domain/task/multipart_upload_task.dart';
 import '../domain/upload_notion.dart';
-import '../service/common/upload_service.dart';
 
 //维护全局传输任务列表
 class UploadState extends ChangeNotifier {

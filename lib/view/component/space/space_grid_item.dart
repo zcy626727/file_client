@@ -18,8 +18,10 @@ class SpaceGridItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          backgroundColor: MaterialStateProperty.all(colorScheme.primaryContainer),
-          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 5))),
+          backgroundColor:
+              MaterialStateProperty.all(colorScheme.primaryContainer),
+          padding: MaterialStateProperty.all(
+              const EdgeInsets.symmetric(horizontal: 5))),
       onPressed: () {
         // 如果已加入该空间
         if (false) {
@@ -38,7 +40,7 @@ class SpaceGridItem extends StatelessWidget {
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return JoinSpaceDialog();
+              return const JoinSpaceDialog();
             },
           );
         }
@@ -49,17 +51,20 @@ class SpaceGridItem extends StatelessWidget {
           leading: CircleAvatar(
             //头像半径
             radius: 30,
-            backgroundImage: NetworkImage(errImageUrl),
+            backgroundImage: const NetworkImage(errImageUrl),
             backgroundColor: colorScheme.primary,
           ),
           title: Text(
             "空间名",
-            style: TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 15),
+            style:
+                TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 15),
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
             "介绍",
-            style: TextStyle(color: colorScheme.onPrimaryContainer.withAlpha(100), fontSize: 12),
+            style: TextStyle(
+                color: colorScheme.onPrimaryContainer.withAlpha(100),
+                fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
         ),

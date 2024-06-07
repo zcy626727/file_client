@@ -1,9 +1,5 @@
-import 'package:file_client/api/client/share/album_api.dart';
-import 'package:file_client/api/client/share/application_api.dart';
 import 'package:file_client/api/client/share/audio_api.dart';
 import 'package:file_client/config/global.dart';
-import 'package:file_client/model/share/album.dart';
-import 'package:file_client/model/share/application.dart';
 
 import '../../model/share/audio.dart';
 
@@ -53,7 +49,8 @@ class AudioService {
     required int page,
     required int pageSize,
   }) async {
-    var list = await AudioApi.searchAudio(keyword: keyword, pageIndex: page, pageSize: pageSize);
+    var list = await AudioApi.searchAudio(
+        keyword: keyword, pageIndex: page, pageSize: pageSize);
     return list;
   }
 
@@ -69,7 +66,8 @@ class AudioService {
     required int pageIndex,
     required int pageSize,
   }) async {
-    var list = await AudioApi.getAudioListByAlbum(pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
+    var list = await AudioApi.getAudioListByAlbum(
+        pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
     return list;
   }
 }

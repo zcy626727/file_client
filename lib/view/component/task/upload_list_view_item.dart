@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/task/enum/upload.dart';
-import '../../../domain/task/multipart_upload_task.dart';
+import '../../../common/upload/constant/upload.dart';
+import '../../../common/upload/task/multipart_upload_task.dart';
 import '../../../util/file_util.dart';
 
 class UploadListViewItem extends StatefulWidget {

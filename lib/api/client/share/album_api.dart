@@ -34,7 +34,7 @@ class AlbumApi {
   static Future<void> deleteAlbum({
     required String albumId,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/album/deleteAlbum",
       data: FormData.fromMap({
         "albumId": albumId,
@@ -52,7 +52,7 @@ class AlbumApi {
     required String introduction,
     required String coverUrl,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/album/updateAlbum",
       data: FormData.fromMap({
         "albumId": albumId,

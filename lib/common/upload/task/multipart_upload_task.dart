@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../config/global.dart';
-import 'enum/upload.dart';
+import '../../../config/global.dart';
+import '../constant/upload.dart';
 
 part 'multipart_upload_task.g.dart';
 

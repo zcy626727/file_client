@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:file_client/model/file/user_file.dart';
 import 'package:file_client/model/share/audio.dart';
 import 'package:file_client/model/share/source.dart';
 import 'package:file_client/model/share/video.dart';
@@ -15,7 +14,8 @@ import '../../widget/confirm_alert_dialog.dart';
 import '../show/show_snack_bar.dart';
 
 class SourceItem extends StatefulWidget {
-  const SourceItem({super.key, required this.source, required this.onDeleteSource});
+  const SourceItem(
+      {super.key, required this.source, required this.onDeleteSource});
 
   final Source source;
   final Function(Source) onDeleteSource;
@@ -59,7 +59,8 @@ class _SourceItemState extends State<SourceItem> {
                   } //...
                 },
                 contentPadding: const EdgeInsets.only(left: 10),
-                leading: widget.source.coverUrl == null || widget.source.coverUrl!.isEmpty
+                leading: widget.source.coverUrl == null ||
+                        widget.source.coverUrl!.isEmpty
                     ? null
                     : Image.network(
                         widget.source.coverUrl!,
@@ -122,7 +123,8 @@ class _SourceItemState extends State<SourceItem> {
                       onTap: () async {
                         await deleteSource();
                       },
-                      child: Text("删除", style: TextStyle(color: colorScheme.onSurface)),
+                      child: Text("删除",
+                          style: TextStyle(color: colorScheme.onSurface)),
                     ),
                   ];
                 },
@@ -149,9 +151,11 @@ class _SourceItemState extends State<SourceItem> {
                 }
                 await widget.onDeleteSource(widget.source);
               } on DioException catch (e) {
-                ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                if (mounted)
+                  ShowSnackBar.exception(
+                      context: context, e: e, defaultValue: "删除失败");
               } finally {
-                Navigator.pop(dialogContext);
+                if (dialogContext.mounted) Navigator.pop(dialogContext);
               }
             },
             onCancel: () {
@@ -169,15 +173,21 @@ class _SourceItemState extends State<SourceItem> {
           builder: (parentContext) {
             return AudioEditPage(
               initSource: widget.source,
-              onCreate: (String title, String? coverUrl, int fileId,int order) async {
+              onCreate: (String title, String? coverUrl, int fileId,
+                  int order) async {
                 try {
-                  await AudioService.updateAudio(fileId: fileId, title: title, coverUrl: coverUrl, audioId: widget.source.id!,order:order);
+                  await AudioService.updateAudio(
+                      fileId: fileId,
+                      title: title,
+                      coverUrl: coverUrl,
+                      audioId: widget.source.id!,
+                      order: order);
                   widget.source.title = title;
                   widget.source.coverUrl = coverUrl;
                   widget.source.order = order;
                   setState(() {});
                 } on Exception catch (e) {
-                  ShowSnackBar.exception(context: context, e: e);
+                  if (mounted) ShowSnackBar.exception(context: context, e: e);
                 }
               },
             );
@@ -191,15 +201,21 @@ class _SourceItemState extends State<SourceItem> {
           builder: (parentContext) {
             return VideoEditPage(
               initSource: widget.source,
-              onCreate: (String title, String? coverUrl, int fileId,int order) async {
+              onCreate: (String title, String? coverUrl, int fileId,
+                  int order) async {
                 try {
-                  await VideoService.updateVideo(fileId: fileId, title: title, coverUrl: coverUrl, videoId: widget.source.id!,order:order);
+                  await VideoService.updateVideo(
+                      fileId: fileId,
+                      title: title,
+                      coverUrl: coverUrl,
+                      videoId: widget.source.id!,
+                      order: order);
                   widget.source.title = title;
                   widget.source.coverUrl = coverUrl;
                   widget.source.order = order;
                   setState(() {});
                 } on Exception catch (e) {
-                  ShowSnackBar.exception(context: context, e: e);
+                  if (mounted) ShowSnackBar.exception(context: context, e: e);
                 }
               },
             );

@@ -3,14 +3,13 @@ import 'package:file_client/view/page/account/reset_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/client/common/file_api.dart';
+import '../../../common/upload/api/file_api.dart';
+import '../../../common/upload/constant/upload.dart';
+import '../../../common/upload/task/single_upload_task.dart';
 import '../../../config/global.dart';
-import '../../../domain/task/enum/upload.dart';
-import '../../../domain/task/single_upload_task.dart';
 import '../../../service/user/user_service.dart';
-import '../../../state/screen_state.dart';
 import '../../../state/user_state.dart';
-import '../../component/upload/image_upload_card.dart';
+import '../../../common/upload/widget/image_upload_card.dart';
 import '../../widget/common_action_two_button.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -39,7 +38,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     //更新用户信息时使用
     var userState = Provider.of<UserState>(context);
-    var navState = Provider.of<ScreenNavigatorState>(context);
+    // var navState = Provider.of<ScreenNavigatorState>(context);
     var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -98,7 +97,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         userState.user.avatarUrl = staticUrl;
                         userState.notify();
                       } on Exception catch (e) {
-                        ShowSnackBar.exception(context: context, e: e);
+                       if(context.mounted) ShowSnackBar.exception(context: context, e: e);
                       }
                       return false;
                       //更新完后获取文件url
@@ -148,12 +147,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           try {
                             if (_usernameController.text != Global.user.name && _usernameController.text.isNotEmpty) {
                               await UserService.updateUser(name: _usernameController.text);
-                              if (mounted) Navigator.of(context).pop();
+                              if (context.mounted) Navigator.of(context).pop();
                               userState.user.name = _usernameController.text;
                               userState.notify();
                             }
                           } on Exception catch (e) {
-                            ShowSnackBar.exception(context: context, e: e);
+                            if(context.mounted)ShowSnackBar.exception(context: context, e: e);
                           }
                           return false;
                         },

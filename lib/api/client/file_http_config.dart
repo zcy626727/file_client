@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 
 import '../../config/global.dart';
@@ -18,9 +16,3 @@ class FileHttpConfig {
     dio.interceptors.add(Global.netCommonInterceptor);
   }
 }
-
-
-
-
-
-

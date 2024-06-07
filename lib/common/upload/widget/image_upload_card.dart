@@ -6,15 +6,15 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/task/enum/upload.dart';
-import '../../../domain/task/single_upload_task.dart';
-import '../../../service/common/file_url_service.dart';
-import '../../../service/common/upload_service.dart';
-import '../../widget/confirm_alert_dialog.dart';
-import '../show/show_snack_bar.dart';
+import '../constant/upload.dart';
+import '../service/file_url_service.dart';
+import '../../../view/widget/confirm_alert_dialog.dart';
+import '../../../view/component/show/show_snack_bar.dart';
+import '../service/upload_service.dart';
+import '../task/single_upload_task.dart';
 
 class ImageUploadCard extends StatefulWidget {
-  const ImageUploadCard({required super.key, required this.task, this.onDeleteImage, this.onUpdateImage, this.enableDelete = true});
+  const ImageUploadCard({Key? key, required this.task, this.onDeleteImage, this.onUpdateImage, this.enableDelete = true}) : super(key: key);
 
   final SingleUploadTask task;
   final Function(SingleUploadTask)? onDeleteImage;
@@ -49,7 +49,7 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
   Future<void> getImageUrl() async {
     try {
       if (widget.task.fileId != null) {
-        var (url, staticUrl) = await FileUrlService.genGetFileUrl(widget.task.fileId!);
+        var (_, staticUrl) = await FileUrlService.genGetFileUrl(widget.task.fileId!);
         widget.task.coverUrl = staticUrl;
       }
     } on DioException catch (e) {
@@ -148,9 +148,9 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
                 await widget.onDeleteImage!(widget.task);
               }
             } on DioException catch (e) {
-              ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
             } finally {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             }
             if (isolate != null) {
               isolate!.kill();
@@ -172,7 +172,7 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
         if (widget.onUpdateImage != null) {
           await widget.onUpdateImage!(task);
         }
-        var (link, staticUrl) = await FileUrlService.genGetFileUrl(task.fileId!);
+        var (_, staticUrl) = await FileUrlService.genGetFileUrl(task.fileId!);
         widget.task.coverUrl = staticUrl;
         setState(() {});
       },

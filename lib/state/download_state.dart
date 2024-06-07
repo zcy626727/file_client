@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 
 import '../config/file_config.dart';
 import '../config/global.dart';
-import '../domain/task/download_task.dart';
-import '../domain/task/enum/download.dart';
-import '../service/common/download_service.dart';
+import '../common/upload/task/download_task.dart';
+import '../common/upload/constant/download.dart';
+import '../common/upload/service/download_service.dart';
 
 class DownloadState extends ChangeNotifier {
   //下载队列

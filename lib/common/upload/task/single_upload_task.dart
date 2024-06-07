@@ -11,12 +11,13 @@ class SingleUploadTask {
   int? id;
   String? srcPath; //文件原路径
   int? totalSize; //文件/文件夹下的文件的大小
-  int uploadedSize = 0; //进度
+  int uploadedSize = 0; //已上传大小
   String? md5; //文件的MD5
-  int? fileId;
-  String? statusMessage; //文件的MD5
+
+  int? fileId;//文件远程id
+  String? statusMessage;//文件状态消息
   int? status; //上传状态
-  DateTime? createTime;
+  DateTime? createTime;//上传时间
   bool? private;
 
 

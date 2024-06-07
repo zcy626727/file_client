@@ -1,13 +1,7 @@
-import 'package:file_client/api/client/share/album_api.dart';
-import 'package:file_client/api/client/share/application_api.dart';
-import 'package:file_client/api/client/share/audio_api.dart';
 import 'package:file_client/api/client/share/video_api.dart';
 import 'package:file_client/config/global.dart';
-import 'package:file_client/model/share/album.dart';
-import 'package:file_client/model/share/application.dart';
-import 'package:file_client/model/share/video.dart';
 
-import '../../model/share/audio.dart';
+import '../../model/share/video.dart';
 
 class VideoService {
   static Future<Video> createVideo({
@@ -42,12 +36,11 @@ class VideoService {
     int order = 0,
   }) async {
     await VideoApi.updateVideo(
-      videoId: videoId,
-      fileId: fileId,
-      title: title,
-      coverUrl: coverUrl,
-      order: order
-    );
+        videoId: videoId,
+        fileId: fileId,
+        title: title,
+        coverUrl: coverUrl,
+        order: order);
   }
 
   static Future<List<Video>> searchVideo({
@@ -55,7 +48,8 @@ class VideoService {
     required int page,
     required int pageSize,
   }) async {
-    var list = await VideoApi.searchVideo(keyword: keyword, pageIndex: page, pageSize: pageSize);
+    var list = await VideoApi.searchVideo(
+        keyword: keyword, pageIndex: page, pageSize: pageSize);
     return list;
   }
 
@@ -71,7 +65,8 @@ class VideoService {
     required int pageIndex,
     required int pageSize,
   }) async {
-    var list = await VideoApi.getVideoListByAlbum(pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
+    var list = await VideoApi.getVideoListByAlbum(
+        pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
     return list;
   }
 }

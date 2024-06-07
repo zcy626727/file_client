@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/task/download_task.dart';
-import '../../../domain/task/enum/download.dart';
+import '../../../common/upload/task/download_task.dart';
+import '../../../common/upload/constant/download.dart';
 import '../../../state/download_state.dart';
 import '../../../view/component/task/download_list_view_item.dart';
 

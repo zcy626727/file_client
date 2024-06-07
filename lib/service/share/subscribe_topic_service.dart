@@ -1,6 +1,4 @@
-import 'package:file_client/api/client/share/subscribe_album_api.dart';
 import 'package:file_client/api/client/share/subscribe_topic_api.dart';
-import 'package:file_client/model/share/subscribe_album.dart';
 
 import '../../config/global.dart';
 import '../../model/share/subscribe_topic.dart';

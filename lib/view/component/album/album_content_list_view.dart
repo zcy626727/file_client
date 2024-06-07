@@ -144,24 +144,25 @@ class _AlbumContentListViewState extends State<AlbumContentListView> {
 
   Future<void> deleteAlbum() async {
     await showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return ConfirmAlertDialog(
-            text: "是否确定删除？",
-            onConfirm: () async {
-              try {
-                await AlbumService.deleteAlbum(albumId: widget.album.id!);
-                await widget.onDeleteAlbum(widget.album);
-              } on DioException catch (e) {
-                ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
-              } finally {
-                Navigator.pop(dialogContext);
-              }
-            },
-            onCancel: () {
-              Navigator.pop(dialogContext);
-            },
-          );
-        });
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return ConfirmAlertDialog(
+          text: "是否确定删除？",
+          onConfirm: () async {
+            try {
+              await AlbumService.deleteAlbum(albumId: widget.album.id!);
+              await widget.onDeleteAlbum(widget.album);
+            } on DioException catch (e) {
+              if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+            } finally {
+              if (dialogContext.mounted) Navigator.pop(dialogContext);
+            }
+          },
+          onCancel: () {
+            Navigator.pop(dialogContext);
+          },
+        );
+      },
+    );
   }
 }

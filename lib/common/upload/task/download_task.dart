@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../config/global.dart';
+import '../../../config/global.dart';
 
 part 'download_task.g.dart';
 

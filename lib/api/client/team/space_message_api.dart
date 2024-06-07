@@ -28,7 +28,7 @@ class SpaceMessageApi {
   static Future<void> acceptJoin({
     required int msgId,
   }) async {
-    var r = await TeamHttpConfig.dio.post(
+    await TeamHttpConfig.dio.post(
       "/spaceMessage/acceptJoin",
       data: FormData.fromMap({
         "msgId": msgId,
@@ -45,7 +45,7 @@ class SpaceMessageApi {
   static Future<void> refuseJoin({
     required int msgId,
   }) async {
-    var r = await TeamHttpConfig.dio.post(
+    await TeamHttpConfig.dio.post(
       "/spaceMessage/refuseJoin",
       data: FormData.fromMap({
         "msgId": msgId,

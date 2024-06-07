@@ -1,13 +1,7 @@
-import 'package:file_client/api/client/share/album_api.dart';
-import 'package:file_client/api/client/share/application_api.dart';
-import 'package:file_client/api/client/share/audio_api.dart';
 import 'package:file_client/api/client/share/gallery_api.dart';
 import 'package:file_client/config/global.dart';
-import 'package:file_client/model/share/album.dart';
-import 'package:file_client/model/share/application.dart';
-import 'package:file_client/model/share/gallery.dart';
 
-import '../../model/share/audio.dart';
+import '../../model/share/gallery.dart';
 
 class GalleryService {
   static Future<Gallery?> createAudio({
@@ -59,7 +53,8 @@ class GalleryService {
     required String page,
     required String pageSize,
   }) async {
-    var list = await GalleryApi.searchGallery(keyword: keyword, pageIndex: page, pageSize: pageSize);
+    var list = await GalleryApi.searchGallery(
+        keyword: keyword, pageIndex: page, pageSize: pageSize);
     return list;
   }
 
@@ -75,7 +70,8 @@ class GalleryService {
     required int pageIndex,
     required int pageSize,
   }) async {
-    var list = await GalleryApi.getGalleryListByAlbum(pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
+    var list = await GalleryApi.getGalleryListByAlbum(
+        pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
     return list;
   }
 }

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../../../domain/multipart_info.dart';
-import '../file_http_config.dart';
+import '../domain/multipart_info.dart';
+import '../../../api/client/file_http_config.dart';
 
 class MultipartApi {
   //初始化上传任务

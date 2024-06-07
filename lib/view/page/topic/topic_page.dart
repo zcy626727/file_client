@@ -22,7 +22,8 @@ import '../../widget/common_tab_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 
 class TopicPage extends StatefulWidget {
-  const TopicPage({Key? key, required this.topic, required this.onDeleteTopic}) : super(key: key);
+  const TopicPage({Key? key, required this.topic, required this.onDeleteTopic})
+      : super(key: key);
 
   final Topic topic;
   final Function(Topic) onDeleteTopic;
@@ -47,7 +48,8 @@ class _TopicPageState extends State<TopicPage> {
         topicUser = Global.user;
         isOwn = true;
       } else {
-        topicUser = await UserService.getUserInfo(targetUserId: widget.topic.userId!);
+        topicUser =
+            await UserService.getUserInfo(targetUserId: widget.topic.userId!);
       }
     } on DioException catch (e) {
       log(e.toString());
@@ -59,7 +61,8 @@ class _TopicPageState extends State<TopicPage> {
   //获取专辑列表
   Future<void> loadAlbumList() async {
     try {
-      albumList = await AlbumService.getAlbumListByTopic(topicId: widget.topic.id!);
+      albumList =
+          await AlbumService.getAlbumListByTopic(topicId: widget.topic.id!);
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -70,7 +73,8 @@ class _TopicPageState extends State<TopicPage> {
   //获取订阅状态
   Future<void> loadSubscribeStatus() async {
     try {
-      subscribeTopic = await SubscribeTopicService.getUserSubscribeTopicInfo(topicId: widget.topic.id!);
+      subscribeTopic = await SubscribeTopicService.getUserSubscribeTopicInfo(
+          topicId: widget.topic.id!);
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
@@ -142,14 +146,18 @@ class _TopicPageState extends State<TopicPage> {
                                 onTap: () async {
                                   await editTopic();
                                 },
-                                child: Text("编辑", style: TextStyle(color: colorScheme.onSurface)),
+                                child: Text("编辑",
+                                    style: TextStyle(
+                                        color: colorScheme.onSurface)),
                               ),
                               PopupMenuItem(
                                 value: "delete",
                                 onTap: () async {
                                   await deleteTopic();
                                 },
-                                child: Text("删除", style: TextStyle(color: colorScheme.onSurface)),
+                                child: Text("删除",
+                                    style: TextStyle(
+                                        color: colorScheme.onSurface)),
                               ),
                             ];
                           },
@@ -199,22 +207,34 @@ class _TopicPageState extends State<TopicPage> {
                                       ? null
                                       //不是自己的主题
                                       : CommonActionOneButton(
-                                          title: subscribeTopic == null ? "订阅" : "取消订阅",
+                                          title: subscribeTopic == null
+                                              ? "订阅"
+                                              : "取消订阅",
                                           backgroundColor: colorScheme.primary,
                                           textColor: colorScheme.onPrimary,
                                           onTap: () async {
                                             try {
                                               if (subscribeTopic == null) {
                                                 //订阅
-                                                subscribeTopic = await SubscribeTopicService.createSubscribe(topicId: widget.topic.id!);
+                                                subscribeTopic =
+                                                    await SubscribeTopicService
+                                                        .createSubscribe(
+                                                            topicId: widget
+                                                                .topic.id!);
                                               } else {
                                                 //取消订阅
-                                                await SubscribeTopicService.deleteSubscribe(subscribeId: subscribeTopic!.id!);
+                                                await SubscribeTopicService
+                                                    .deleteSubscribe(
+                                                        subscribeId:
+                                                            subscribeTopic!
+                                                                .id!);
                                                 subscribeTopic = null;
                                               }
                                               setState(() {});
                                             } on Exception catch (e) {
-                                              if (mounted) ShowSnackBar.exception(context: context, e: e);
+                                              if (mounted)
+                                                ShowSnackBar.exception(
+                                                    context: context, e: e);
                                             }
                                             setState(() {});
                                           },
@@ -229,7 +249,9 @@ class _TopicPageState extends State<TopicPage> {
                                   child: CircleAvatar(
                                     radius: 10,
                                     foregroundImage: NetworkImage(
-                                      topicUser == null ? "" : topicUser!.avatarUrl!,
+                                      topicUser == null
+                                          ? ""
+                                          : topicUser!.avatarUrl!,
                                     ),
                                   ),
                                 ),
@@ -247,7 +269,9 @@ class _TopicPageState extends State<TopicPage> {
                               margin: const EdgeInsets.only(top: 10),
                               child: Text(
                                 widget.topic.introduction ?? "简介为空",
-                                style: TextStyle(color: colorScheme.onSurface.withAlpha(100)),
+                                style: TextStyle(
+                                    color:
+                                        colorScheme.onSurface.withAlpha(100)),
                               ),
                             )
                           ],
@@ -327,7 +351,8 @@ class _TopicPageState extends State<TopicPage> {
       context: context,
       builder: (BuildContext context) {
         return AlbumEditDialog(
-          onCreate: (String title, String introduction, String? coverUrl, albumType) async {
+          onCreate: (String title, String introduction, String? coverUrl,
+              albumType) async {
             var album = await AlbumService.createAlbum(
               topicId: widget.topic.id,
               title: title,
@@ -361,10 +386,12 @@ class _TopicPageState extends State<TopicPage> {
                 await TopicService.deleteTopic(topicId: widget.topic.id!);
                 await widget.onDeleteTopic(widget.topic);
               } on DioException catch (e) {
-                ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                if (mounted)
+                  ShowSnackBar.exception(
+                      context: context, e: e, defaultValue: "删除失败");
               } finally {
-                Navigator.pop(dialogContext);
-                Navigator.pop(context);
+                if (dialogContext.mounted) Navigator.pop(dialogContext);
+                if (mounted) Navigator.pop(context);
               }
             },
             onCancel: () {
@@ -381,7 +408,8 @@ class _TopicPageState extends State<TopicPage> {
       builder: (BuildContext context) {
         return TopicEditDialog(
           initTopic: widget.topic,
-          onCreate: (String title, String introduction, String? coverUrl, int albumType) async {
+          onCreate: (String title, String introduction, String? coverUrl,
+              int albumType) async {
             await TopicService.updateTopic(
               title: title,
               introduction: introduction,
@@ -392,7 +420,7 @@ class _TopicPageState extends State<TopicPage> {
             widget.topic.introduction = introduction;
             widget.topic.coverUrl = coverUrl;
             setState(() {});
-            if (mounted) Navigator.of(context).pop();
+            if (context.mounted) Navigator.of(context).pop();
           },
         );
       },

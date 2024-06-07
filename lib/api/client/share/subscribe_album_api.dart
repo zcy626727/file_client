@@ -25,7 +25,7 @@ class SubscribeAlbumApi {
   static Future<void> deleteSubscribe({
     required String subscribeId,
   }) async {
-    var r = await ShareHttpConfig.dio.post(
+    await ShareHttpConfig.dio.post(
       "/subscribeAlbum/deleteSubscribe",
       data: FormData.fromMap({
         "subscribeId": subscribeId,

@@ -1,10 +1,10 @@
 import 'package:file_client/constant/album.dart';
-import 'package:file_client/domain/task/enum/upload.dart';
 import 'package:file_client/model/share/topic.dart';
 import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/task/single_upload_task.dart';
+import '../../../common/upload/constant/upload.dart';
+import '../../../common/upload/task/single_upload_task.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_dropdown.dart';
 import '../input/common_info_card.dart';
@@ -100,7 +100,7 @@ class _TopicEditDialogState extends State<TopicEditDialog> {
               var introduction = introductionController.text;
               await widget.onCreate(title, introduction, coverUploadImage.coverUrl, _selectedAlbumType.$1);
             } on Exception catch (e) {
-              ShowSnackBar.exception(context: context, e: e);
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e);
             }
             return false;
           },

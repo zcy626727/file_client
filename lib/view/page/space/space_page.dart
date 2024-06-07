@@ -111,7 +111,7 @@ class _SpacePageState extends State<SpacePage> {
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return SpaceSettingDialog();
+                              return SpaceEditDialog();
                             },
                           );
                         },

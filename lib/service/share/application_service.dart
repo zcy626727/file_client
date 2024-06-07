@@ -1,7 +1,5 @@
-import 'package:file_client/api/client/share/album_api.dart';
 import 'package:file_client/api/client/share/application_api.dart';
 import 'package:file_client/config/global.dart';
-import 'package:file_client/model/share/album.dart';
 import 'package:file_client/model/share/application.dart';
 
 class ApplicationService {
@@ -54,7 +52,8 @@ class ApplicationService {
     required String page,
     required String pageSize,
   }) async {
-    var list = await ApplicationApi.searchApplication(keyword: keyword, pageIndex: page, pageSize: pageSize);
+    var list = await ApplicationApi.searchApplication(
+        keyword: keyword, pageIndex: page, pageSize: pageSize);
     return list;
   }
 
@@ -70,7 +69,8 @@ class ApplicationService {
     required int pageIndex,
     required int pageSize,
   }) async {
-    var list = await ApplicationApi.getApplicationListByAlbum(pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
+    var list = await ApplicationApi.getApplicationListByAlbum(
+        pageSize: pageSize, albumId: albumId, pageIndex: pageIndex);
     return list;
   }
 }
