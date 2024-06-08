@@ -159,7 +159,7 @@ class _TrashPageState extends State<TrashPage> {
                           _selectedTrashList.remove(trash);
                         }
                       },
-                      resource: trash,
+                      resource: trash.file!,
                       selected: _selectedIndex == idx,
                     ),
                   );
@@ -199,9 +199,9 @@ class _TrashPageState extends State<TrashPage> {
                                       cancelCheck();
                                       setState(() {});
                                     } on DioException catch (e) {
-                                      ShowSnackBar.exception(context: context, e: e, defaultValue: "恢复失败");
+                                      if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "恢复失败");
                                     } finally {
-                                      Navigator.pop(context);
+                                      if (context.mounted) Navigator.pop(context);
                                     }
                                   },
                                   onCancel: () {
@@ -237,9 +237,9 @@ class _TrashPageState extends State<TrashPage> {
                                       cancelCheck();
                                       setState(() {});
                                     } on DioException catch (e) {
-                                      ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                                      if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
                                     } finally {
-                                      Navigator.pop(context);
+                                      if (context.mounted) Navigator.pop(context);
                                     }
                                   },
                                   onCancel: () {

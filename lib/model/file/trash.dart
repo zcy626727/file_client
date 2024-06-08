@@ -1,28 +1,25 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../constant/resource.dart';
 import '../common/common_resource.dart';
 
 part 'trash.g.dart';
 
 @JsonSerializable()
-class Trash extends CommonResource {
+class Trash {
+  int? id;
+  int? userFileId;
   int? userId;
-  int? itemId;
-  int? type;
+  String? name;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  CommonResource? file;
 
   Trash({
-    id,
-    name,
+    this.id,
+    this.userFileId,
     this.userId,
-    this.itemId,
-    this.type,
-  }) : super(
-          id: id,
-          name: name,
-          status: FileStatus.deleted.index,
-        );
+    this.name,
+  });
 
   factory Trash.fromJson(Map<String, dynamic> json) => _$TrashFromJson(json);
 
