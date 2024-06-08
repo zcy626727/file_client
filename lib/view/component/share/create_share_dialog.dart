@@ -1,3 +1,4 @@
+import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../service/file/share_service.dart';
@@ -82,12 +83,12 @@ class _CreateShareDialogState extends State<CreateShareDialog> {
               children: [
                 Expanded(
                     child: InputTextField(
-                  controller: codeController,
-                  title: "提取码",
-                  enable: true,
-                  hintText: "无提取码",
-                  maxLength: 10,
-                )),
+                      controller: codeController,
+                      title: "提取码",
+                      enable: true,
+                      hintText: "无提取码",
+                      maxLength: 10,
+                    )),
                 const SizedBox(width: 5),
                 SizedBox(
                   height: 42,
@@ -119,8 +120,13 @@ class _CreateShareDialogState extends State<CreateShareDialog> {
           rightTextColor: colorScheme.onPrimary,
           backgroundRightColor: colorScheme.primary,
           onRightTap: () async {
-            var share = await ShareService.createShare(userFileIdList: widget.userFileIdList, endTime: endTime, name: widget.shareName, code: codeController.text);
-            Navigator.of(context).pop(share);
+            try {
+              var share = await ShareService.createShare(userFileIdList: widget.userFileIdList, endTime: endTime, name: widget.shareName, code: codeController.text);
+              if (context.mounted) Navigator.of(context).pop(share);
+              if (context.mounted) ShowSnackBar.info(context: context, message: "分享成功");
+            } on Exception catch (e) {
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e);
+            }
           },
         )
       ],

@@ -14,17 +14,17 @@ import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_one_button.dart';
 import '../../widget/input_text_field.dart';
 
-class ShareContextPage extends StatefulWidget {
-  const ShareContextPage({Key? key, required this.token, this.code, this.initFolderId}) : super(key: key);
+class AccessSharePage extends StatefulWidget {
+  const AccessSharePage({Key? key, required this.token, this.code, this.initFolderId}) : super(key: key);
   final String token;
   final String? code;
   final int? initFolderId;
 
   @override
-  State<ShareContextPage> createState() => _ShareContextPageState();
+  State<AccessSharePage> createState() => _AccessSharePageState();
 }
 
-class _ShareContextPageState extends State<ShareContextPage> {
+class _AccessSharePageState extends State<AccessSharePage> {
   int _selectedIndex = -1;
   bool _loadingResourceList = false;
 
@@ -40,8 +40,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
   final _codeInputController = TextEditingController(text: "");
   Share? _share;
 
-  //-1：访问失败，0：正在访问，1：需要提取码，2：提取码错误，3：访问成功
-  int _status = -1;
+  //0：正在访问
+  int _status = 0;
 
   Future<void> loadShareData() async {
     await accessShare(token: widget.token, code: _code);
@@ -78,7 +78,7 @@ class _ShareContextPageState extends State<ShareContextPage> {
                 ),
               ],
             );
-          } else if (_status == AppHttpStatusCode.needShareCode || _status == AppHttpStatusCode.unableShareCode) {
+          } else if (_status == AppHttpStatusCode.needShareCode || _status == AppHttpStatusCode.shareCodeError) {
             //需要提取码
             return Center(
               child: SizedBox(
@@ -93,8 +93,8 @@ class _ShareContextPageState extends State<ShareContextPage> {
                       onTap: () async {
                         _code = _codeInputController.text;
                         await accessShare(token: widget.token, code: _code);
-                        if (_status == AppHttpStatusCode.unableShareCode) {
-                          if (mounted) ShowSnackBar.error(context: context, message: "提取码错误");
+                        if (_status == AppHttpStatusCode.shareCodeError) {
+                          if (context.mounted) ShowSnackBar.error(context: context, message: "提取码错误");
                         }
                         setState(() {});
                       },
@@ -102,6 +102,14 @@ class _ShareContextPageState extends State<ShareContextPage> {
                   ],
                 ),
               ),
+            );
+          } else if (_status == AppHttpStatusCode.closeShare) {
+            return const Center(
+              child: Text("分享被暂时关闭"),
+            );
+          } else if (_status == AppHttpStatusCode.cancelShare) {
+            return const Center(
+              child: Text("分享被取消"),
             );
           } else {
             return const Center(
@@ -287,18 +295,20 @@ class _ShareContextPageState extends State<ShareContextPage> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return SelectFolderDialog(
-                  title: "保存到",
-                  onConfirm: (targetFolder) {
-                    try {
-                      var fileIdList = <int>[];
-                      if (res.id == null || targetFolder.id == null) throw const FormatException("保存失败");
-                      fileIdList.add(res.id!);
-                      ShareService.saveFileList(token: widget.token, code: _code, userFileIdList: fileIdList, targetFolderId: targetFolder.id!);
-                    } on Exception catch (e) {
-                      ShowSnackBar.exception(context: context, e: e);
-                    }
-                    Navigator.pop(context);
-                  });
+                title: "保存到",
+                filterIdSet: <int?>{res.id},
+                onConfirm: (targetFolder) async {
+                  try {
+                    var fileIdList = <int>[];
+                    if (res.id == null || targetFolder.id == null) throw const FormatException("保存失败");
+                    fileIdList.add(res.id!);
+                    await ShareService.saveFileList(token: widget.token, code: _code, userFileIdList: fileIdList, targetFolderId: targetFolder.id!);
+                  } on Exception catch (e) {
+                    if (context.mounted) ShowSnackBar.exception(context: context, e: e);
+                  }
+                  if (context.mounted) Navigator.pop(context);
+                },
+              );
             },
           );
           break;
@@ -312,15 +322,20 @@ class _ShareContextPageState extends State<ShareContextPage> {
     int? folderId,
     int page = 0,
   }) async {
-    var (s, share, fileList) = await ShareService.accessShare(token: token, code: code, folderId: folderId, pageIndex: page);
-    if (share != null) {
-      _share = share;
+    try {
+      var (s, share, fileList) = await ShareService.accessShare(token: token, code: code, folderId: folderId, pageIndex: page);
+      if (share != null) {
+        _share = share;
+      }
+      _status = s;
+      if (s == AppHttpStatusCode.success) {
+        _fileList = fileList;
+        return true;
+      }
+      return false;
+    } on Exception catch (e) {
+      ShowSnackBar.exception(context: context, e: e);
+      return false;
     }
-    _status = s;
-    if (s == AppHttpStatusCode.success) {
-      _fileList = fileList;
-      return true;
-    }
-    return false;
   }
 }

@@ -17,7 +17,7 @@ class SelectFolderDialog extends StatefulWidget {
   //初始文件夹，默认为用户根目录
   final int? folderId;
   final String title;
-  final Set<int>? filterIdSet;
+  final Set<int?>? filterIdSet;
   final Function(CommonResource) onConfirm;
 
   @override
@@ -102,94 +102,96 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
           ],
         ),
       ),
-      content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-        return SizedBox(
-          width: 250,
-          child: Column(
-            children: [
-              Container(
-                height: 30,
-                margin: const EdgeInsets.only(right: 5.0),
-                child: FolderPathList(
-                  margin: const EdgeInsets.only(),
-                  folderList: _folderPath,
-                  onTap: (userFolder) async {
-                    if (userFolder is! UserFolder) return;
-                    setState(() {
-                      _loadingMoveFolderList = true;
-                    });
-                    _selectedFile = userFolder;
-                    //更新路径和列表
-                    if (userFolder.id == 0) {
-                      _folderPath.clear();
-                    } else {
-                      while (_folderPath.last.id != userFolder.id) {
-                        _folderPath.removeLast();
+      content: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return SizedBox(
+            width: 250,
+            child: Column(
+              children: [
+                Container(
+                  height: 30,
+                  margin: const EdgeInsets.only(right: 5.0),
+                  child: FolderPathList(
+                    margin: const EdgeInsets.only(),
+                    folderList: _folderPath,
+                    onTap: (userFolder) async {
+                      if (userFolder is! UserFolder) return;
+                      setState(() {
+                        _loadingMoveFolderList = true;
+                      });
+                      _selectedFile = userFolder;
+                      //更新路径和列表
+                      if (userFolder.id == 0) {
+                        _folderPath.clear();
+                      } else {
+                        while (_folderPath.last.id != userFolder.id) {
+                          _folderPath.removeLast();
+                        }
                       }
-                    }
-                    _fileList = await UserFileService.getNormalFileList(parentId: userFolder.id!);
-                    setState(() {
-                      _loadingMoveFolderList = false;
-                    });
-                  },
-                  onCurrentTap: (userFolder) {
-                    //点击当前的路径文件夹不需要重新获取数据
-                    if (userFolder is! UserFolder) return;
-                    setState(() {
-                      _loadingMoveFolderList = true;
-                    });
-                    _selectedFile = userFolder;
-                    setState(() {
-                      _loadingMoveFolderList = false;
-                    });
-                  },
+                      _fileList = await UserFileService.getFolderList(parentId: userFolder.id!);
+                      setState(() {
+                        _loadingMoveFolderList = false;
+                      });
+                    },
+                    onCurrentTap: (userFolder) {
+                      //点击当前的路径文件夹不需要重新获取数据
+                      if (userFolder is! UserFolder) return;
+                      setState(() {
+                        _loadingMoveFolderList = true;
+                      });
+                      _selectedFile = userFolder;
+                      setState(() {
+                        _loadingMoveFolderList = false;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  child: _loadingMoveFolderList
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : ListView.builder(
-                    itemCount: _fileList.length,
-                          itemExtent: 45,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ResourceListItem(
-                              isGrid: false,
-                              onPreTap: () {
-                                //选择当前文件夹
-                                setState(() {
-                                  _selectedFile = _fileList[index];
-                                });
-                              },
-                              onDoubleTap: () async {
-                                setState(() {
-                                  _loadingMoveFolderList = true;
-                                });
-                                var folder = _fileList[index];
-                                //选择当前文件夹
-                                _selectedFile = folder;
-                                //更新路径
-                                _folderPath.add(folder);
-                                //更新列表
-                                _fileList = await UserFileService.getNormalFileList(parentId: folder.id!);
-                                setState(() {
-                                  _loadingMoveFolderList = false;
-                                });
-                              },
-                              resource: _fileList[index],
-                              selected: _selectedFile.id == _fileList[index].id,
-                            );
-                          },
-                        ),
-                ),
-              )
-            ],
-          ),
-        );
-      }),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    child: _loadingMoveFolderList
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.builder(
+                            itemCount: _fileList.length,
+                            itemExtent: 45,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ResourceListItem(
+                                isGrid: false,
+                                onPreTap: () {
+                                  //选择当前文件夹
+                                  setState(() {
+                                    _selectedFile = _fileList[index];
+                                  });
+                                },
+                                onDoubleTap: () async {
+                                  setState(() {
+                                    _loadingMoveFolderList = true;
+                                  });
+                                  var folder = _fileList[index];
+                                  //选择当前文件夹
+                                  _selectedFile = folder;
+                                  //更新路径
+                                  _folderPath.add(folder);
+                                  //更新列表
+                                  _fileList = await UserFileService.getFolderList(parentId: folder.id!);
+                                  setState(() {
+                                    _loadingMoveFolderList = false;
+                                  });
+                                },
+                                resource: _fileList[index],
+                                selected: _selectedFile.id == _fileList[index].id,
+                              );
+                            },
+                          ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
       actions: <Widget>[
         CommonActionTwoButton(
           height: 35,

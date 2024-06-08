@@ -81,9 +81,9 @@ class _LinkSharePageState extends State<LinkSharePage> {
                 ...List.generate(_shareList.length, (index) {
                   var share = _shareList[index];
                   String statusText = "";
-                  if (share.status == ShareStatus.normal.index) {
+                  if (share.status == ShareStatus.normal) {
                     statusText = "分享中";
-                  } else if (share.status == ShareStatus.cancel.index) {
+                  } else if (share.status == ShareStatus.cancel) {
                     statusText = "关闭中";
                   }
                   bool isEnd = false;
@@ -161,15 +161,15 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                 },
                                 child: Text("取消分享", style: textStyle, overflow: TextOverflow.ellipsis),
                               ),
-                              if (!isEnd && share.status == ShareStatus.normal.index)
+                              if (!isEnd && share.status == ShareStatus.normal)
                                 PopupMenuItem(
                                   value: "close",
                                   height: 35,
                                   onTap: () async {
                                     try {
                                       if (share.id == null) throw const FormatException("分享信息异常，刷新后再试");
-                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.cancel.index);
-                                      share.status = ShareStatus.cancel.index;
+                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.cancel);
+                                      share.status = ShareStatus.cancel;
                                       setState(() {});
                                     } on Exception catch (e) {
                                       if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "关闭分享失败");
@@ -180,14 +180,14 @@ class _LinkSharePageState extends State<LinkSharePage> {
                                     style: textStyle,
                                   ),
                                 ),
-                              if (!isEnd && share.status == ShareStatus.cancel.index)
+                              if (!isEnd && share.status == ShareStatus.cancel)
                                 PopupMenuItem(
                                   height: 35,
                                   onTap: () async {
                                     try {
                                       if (share.id == null) throw const FormatException("分享信息异常，刷新后再试");
-                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.normal.index);
-                                      share.status = ShareStatus.normal.index;
+                                      await ShareService.updateShareStatus(shareId: share.id!, newStatus: ShareStatus.normal);
+                                      share.status = ShareStatus.normal;
                                       setState(() {});
                                     } on Exception catch (e) {
                                       if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "打开分享失败");

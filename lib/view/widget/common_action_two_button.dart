@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +71,7 @@ class _CommonActionTwoButtonState extends State<CommonActionTwoButton> {
 
                       if (isPop == true) {
                         //表示调用pop
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       }
 
                       setState(() {
@@ -109,7 +107,7 @@ class _CommonActionTwoButtonState extends State<CommonActionTwoButton> {
 
                       if (isPop == true) {
                         //表示调用pop
-                        Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       }
 
                       setState(() {

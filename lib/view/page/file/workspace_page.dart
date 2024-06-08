@@ -30,7 +30,7 @@ import '../../component/share/create_share_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../../widget/input_alert_dialog.dart';
-import '../link/share_context_page.dart';
+import '../link/access_share_page.dart';
 
 class WorkspacePage extends StatefulWidget {
   const WorkspacePage({Key? key}) : super(key: key);
@@ -225,7 +225,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
             height: 25,
             child: ElevatedButton(
               onPressed: () async {
-                var value = await showDialog<String?>(
+                var token = await showDialog<String?>(
                   context: context,
                   barrierDismissible: false,
                   builder: (BuildContext context) {
@@ -242,7 +242,6 @@ class _WorkspacePageState extends State<WorkspacePage> {
                   },
                 );
                 //解析链接
-                var token = value;
                 if (token != null) {
                   //发送请求获取share
                   try {
@@ -254,7 +253,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                           builder: (context) {
                             return Scaffold(
                               backgroundColor: colorScheme.surface,
-                              body: ShareContextPage(token: token),
+                              body: AccessSharePage(token: token),
                             );
                           },
                         ),

@@ -81,7 +81,7 @@ class LinkShareDetailDialog extends StatelessWidget {
           ],
         ),
       ),
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      actionsPadding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10),
       actions: <Widget>[
         CommonActionTwoButton(
           leftTitle: "返回",

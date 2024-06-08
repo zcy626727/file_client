@@ -14,7 +14,7 @@ class ShareApi {
     var r = await FileHttpConfig.dio.post(
       "/share/createShare",
       data: FormData.fromMap({
-        "userFileList": userFileIdList,
+        "userFileIdList": userFileIdList,
         "endTime": endTime,
         "code": code,
         "name": name,
@@ -67,7 +67,10 @@ class ShareApi {
   }) async {
     var r = await FileHttpConfig.dio.get(
       "/share/getShareList",
-      queryParameters: {},
+      queryParameters: {
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
       options: FileHttpConfig.options.copyWith(extra: {
         "noCache": true,
         "withToken": true,
@@ -116,7 +119,7 @@ class ShareApi {
       }),
     );
     Share share = Share.fromJson(r.data['share']);
-    int status = r.data['status'];
+    int status = r.data['code'];
     return (status, share, _parseUserFileList(r));
   }
 
@@ -127,14 +130,14 @@ class ShareApi {
     required List<int> userFileIdList,
     required int targetFolderId,
   }) async {
-    await FileHttpConfig.dio.get(
+    await FileHttpConfig.dio.post(
       "/share/saveFileList",
-      queryParameters: {
+      data: FormData.fromMap({
         "token": token,
         "code": code,
         "userFileIdList": userFileIdList,
         "targetFolderId": targetFolderId,
-      },
+      }),
       options: FileHttpConfig.options.copyWith(extra: {
         "noCache": true,
         "withToken": true,
