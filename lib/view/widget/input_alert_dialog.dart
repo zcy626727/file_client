@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'common_action_two_button.dart';
 
-
 class InputAlertDialog extends StatelessWidget {
   const InputAlertDialog({
     Key? key,
@@ -32,7 +31,7 @@ class InputAlertDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.only(
         left: 10.0,
         right: 10.0,
-        top: 15.0,
+        top: 25.0,
       ),
       content: SizedBox(
         height: 65,
@@ -48,8 +47,7 @@ class InputAlertDialog extends StatelessWidget {
           decoration: InputDecoration(
             isCollapsed: true,
             //防止文本溢出时被白边覆盖
-            contentPadding: const EdgeInsets.only(
-                left: 12.0, right: 2, bottom: -3, top: 10),
+            contentPadding: const EdgeInsets.only(left: 12.0, right: 2, bottom: -3, top: 10),
             border: OutlineInputBorder(
               //添加边框
               borderRadius: BorderRadius.circular(5.0),
@@ -57,8 +55,7 @@ class InputAlertDialog extends StatelessWidget {
             label: Text(
               title,
               style: TextStyle(
-                color:
-                    Theme.of(context).colorScheme.onBackground.withAlpha(150),
+                color: Theme.of(context).colorScheme.onBackground.withAlpha(150),
               ),
               strutStyle: const StrutStyle(fontSize: 16),
             ),
@@ -71,14 +68,15 @@ class InputAlertDialog extends StatelessWidget {
           keyboardType: TextInputType.text,
         ),
       ),
-      actionsPadding:
-          const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      actionsPadding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10),
       actions: <Widget>[
         CommonActionTwoButton(
           height: 35,
           onLeftTap: () {
             onCancel();
           },
+          rightTextColor: colorScheme.onPrimary,
+          backgroundRightColor: colorScheme.primary,
           onRightTap: () {
             onConfirm(controller.value.text);
           },

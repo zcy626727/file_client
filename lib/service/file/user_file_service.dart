@@ -3,6 +3,7 @@ import 'package:file_client/config/net_config.dart';
 import '../../api/client/file/user_file_api.dart';
 import '../../model/common/common_resource.dart';
 import '../../model/file/user_file.dart';
+import '../../model/file/user_folder.dart';
 
 class UserFileService {
   static Future<UserFile> createFile({
@@ -14,7 +15,7 @@ class UserFileService {
     return userFile;
   }
 
-  static Future<UserFile> createFolder({
+  static Future<UserFolder> createFolder({
     required String folderName,
     required int parentId,
   }) async {
@@ -63,6 +64,14 @@ class UserFileService {
     int pageSize = NetConfig.commonPageSize,
   }) async {
     return await UserFileApi.getNormalFileList(parentId: parentId, pageIndex: pageIndex, pageSize: pageSize);
+  }
+
+  static Future<List<CommonResource>> getFolderList({
+    required int parentId,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await UserFileApi.getFolderList(parentId: parentId, pageIndex: pageIndex, pageSize: pageSize);
   }
 
   static Future<String> getDownloadUrl(int userFileId) async {

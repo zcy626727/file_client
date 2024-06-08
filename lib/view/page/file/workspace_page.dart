@@ -11,10 +11,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/upload/constant/upload.dart';
+import '../../../common/upload/task/download_task.dart';
 import '../../../common/upload/task/multipart_upload_task.dart';
 import '../../../config/global.dart';
 import '../../../constant/resource.dart';
-import '../../../common/upload/task/download_task.dart';
 import '../../../domain/upload_notion.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
@@ -668,7 +668,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                 });
             break;
           case "move":
-            moveFileOrFolder(res);
+            moveFile(res);
             break;
           case "delete":
             showDialog(
@@ -740,12 +740,13 @@ class _WorkspacePageState extends State<WorkspacePage> {
     );
   }
 
-  void moveFileOrFolder(CommonResource selectedRes) {
+  void moveFile(CommonResource selectedRes) {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return SelectFolderDialog(
+          filterIdSet: selectedRes.id != null ? <int>{selectedRes.id!} : null,
           title: "移动到",
           onConfirm: (targetFolder) async {
             try {
@@ -753,7 +754,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
               if (selectedRes.parentId == targetFolder.id) throw const FormatException("文件夹已存在于该路径");
               if (selectedRes.id == null || selectedRes.parentId == null) throw const FormatException("文件夹信息错误，刷新后再试");
 
-              await UserFileService.moveFile(fileId: selectedRes.id!, newParentId: selectedRes.parentId!, keepUnique: true);
+              await UserFileService.moveFile(fileId: selectedRes.id!, newParentId: targetFolder.id!, keepUnique: true);
               _fileList.remove(selectedRes);
               setState(() {});
             } on Exception catch (e) {

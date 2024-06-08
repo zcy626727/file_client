@@ -29,12 +29,12 @@ class UserFileApi {
     return UserFile.fromJson(r.data["userFile"]);
   }
 
-  static Future<UserFile> createFolder({
+  static Future<UserFolder> createFolder({
     required String folderName,
     required int parentId,
   }) async {
     var r = await FileHttpConfig.dio.post(
-      "/userFile/createFile",
+      "/userFile/createFolder",
       data: FormData.fromMap({
         "folderName": folderName,
         "parentId": parentId,
@@ -46,7 +46,7 @@ class UserFileApi {
         },
       ),
     );
-    return UserFile.fromJson(r.data["userFolder"]);
+    return UserFolder.fromJson(r.data["userFolder"]);
   }
 
   //删除文件
@@ -155,6 +155,28 @@ class UserFileApi {
   }) async {
     var r = await FileHttpConfig.dio.get(
       "/userFile/getNormalFileList",
+      queryParameters: {
+        "parentId": parentId,
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
+      options: FileHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return _parseUserFileList(r);
+  }
+
+  static Future<List<CommonResource>> getFolderList({
+    required int parentId,
+    required int pageIndex,
+    required int pageSize,
+  }) async {
+    var r = await FileHttpConfig.dio.get(
+      "/userFile/getFolderList",
       queryParameters: {
         "parentId": parentId,
         "pageIndex": pageIndex,

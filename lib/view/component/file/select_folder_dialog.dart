@@ -12,11 +12,12 @@ import 'file_list_tile.dart';
 import 'folder_path_list.dart';
 
 class SelectFolderDialog extends StatefulWidget {
-  const SelectFolderDialog({Key? key, this.folderId, required this.title, required this.onConfirm}) : super(key: key);
+  const SelectFolderDialog({Key? key, this.folderId, required this.title, required this.onConfirm, this.filterIdSet}) : super(key: key);
 
   //初始文件夹，默认为用户根目录
   final int? folderId;
   final String title;
+  final Set<int>? filterIdSet;
   final Function(CommonResource) onConfirm;
 
   @override
@@ -38,7 +39,14 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
 
   Future<void> loadFolderList(int parentId) async {
     try {
-      _fileList = await UserFileService.getNormalFileList(parentId: parentId);
+      _fileList = await UserFileService.getFolderList(parentId: parentId);
+      if (widget.filterIdSet != null) {
+        for (var value in _fileList) {
+          if (widget.filterIdSet!.contains(value.id)) {
+            _fileList.remove(value);
+          }
+        }
+      }
     } on DioException catch (e) {
       log(e.toString());
     } catch (e) {
