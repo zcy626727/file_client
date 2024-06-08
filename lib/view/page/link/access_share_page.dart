@@ -61,6 +61,7 @@ class _AccessSharePageState extends State<AccessSharePage> {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return FutureBuilder(
       future: _futureBuilderFuture,
       builder: (BuildContext context, AsyncSnapshot snapShot) {
@@ -104,17 +105,15 @@ class _AccessSharePageState extends State<AccessSharePage> {
               ),
             );
           } else if (_status == AppHttpStatusCode.closeShare) {
-            return const Center(
-              child: Text("分享被暂时关闭"),
-            );
+            return Center(child: Text("分享被暂时关闭", style: TextStyle(color: colorScheme.onSurface)));
           } else if (_status == AppHttpStatusCode.cancelShare) {
-            return const Center(
-              child: Text("分享被取消"),
-            );
+            return Center(child: Text("分享不存在或已被被取消", style: TextStyle(color: colorScheme.onSurface)));
           } else {
-            return const Center(
-              child: Text("访问失败"),
-            );
+            return Center(
+                child: Text(
+              "访问失败",
+              style: TextStyle(color: colorScheme.onSurface),
+            ));
           }
         } else {
           // 请求未结束，显示loading

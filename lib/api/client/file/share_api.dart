@@ -118,7 +118,10 @@ class ShareApi {
         "withToken": true,
       }),
     );
-    Share share = Share.fromJson(r.data['share']);
+    Share? share;
+    if (r.data['share'] != null) {
+      share = Share.fromJson(r.data['share']);
+    }
     int status = r.data['code'];
     return (status, share, _parseUserFileList(r));
   }
@@ -155,8 +158,10 @@ class ShareApi {
 
   static List<UserFile> _parseUserFileList(Response<dynamic> r) {
     List<UserFile> list = [];
-    for (var map in r.data["userFileList"]) {
-      list.add(UserFile.fromJson(map));
+    if (r.data["userFileList"] != null) {
+      for (var map in r.data["userFileList"]) {
+        list.add(UserFile.fromJson(map));
+      }
     }
     return list;
   }
