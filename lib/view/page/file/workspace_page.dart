@@ -511,10 +511,8 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                       List<int> userFileIdList = <int>[];
 
                                       for (var res in _selectedFileList) {
-                                        if (res is UserFile) {
-                                          if (res.id != null) {
-                                            userFileIdList.add(res.id!);
-                                          }
+                                        if (res.id != null) {
+                                          userFileIdList.add(res.id!);
                                         }
                                       }
                                       await UserFileService.deleteFileList(userFileIdList: userFileIdList);

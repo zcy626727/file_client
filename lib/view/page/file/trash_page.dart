@@ -191,7 +191,7 @@ class _TrashPageState extends State<TrashPage> {
                                         trashIdList.add(trash.id!);
                                       }
 
-                                      await TrashService.deleteTrashList(trashIdList: trashIdList);
+                                      await TrashService.recoverTrashList(trashIdList: trashIdList);
 
                                       for (var trash in _selectedTrashList) {
                                         _trashList.remove(trash);
@@ -220,33 +220,34 @@ class _TrashPageState extends State<TrashPage> {
                         splashRadius: 18,
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return ConfirmAlertDialog(
-                                  text: "是否确定删除？",
-                                  onConfirm: () async {
-                                    try {
-                                      var trashIdList = <int>[];
-                                      for (var trash in _selectedTrashList) {
-                                        trashIdList.add(trash.id!);
-                                      }
-                                      await TrashService.deleteTrashList(trashIdList: trashIdList);
-                                      for (var trash in _selectedTrashList) {
-                                        _trashList.remove(trash);
-                                      }
-                                      cancelCheck();
-                                      setState(() {});
-                                    } on DioException catch (e) {
-                                      if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
-                                    } finally {
-                                      if (context.mounted) Navigator.pop(context);
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmAlertDialog(
+                                text: "是否确定删除？",
+                                onConfirm: () async {
+                                  try {
+                                    var trashIdList = <int>[];
+                                    for (var trash in _selectedTrashList) {
+                                      trashIdList.add(trash.id!);
                                     }
-                                  },
-                                  onCancel: () {
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              });
+                                    await TrashService.deleteTrashList(trashIdList: trashIdList);
+                                    for (var trash in _selectedTrashList) {
+                                      _trashList.remove(trash);
+                                    }
+                                    cancelCheck();
+                                    setState(() {});
+                                  } on DioException catch (e) {
+                                    if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                                  } finally {
+                                    if (context.mounted) Navigator.pop(context);
+                                  }
+                                },
+                                onCancel: () {
+                                  Navigator.pop(context);
+                                },
+                              );
+                            },
+                          );
                         },
                         icon: Icon(
                           Icons.delete,
