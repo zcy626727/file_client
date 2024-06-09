@@ -6,7 +6,6 @@ import 'package:file_client/view/page/preview/image_preview_page.dart';
 import 'package:file_client/view/page/preview/video_preview_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -413,7 +412,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                 if (context.mounted) ShowSnackBar.exception(context: context, e: e);
                               }
                             } else if (res is UserFile) {
-                              var mimeType = lookupMimeType(res.name ?? "");
+                              var mimeType = res.mimeType;
                               if (mimeType != null) {
                                 if (MimeUtil.isMedia(mimeType)) {
                                   Navigator.push(
