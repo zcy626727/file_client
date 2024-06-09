@@ -1,13 +1,16 @@
 import 'package:file_client/model/space/group.dart';
+import 'package:file_client/service/team/group_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constant/ui.dart';
 import '../../../widget/confirm_alert_dialog.dart';
+import '../../show/show_snack_bar.dart';
 
 class GroupListItem extends StatelessWidget {
-  const GroupListItem({super.key, required this.group});
+  const GroupListItem({super.key, required this.group, this.onDeleteGroup});
 
   final Group group;
+  final Function(Group)? onDeleteGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,18 @@ class GroupListItem extends StatelessWidget {
                           builder: (BuildContext dialogContext) {
                             return ConfirmAlertDialog(
                               text: "是否确定删除分组？",
-                              onConfirm: () async {},
+                              onConfirm: () async {
+                                try {
+                                  if (group.id == null) throw const FormatException("组状态异常");
+                                  if (group.spaceId == null) throw const FormatException("空间状态异常");
+                                  await GroupService.deleteGroup(spaceId: group.spaceId!, groupId: group.id!);
+                                  if (onDeleteGroup != null) onDeleteGroup!(group);
+                                  if (dialogContext.mounted) ShowSnackBar.info(context: dialogContext, message: "删除成功");
+                                  if (dialogContext.mounted) Navigator.pop(dialogContext);
+                                } on Exception catch (e) {
+                                  if (dialogContext.mounted) ShowSnackBar.exception(context: dialogContext, e: e);
+                                }
+                              },
                               onCancel: () {
                                 Navigator.pop(dialogContext);
                               },

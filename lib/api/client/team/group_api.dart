@@ -70,7 +70,7 @@ class GroupApi {
     required int pageSize,
   }) async {
     var r = await TeamHttpConfig.dio.get(
-      "/group/getSpaceGroupListByUser",
+      "/group/getUserSpaceGroupList",
       queryParameters: {
         "spaceId": spaceId,
         "pageIndex": pageIndex,

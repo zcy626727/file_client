@@ -4,7 +4,7 @@ import 'package:file_client/model/space/group.dart';
 import '../../api/client/team/group_api.dart';
 
 class GroupService {
-  static Future<Group> createFile({
+  static Future<Group> createGroup({
     required String name,
     required int spaceId,
   }) async {

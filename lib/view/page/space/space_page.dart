@@ -229,9 +229,9 @@ class _SpacePageState extends State<SpacePage> {
       case SpaceNav.message:
         return SpaceMessagePage();
       case SpaceNav.group:
-        return SpaceGroupPage();
+        return SpaceGroupPage(space: widget.space);
       case SpaceNav.workspace:
-        return SpaceWorkspacePage(spaceId: widget.space.id!);
+        return SpaceWorkspacePage(space: widget.space);
       default:
         return Container();
     }

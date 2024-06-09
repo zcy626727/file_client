@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:file_client/model/space/space.dart';
 import 'package:file_client/model/space/space_folder.dart';
 import 'package:file_client/view/component/resource/resource_detail_dialog.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,9 @@ import '../../widget/confirm_alert_dialog.dart';
 import '../../widget/input_alert_dialog.dart';
 
 class SpaceWorkspacePage extends StatefulWidget {
-  const SpaceWorkspacePage({super.key, required this.spaceId});
+  const SpaceWorkspacePage({super.key, required this.space});
 
-  final int spaceId;
+  final Space space;
 
   @override
   State<SpaceWorkspacePage> createState() => _SpaceWorkspacePageState();
@@ -222,7 +223,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
 
   Widget _buildPathList() {
     var folderPath = Provider.of<PathState>(context, listen: true);
-    var folderList = folderPath.getSpaceFolder(spaceId: widget.spaceId);
+    var folderList = folderPath.getSpaceFolder(spaceId: widget.space.id!);
     return FolderPathList(
       margin: const EdgeInsets.only(left: 13.0, top: 1.0),
       folderList: folderList,
