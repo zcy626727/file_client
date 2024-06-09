@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:file_client/model/common/common_resource.dart';
 
+import '../../../constant/file.dart';
 import '../../../model/file/share.dart';
 import '../../../model/file/user_file.dart';
+import '../../../model/file/user_folder.dart';
 import '../file_http_config.dart';
 
 class ShareApi {
@@ -97,7 +100,7 @@ class ShareApi {
   }
 
   // 访问分享链接，校验并返回文件列表，如果出错可以根据状态码判断错误
-  static Future<(int, Share?, List<UserFile>)> accessShare({
+  static Future<(int, Share?, List<CommonResource>)> accessShare({
     required String token,
     String? code,
     int? folderId,
@@ -109,7 +112,7 @@ class ShareApi {
       queryParameters: {
         "token": token,
         "code": code,
-        "folderId": folderId,
+        "folderId": folderId ?? 0,
         "pageIndex": pageIndex,
         "pageSize": pageSize,
       },
@@ -156,11 +159,17 @@ class ShareApi {
     return shareList;
   }
 
-  static List<UserFile> _parseUserFileList(Response<dynamic> r) {
-    List<UserFile> list = [];
+  static List<CommonResource> _parseUserFileList(Response<dynamic> r) {
+    List<CommonResource> list = [];
     if (r.data["userFileList"] != null) {
       for (var map in r.data["userFileList"]) {
-        list.add(UserFile.fromJson(map));
+        if (map['fileType'] == FileType.direction) {
+          //文件夹
+          list.add(UserFolder.fromJson(map));
+        } else {
+          //文件
+          list.add(UserFile.fromJson(map));
+        }
       }
     }
     return list;

@@ -1,7 +1,8 @@
+import 'package:file_client/model/common/common_resource.dart';
+
 import '../../api/client/file/share_api.dart';
 import '../../config/net_config.dart';
 import '../../model/file/share.dart';
-import '../../model/file/user_file.dart';
 
 class ShareService {
   static Future<Share> createShare({
@@ -47,7 +48,7 @@ class ShareService {
     return await ShareApi.getShare(shareId: shareId);
   }
 
-  static Future<(int, Share?, List<UserFile>)> accessShare({
+  static Future<(int, Share?, List<CommonResource>)> accessShare({
     required String token,
     String? code,
     int? folderId,

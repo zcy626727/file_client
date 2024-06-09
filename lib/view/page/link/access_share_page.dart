@@ -239,7 +239,7 @@ class _AccessSharePageState extends State<AccessSharePage> {
                     if (res is UserFolder) {
                       //双击进入文件夹
                       if (res.id != null) {
-                        await accessShare(token: widget.token, code: _code);
+                        await accessShare(token: widget.token, code: _code, folderId: res.id);
                         _pathList.add(res);
                       }
                     }
