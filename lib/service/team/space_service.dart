@@ -1,12 +1,13 @@
+import 'package:file_client/config/net_config.dart';
 import 'package:file_client/model/space/space.dart';
 
 import '../../api/client/team/space_api.dart';
 
 class SpaceService {
   static Future<Space> createCreate({
-     String? name,
-     String? avatarUrl,
-     String? description,
+    required String name,
+    String? avatarUrl,
+    String? description,
   }) async {
     var space = await SpaceApi.createSpace(name: name, avatarUrl: avatarUrl, description: description);
     return space;
@@ -24,5 +25,12 @@ class SpaceService {
     String? newAvatarUrl,
   }) async {
     await SpaceApi.updateSpace(spaceId: spaceId, newName: newName, newAvatarUrl: newAvatarUrl);
+  }
+
+  static Future<List<Space>> getUserSpaceList({
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await SpaceApi.getUserSpaceList(pageIndex: pageIndex, pageSize: pageSize);
   }
 }

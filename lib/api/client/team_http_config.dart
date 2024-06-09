@@ -7,7 +7,7 @@ class TeamHttpConfig {
   static Options options = Options();
 
   static Dio dio = Dio(BaseOptions(
-    baseUrl: NetConfig.shareApiUrl,
+    baseUrl: NetConfig.teamApiUrl,
   ));
 
   static void init() {

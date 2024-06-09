@@ -3,14 +3,15 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:file_client/api/client/share_http_config.dart';
+import 'package:file_client/api/client/team_http_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../api/client/file_http_config.dart';
+import '../api/client/user_http_config.dart';
 import '../api/net_cache_interceptor.dart';
 import '../api/net_common_interceptor.dart';
-import '../api/client/user_http_config.dart';
 import '../common/upload/task/download_task.dart';
 import '../common/upload/task/multipart_upload_task.dart';
 import '../model/user/user.dart';
@@ -68,6 +69,7 @@ class Global {
     UserHttpConfig.init();
     FileHttpConfig.init();
     ShareHttpConfig.init();
+    TeamHttpConfig.init();
   }
 
   //初始化相关数据数据（应用启动后调用）

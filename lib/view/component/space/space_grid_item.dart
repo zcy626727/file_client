@@ -1,3 +1,4 @@
+import 'package:file_client/model/space/space.dart';
 import 'package:file_client/view/component/space/join_space_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -5,7 +6,9 @@ import '../../../config/constants.dart';
 import '../../page/space/space_page.dart';
 
 class SpaceGridItem extends StatelessWidget {
-  const SpaceGridItem({super.key});
+  const SpaceGridItem({super.key, required this.space});
+
+  final Space space;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +21,8 @@ class SpaceGridItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          backgroundColor:
-              MaterialStateProperty.all(colorScheme.primaryContainer),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(horizontal: 5))),
+          backgroundColor: MaterialStateProperty.all(colorScheme.primaryContainer),
+          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 5))),
       onPressed: () {
         // 如果已加入该空间
         if (false) {
@@ -30,7 +31,7 @@ class SpaceGridItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const SpacePage(spaceId: 1);
+                return SpacePage(space: space);
               },
             ),
           );
@@ -56,15 +57,12 @@ class SpaceGridItem extends StatelessWidget {
           ),
           title: Text(
             "空间名",
-            style:
-                TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 15),
+            style: TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 15),
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
             "介绍",
-            style: TextStyle(
-                color: colorScheme.onPrimaryContainer.withAlpha(100),
-                fontSize: 12),
+            style: TextStyle(color: colorScheme.onPrimaryContainer.withAlpha(100), fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
         ),

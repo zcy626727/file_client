@@ -6,20 +6,21 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../../view/component/show/show_snack_bar.dart';
+import '../../../view/widget/confirm_alert_dialog.dart';
 import '../constant/upload.dart';
 import '../service/file_url_service.dart';
-import '../../../view/widget/confirm_alert_dialog.dart';
-import '../../../view/component/show/show_snack_bar.dart';
 import '../service/upload_service.dart';
 import '../task/single_upload_task.dart';
 
 class ImageUploadCard extends StatefulWidget {
-  const ImageUploadCard({Key? key, required this.task, this.onDeleteImage, this.onUpdateImage, this.enableDelete = true}) : super(key: key);
+  const ImageUploadCard({Key? key, required this.task, this.onDeleteImage, this.onUpdateImage, this.enableDelete = true, this.radius = 8}) : super(key: key);
 
   final SingleUploadTask task;
   final Function(SingleUploadTask)? onDeleteImage;
   final Function(SingleUploadTask)? onUpdateImage;
   final bool enableDelete;
+  final double radius;
 
   @override
   State<ImageUploadCard> createState() => _ImageUploadCardState();
@@ -112,15 +113,18 @@ class _ImageUploadCardState extends State<ImageUploadCard> {
                 : null,
             child: Container(
               //上传成功前填充前景色为灰
-              foregroundDecoration: widget.task.status == UploadTaskStatus.finished ? null : BoxDecoration(color: Colors.grey.withAlpha(100)),
-              width: imageWidth,
-              height: imageWidth,
-              decoration: decorationImage == null
+              foregroundDecoration: widget.task.status == UploadTaskStatus.finished
                   ? null
                   : BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      image: decorationImage,
+                      color: Colors.grey.withAlpha(100),
+                      borderRadius: BorderRadius.circular(widget.radius),
                     ),
+              width: imageWidth,
+              height: imageWidth,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.radius),
+                image: decorationImage,
+              ),
               child: decorationImage == null ? const Icon(Icons.cloud_upload) : null,
             ),
           );

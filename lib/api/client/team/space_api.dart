@@ -5,7 +5,7 @@ import '../team_http_config.dart';
 
 class SpaceApi {
   static Future<Space> createSpace({
-    String? name,
+    required String name,
     String? avatarUrl,
     String? description,
   }) async {
@@ -62,5 +62,35 @@ class SpaceApi {
         },
       ),
     );
+  }
+
+  static Future<List<Space>> getUserSpaceList({
+    required int pageIndex,
+    required int pageSize,
+  }) async {
+    var r = await TeamHttpConfig.dio.get(
+      "/space/getUserSpaceList",
+      queryParameters: {
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
+      options: TeamHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return _parseSpaceList(r);
+  }
+
+  static List<Space> _parseSpaceList(Response<dynamic> r) {
+    List<Space> list = [];
+    if (r.data["spaceList"] != null) {
+      for (var map in r.data["spaceList"]) {
+        list.add(Space.fromJson(map));
+      }
+    }
+    return list;
   }
 }

@@ -1,4 +1,5 @@
-import 'package:file_client/view/component/space/space_setting_dialog.dart';
+import 'package:file_client/model/space/space.dart';
+import 'package:file_client/view/component/space/space_edit_dialog.dart';
 import 'package:file_client/view/page/space/space_group_page.dart';
 import 'package:file_client/view/page/space/space_member_page.dart';
 import 'package:file_client/view/page/space/space_message_page.dart';
@@ -11,9 +12,9 @@ import '../../component/common/common_side_title.dart';
 import '../../widget/desktop_nav_button.dart';
 
 class SpacePage extends StatefulWidget {
-  const SpacePage({super.key, required this.spaceId});
+  const SpacePage({super.key, required this.space});
 
-  final int spaceId;
+  final Space space;
 
   @override
   State<SpacePage> createState() => _SpacePageState();
@@ -223,7 +224,7 @@ class _SpacePageState extends State<SpacePage> {
       case SpaceNav.group:
         return SpaceGroupPage();
       case SpaceNav.workspace:
-        return SpaceWorkspacePage(spaceId: widget.spaceId);
+        return SpaceWorkspacePage(spaceId: widget.space.id!);
       default:
         return Container();
     }

@@ -1,8 +1,7 @@
-
+import 'package:file_client/common/upload/widget/image_upload_card.dart';
 import 'package:file_client/model/space/space.dart';
 import 'package:file_client/service/team/space_service.dart';
 import 'package:file_client/view/component/show/show_snack_bar.dart';
-import 'package:file_client/common/upload/widget/image_upload_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/upload/constant/upload.dart';
@@ -22,7 +21,6 @@ class SpaceEditDialog extends StatefulWidget {
 }
 
 class _SpaceEditDialogState extends State<SpaceEditDialog> {
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   SingleUploadTask coverUploadImage = SingleUploadTask();
@@ -31,7 +29,7 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
   void initState() {
     super.initState();
     //
-    if (widget.space != null && widget.space!.avatarUrl!=null){
+    if (widget.space != null && widget.space!.avatarUrl != null) {
       coverUploadImage.status = UploadTaskStatus.finished;
       coverUploadImage.coverUrl = widget.space!.avatarUrl;
     }
@@ -39,9 +37,7 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    var colorScheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
       backgroundColor: colorScheme.surface,
@@ -53,10 +49,10 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(bottom: 10,left: 1,right: 1),
-              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 10, left: 1, right: 1),
+              width: 70,
               height: 70,
-              child: ImageUploadCard(task: coverUploadImage),
+              child: ImageUploadCard(task: coverUploadImage, radius: 50),
             ),
             CommonInputTextField(
               title: "空间名",
@@ -80,11 +76,14 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
           onRightTap: () async {
             try {
               if (nameController.value.text.isEmpty) throw const FormatException("名字为空");
-              if (widget.space != null) { //更新
+              if (widget.space != null) {
+                //更新
                 await SpaceService.updateSpace(spaceId: widget.space!.id!, newName: nameController.value.text, newAvatarUrl: coverUploadImage.coverUrl);
-              } else { //创建
+              } else {
+                //创建
                 var space = await SpaceService.createCreate(name: nameController.value.text, avatarUrl: coverUploadImage.coverUrl, description: descriptionController.value.text);
-                widget.onCreateSpace ?? (space);
+                if (widget.onCreateSpace != null) widget.onCreateSpace!(space);
+                if (context.mounted) Navigator.pop(context);
               }
             } on Exception catch (e) {
               if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "操作失败");
@@ -95,6 +94,4 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
       ],
     );
   }
-
-
 }
