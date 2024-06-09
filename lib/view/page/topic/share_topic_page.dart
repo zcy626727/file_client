@@ -2,10 +2,10 @@ import 'package:file_client/model/share/topic.dart';
 import 'package:file_client/view/component/topic/topic_item.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../service/share/topic_service.dart';
 import '../../component/topic/topic_edit_dialog.dart';
 import '../../widget/common_action_one_button.dart';
-import '../../widget/common_item_list.dart';
 
 class ShareTopicPage extends StatefulWidget {
   const ShareTopicPage({super.key});

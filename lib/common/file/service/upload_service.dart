@@ -4,11 +4,11 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
-import '../api/file_api.dart';
-import '../api/multipart_api.dart';
 import '../../../config/file_config.dart';
 import '../../../config/global.dart';
 import '../../../util/file_util.dart';
+import '../api/file_api.dart';
+import '../api/multipart_api.dart';
 import '../constant/upload.dart';
 import '../task/multipart_upload_task.dart';
 import '../task/single_upload_task.dart';

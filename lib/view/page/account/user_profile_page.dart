@@ -3,13 +3,13 @@ import 'package:file_client/view/page/account/reset_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/upload/api/file_api.dart';
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/single_upload_task.dart';
+import '../../../common/file/api/file_api.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/single_upload_task.dart';
+import '../../../common/file/widget/image_upload_card.dart';
 import '../../../config/global.dart';
 import '../../../service/user/user_service.dart';
 import '../../../state/user_state.dart';
-import '../../../common/upload/widget/image_upload_card.dart';
 import '../../widget/common_action_two_button.dart';
 
 class UserProfilePage extends StatefulWidget {

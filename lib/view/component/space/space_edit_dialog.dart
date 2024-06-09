@@ -1,20 +1,21 @@
-import 'package:file_client/common/upload/widget/image_upload_card.dart';
 import 'package:file_client/model/space/space.dart';
 import 'package:file_client/service/team/space_service.dart';
 import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/single_upload_task.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/single_upload_task.dart';
+import '../../../common/file/widget/image_upload_card.dart';
 import '../../../constant/ui.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_input_text_field.dart';
 
 class SpaceEditDialog extends StatefulWidget {
-  const SpaceEditDialog({super.key, this.space, this.onCreateSpace});
+  const SpaceEditDialog({super.key, this.space, this.onCreateSpace, this.onUpdateSpace});
 
   final Space? space;
   final Function(Space)? onCreateSpace;
+  final Function(Space)? onUpdateSpace;
 
   @override
   State<SpaceEditDialog> createState() => _SpaceEditDialogState();
@@ -29,9 +30,13 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
   void initState() {
     super.initState();
     //
-    if (widget.space != null && widget.space!.avatarUrl != null) {
-      coverUploadImage.status = UploadTaskStatus.finished;
-      coverUploadImage.coverUrl = widget.space!.avatarUrl;
+    if (widget.space != null) {
+      if (widget.space!.avatarUrl != null) {
+        coverUploadImage.status = UploadTaskStatus.finished;
+        coverUploadImage.coverUrl = widget.space!.avatarUrl;
+      }
+      nameController.text = widget.space!.name ?? "";
+      descriptionController.text = widget.space!.description ?? "";
     }
   }
 
@@ -78,13 +83,26 @@ class _SpaceEditDialogState extends State<SpaceEditDialog> {
               if (nameController.value.text.isEmpty) throw const FormatException("名字为空");
               if (widget.space != null) {
                 //更新
-                await SpaceService.updateSpace(spaceId: widget.space!.id!, newName: nameController.value.text, newAvatarUrl: coverUploadImage.coverUrl);
+                await SpaceService.updateSpace(
+                  spaceId: widget.space!.id!,
+                  newName: nameController.value.text,
+                  newAvatarUrl: coverUploadImage.coverUrl,
+                  newDescription: descriptionController.value.text,
+                );
+                widget.space!.name = nameController.value.text;
+                widget.space!.avatarUrl = coverUploadImage.coverUrl;
+                widget.space!.description = descriptionController.value.text;
+                if (widget.onUpdateSpace != null) widget.onUpdateSpace!(widget.space!);
               } else {
                 //创建
-                var space = await SpaceService.createCreate(name: nameController.value.text, avatarUrl: coverUploadImage.coverUrl, description: descriptionController.value.text);
+                var space = await SpaceService.createCreate(
+                  name: nameController.value.text,
+                  avatarUrl: coverUploadImage.coverUrl,
+                  description: descriptionController.value.text,
+                );
                 if (widget.onCreateSpace != null) widget.onCreateSpace!(space);
-                if (context.mounted) Navigator.pop(context);
               }
+              if (context.mounted) Navigator.pop(context);
             } on Exception catch (e) {
               if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "操作失败");
             }

@@ -3,8 +3,8 @@ import 'package:file_client/model/share/album.dart';
 import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/single_upload_task.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/single_upload_task.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_dropdown.dart';
 import '../input/common_info_card.dart';

@@ -23,8 +23,9 @@ class SpaceService {
     required int spaceId,
     String? newName,
     String? newAvatarUrl,
+    String? newDescription,
   }) async {
-    await SpaceApi.updateSpace(spaceId: spaceId, newName: newName, newAvatarUrl: newAvatarUrl);
+    await SpaceApi.updateSpace(spaceId: spaceId, newName: newName, newAvatarUrl: newAvatarUrl, newDescription: newDescription);
   }
 
   static Future<List<Space>> getUserSpaceList({

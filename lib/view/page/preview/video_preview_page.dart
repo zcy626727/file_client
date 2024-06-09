@@ -1,9 +1,10 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:file_client/common/upload/service/file_url_service.dart';
 import 'package:file_client/view/widget/common_media_player.dart';
 import 'package:flutter/material.dart';
+
+import '../../../common/file/service/file_url_service.dart';
 
 class VideoPreviewPage extends StatefulWidget {
   const VideoPreviewPage({super.key, required this.fileId});

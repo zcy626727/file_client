@@ -2,14 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 
-
 import 'package:flutter/services.dart';
 
 import '../../../api/client/file/user_file_api.dart';
 import '../../../config/global.dart';
-import '../task/download_task.dart';
-import '../constant/download.dart';
 import '../../../util/file_util.dart';
+import '../constant/download.dart';
+import '../task/download_task.dart';
 
 class DownloadService {
 

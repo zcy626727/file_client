@@ -8,6 +8,7 @@ class Space {
   int? creatorId;
   String? name;
   String? avatarUrl;
+  String? description;
 
   factory Space.fromJson(Map<String, dynamic> json) => _$SpaceFromJson(json);
 

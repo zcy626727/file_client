@@ -4,8 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 
-import '../../../util/responsive.dart';
-
 class CommonItemList<T> extends StatefulWidget {
   const CommonItemList({
     Key? key,
@@ -17,8 +15,7 @@ class CommonItemList<T> extends StatefulWidget {
     this.isGrip = false,
     this.enableScrollbar = false,
     this.enableLoad = true,
-    this.gridWidth = 300,
-    this.gripAspectRatio = 1,
+    this.gridDelegate,
   }) : super(key: key);
 
   final Future<List<T>> Function(int) onLoad;
@@ -31,12 +28,7 @@ class CommonItemList<T> extends StatefulWidget {
 
   //是否为网格
   final bool isGrip;
-
-  //网格横向数量
-  final double gridWidth;
-
-  //长宽比例
-  final double gripAspectRatio;
+  final SliverGridDelegate? gridDelegate;
 
   @override
   State<CommonItemList> createState() => CommonItemListState<T>();
@@ -49,6 +41,8 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
   );
 
   List<T>? _itemList;
+
+  bool noData = false;
 
   //当前页数
   int _page = 0;
@@ -70,6 +64,8 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
       var list = await widget.onLoad(_page);
       if (_itemList == null) {
         _itemList = list;
+      } else if (list.isEmpty) {
+        noData = true;
       } else {
         _itemList!.addAll(list);
       }
@@ -104,6 +100,8 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
         //获取
         _itemList!.addAll(list);
         _page++;
+      } else {
+        noData = true;
       }
       _refreshController.finishLoad();
       if (mounted) setState(() {});
@@ -114,6 +112,7 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
     }
   }
 
+  //用于从外部更新内部的list数据
   void addItem(T t) async {
     if (_itemList == null) {
       _itemList = <T>[t];
@@ -159,14 +158,25 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
       );
     }
     return EasyRefresh(
-      scrollController: ScrollController(),
       header: MaterialHeader(backgroundColor: colorScheme.primaryContainer, color: colorScheme.onPrimaryContainer),
       footer: CupertinoFooter(backgroundColor: colorScheme.primaryContainer, foregroundColor: colorScheme.onPrimaryContainer),
       controller: _refreshController,
-      onRefresh: _onRefresh,
-      onLoad: _onLoading,
+      onRefresh: widget.enableRefresh ? _onRefresh : null,
+      onLoad: widget.enableLoad ? (noData ? null : _onLoading) : null,
       child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: widget.gridWidth, childAspectRatio: widget.gripAspectRatio),
+        controller: ScrollController(),
+        gridDelegate: widget.gridDelegate ??
+            SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              //长宽比例
+              childAspectRatio: 1.5,
+              //主轴高度
+              mainAxisExtent: widget.itemHeight,
+              //主轴距离
+              mainAxisSpacing: 5.0,
+              //辅轴距离
+              crossAxisSpacing: 5.0,
+            ),
         itemCount: _itemList!.length,
         itemBuilder: (context, index) {
           return widget.itemBuilder(context, _itemList![index], _itemList, () {
@@ -194,18 +204,17 @@ class CommonItemListState<T> extends State<CommonItemList<T>> {
       footer: CupertinoFooter(backgroundColor: colorScheme.primaryContainer, foregroundColor: colorScheme.onPrimaryContainer),
       controller: _refreshController,
       onRefresh: widget.enableRefresh ? _onRefresh : null,
-      onLoad: widget.enableLoad ? _onLoading : null,
+      onLoad: widget.enableLoad ? (noData ? null : _onLoading) : null,
       child: widget.enableScrollbar
           ? Scrollbar(
               child: ListView.builder(
-                itemCount: _itemList!.length,
-                itemBuilder: (context, index) {
-                  return widget.itemBuilder(context, _itemList![index], _itemList, () {
-                    setState(() {});
-                  });
-                },
-              ),
-            )
+              itemCount: _itemList!.length,
+              itemBuilder: (context, index) {
+                return widget.itemBuilder(context, _itemList![index], _itemList, () {
+                  setState(() {});
+                });
+              },
+            ))
           : ListView.builder(
               itemCount: _itemList!.length,
               itemBuilder: (context, index) {

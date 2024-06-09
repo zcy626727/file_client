@@ -47,13 +47,15 @@ class SpaceApi {
     required int spaceId,
     String? newName,
     String? newAvatarUrl,
+    String? newDescription,
   }) async {
     await TeamHttpConfig.dio.put(
-      "/space/deleteSpace",
+      "/space/updateSpace",
       data: FormData.fromMap({
         "spaceId": spaceId,
         "newName": newName,
         "newAvatarUrl": newAvatarUrl,
+        "newDescription": newDescription,
       }),
       options: TeamHttpConfig.options.copyWith(
         extra: {

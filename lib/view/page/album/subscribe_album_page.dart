@@ -1,10 +1,10 @@
 import 'package:file_client/constant/album.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../model/share/album.dart';
 import '../../../service/share/album_service.dart';
 import '../../component/album/album_item.dart';
-import '../../widget/common_item_list.dart';
 import '../../widget/common_tab_bar.dart';
 
 class SubscribeAlbumPage extends StatefulWidget {

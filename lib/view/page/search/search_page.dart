@@ -2,6 +2,7 @@ import 'package:file_client/util/device.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../model/share/album.dart';
 import '../../../model/share/audio.dart';
 import '../../../model/share/topic.dart';
@@ -13,7 +14,6 @@ import '../../../service/share/video_service.dart';
 import '../../component/album/album_item.dart';
 import '../../component/source/source_item.dart';
 import '../../component/topic/topic_item.dart';
-import '../../widget/common_item_list.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, this.initKeyword});

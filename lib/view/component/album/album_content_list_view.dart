@@ -5,6 +5,7 @@ import 'package:file_client/view/page/source/audio_edit_page.dart';
 import 'package:file_client/view/page/source/video_edit_page.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../constant/album.dart';
 import '../../../model/share/source.dart';
 import '../../../service/share/application_service.dart';
@@ -12,7 +13,6 @@ import '../../../service/share/audio_service.dart';
 import '../../../service/share/gallery_service.dart';
 import '../../../service/share/video_service.dart';
 import '../../widget/common_action_one_button.dart';
-import '../../widget/common_item_list.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../show/show_snack_bar.dart';
 import '../source/source_item.dart';

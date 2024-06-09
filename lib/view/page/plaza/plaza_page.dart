@@ -6,14 +6,13 @@ import 'package:file_client/view/component/source/source_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constant/album.dart';
+import '../../../common/list/common_item_list.dart';
 import '../../../model/share/album.dart';
 import '../../../model/share/topic.dart';
 import '../../../service/share/album_service.dart';
 import '../../../service/share/topic_service.dart';
 import '../../component/album/album_item.dart';
 import '../../component/topic/topic_item.dart';
-import '../../widget/common_item_list.dart';
 import '../../widget/common_tab_bar.dart';
 import '../search/search_page.dart';
 

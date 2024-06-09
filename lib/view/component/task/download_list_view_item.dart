@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/upload/task/download_task.dart';
-import '../../../common/upload/constant/download.dart';
+import '../../../common/file/constant/download.dart';
+import '../../../common/file/task/download_task.dart';
 import '../../../util/file_util.dart';
 
 class DownloadListViewItem extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/upload/task/single_upload_task.dart';
-import '../../../common/upload/widget/image_upload_card.dart';
+import '../../../common/file/task/single_upload_task.dart';
+import '../../../common/file/widget/image_upload_card.dart';
 
 class CommonInfoCard extends StatefulWidget {
   const CommonInfoCard({

@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/download_task.dart';
-import '../../../common/upload/task/multipart_upload_task.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/download_task.dart';
+import '../../../common/file/task/multipart_upload_task.dart';
 import '../../../config/global.dart';
 import '../../../constant/resource.dart';
 import '../../../domain/upload_notion.dart';

@@ -12,9 +12,10 @@ import '../../component/common/common_side_title.dart';
 import '../../widget/desktop_nav_button.dart';
 
 class SpacePage extends StatefulWidget {
-  const SpacePage({super.key, required this.space});
+  const SpacePage({super.key, required this.space, this.onUpdateSpace});
 
   final Space space;
+  final Function(Space)? onUpdateSpace;
 
   @override
   State<SpacePage> createState() => _SpacePageState();
@@ -68,16 +69,16 @@ class _SpacePageState extends State<SpacePage> {
                               children: [
                                 Container(
                                   color: colorScheme.onPrimaryContainer,
-                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  margin: const EdgeInsets.only(left: 5, right: 5),
                                   child: Image(
-                                    height: 20,
-                                    width: 20,
+                                    height: 30,
+                                    width: 30,
                                     fit: BoxFit.cover,
-                                    image: NetworkImage(errImageUrl),
+                                    image: NetworkImage(widget.space.avatarUrl ?? errImageUrl),
                                   ),
                                 ),
                                 Text(
-                                  "空间名",
+                                  widget.space.name ?? "",
                                   style: TextStyle(color: colorScheme.onPrimaryContainer),
                                 ),
                               ],
@@ -112,7 +113,13 @@ class _SpacePageState extends State<SpacePage> {
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return SpaceEditDialog();
+                              return SpaceEditDialog(
+                                space: widget.space,
+                                onUpdateSpace: (space) {
+                                  setState(() {});
+                                  if (widget.onUpdateSpace != null) widget.onUpdateSpace!(space);
+                                },
+                              );
                             },
                           );
                         },

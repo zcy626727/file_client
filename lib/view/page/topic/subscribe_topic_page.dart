@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../model/share/topic.dart';
 import '../../../service/share/topic_service.dart';
 import '../../component/topic/topic_item.dart';
-import '../../widget/common_item_list.dart';
 
 class SubscribeTopicPage extends StatefulWidget {
   const SubscribeTopicPage({super.key});

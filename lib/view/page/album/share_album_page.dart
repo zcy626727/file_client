@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:file_client/common/list/common_item_list.dart';
 import 'package:file_client/constant/album.dart';
 import 'package:file_client/model/share/album.dart';
 import 'package:file_client/service/share/album_service.dart';
 import 'package:file_client/view/component/album/album_edit_dialog.dart';
 import 'package:file_client/view/component/album/album_item.dart';
-import 'package:file_client/view/widget/common_item_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/common_action_one_button.dart';
@@ -173,7 +173,7 @@ class _ShareAlbumPageState extends State<ShareAlbumPage> {
               albumKeyList[index].currentState?.addItem(album);
               albumKeyList[index].currentState?.setState(() {});
             }
-            if (mounted) Navigator.of(context).pop();
+            if (context.mounted) Navigator.of(context).pop();
           },
           option: AlbumType.option,
         );

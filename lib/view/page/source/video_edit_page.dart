@@ -6,13 +6,13 @@ import 'package:file_client/view/component/input/common_info_card.dart';
 import 'package:file_client/view/widget/common_action_one_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/single_upload_task.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/service/file_url_service.dart';
+import '../../../common/file/task/single_upload_task.dart';
 import '../../../constant/file.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/share/video.dart';
-import '../../../common/upload/service/file_url_service.dart';
 import '../../component/file/select_file_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_two_button.dart';

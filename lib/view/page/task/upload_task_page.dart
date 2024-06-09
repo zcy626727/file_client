@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/upload/constant/upload.dart';
-import '../../../common/upload/task/multipart_upload_task.dart';
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/multipart_upload_task.dart';
 import '../../../state/upload_state.dart';
 import '../../component/task/upload_list_view_item.dart';
 

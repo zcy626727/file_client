@@ -4,9 +4,9 @@ import 'dart:isolate';
 import 'package:file_client/service/file/user_file_service.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../common/upload/constant/upload.dart';
-import '../common/upload/service/upload_service.dart';
-import '../common/upload/task/multipart_upload_task.dart';
+import '../common/file/constant/upload.dart';
+import '../common/file/service/upload_service.dart';
+import '../common/file/task/multipart_upload_task.dart';
 import '../config/file_config.dart';
 import '../config/global.dart';
 import '../domain/upload_notion.dart';

@@ -3,11 +3,11 @@ import 'dart:isolate';
 
 import 'package:flutter/cupertino.dart';
 
+import '../common/file/constant/download.dart';
+import '../common/file/service/download_service.dart';
+import '../common/file/task/download_task.dart';
 import '../config/file_config.dart';
 import '../config/global.dart';
-import '../common/upload/task/download_task.dart';
-import '../common/upload/constant/download.dart';
-import '../common/upload/service/download_service.dart';
 
 class DownloadState extends ChangeNotifier {
   //下载队列
