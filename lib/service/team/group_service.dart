@@ -19,11 +19,11 @@ class GroupService {
     await GroupApi.deleteGroup(spaceId: spaceId, groupId: groupId);
   }
 
-  static Future<void> renameGroup({
+  static Future<void> updateGroup({
     required String newName,
-    required int spaceId,
+    required int groupId,
   }) async {
-    await GroupApi.renameGroup(newName: newName, spaceId: spaceId);
+    await GroupApi.updateGroup(newName: newName, groupId: groupId);
   }
 
   static Future<List<Group>> getSpaceGroupListByUser({

@@ -7,19 +7,35 @@ import 'package:flutter/material.dart';
 import '../../../widget/common_action_two_button.dart';
 import '../../../widget/common_input_text_field.dart';
 
-class CreateGroupDialog extends StatefulWidget {
-  const CreateGroupDialog({super.key, required this.space, this.onCreateGroup});
+class GroupEditDialog extends StatefulWidget {
+  const GroupEditDialog({
+    super.key,
+    required this.space,
+    this.group,
+    this.onCreateGroup,
+    this.onUpdateGroup,
+  });
 
   final Space space;
+  final Group? group;
 
   final Function(Group)? onCreateGroup;
+  final Function(Group)? onUpdateGroup;
 
   @override
-  State<CreateGroupDialog> createState() => _CreateGroupDialogState();
+  State<GroupEditDialog> createState() => _GroupEditDialogState();
 }
 
-class _CreateGroupDialogState extends State<CreateGroupDialog> {
+class _GroupEditDialogState extends State<GroupEditDialog> {
   final TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.group != null) {
+      controller.text = widget.group!.name ?? "";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +66,24 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
           onRightTap: () async {
             try {
               if (controller.text.isEmpty) throw const FormatException("文件名为空");
-              if (widget.space.id == null) throw const FormatException("空间信息异常");
-              var group = await GroupService.createGroup(name: controller.text, spaceId: widget.space.id!);
-              if (widget.onCreateGroup != null) widget.onCreateGroup!(group);
-              if (context.mounted) ShowSnackBar.info(context: context, message: "创建成功");
+              if (widget.group != null) {
+                if (widget.group!.spaceId == null) throw const FormatException("空间信息异常");
+                await GroupService.updateGroup(groupId: widget.group!.id!, newName: controller.text);
+                widget.group!.name = controller.text;
+                if (widget.onUpdateGroup != null) widget.onUpdateGroup!(widget.group!);
+                if (context.mounted) ShowSnackBar.info(context: context, message: "更新成功");
+              } else {
+                if (widget.space.id == null) throw const FormatException("空间信息异常");
+                var group = await GroupService.createGroup(name: controller.text, spaceId: widget.space.id!);
+                if (widget.onCreateGroup != null) widget.onCreateGroup!(group);
+                if (context.mounted) ShowSnackBar.info(context: context, message: "创建成功");
+              }
               if (context.mounted) Navigator.pop(context);
             } on Exception catch (e) {
               if (context.mounted) ShowSnackBar.exception(context: context, e: e);
             }
           },
-          rightTitle: "创建",
+          rightTitle: widget.group == null ? "创建" : "更新",
         )
       ],
     );

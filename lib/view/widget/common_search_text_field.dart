@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CommonSearchTextField extends StatelessWidget {
   const CommonSearchTextField({
     super.key,
-    this.height = 65,
+    this.height = 35,
     this.placeholder,
     this.onSubmitted,
   });
@@ -19,7 +19,7 @@ class CommonSearchTextField extends StatelessWidget {
     return Container(
       color: colorScheme.surface,
       height: height,
-      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0, bottom: 10.0),
+      // padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0, bottom: 10.0),
       child: CupertinoSearchTextField(
         style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
         placeholder: placeholder,

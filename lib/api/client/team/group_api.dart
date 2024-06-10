@@ -43,15 +43,15 @@ class GroupApi {
     );
   }
 
-  static Future<Group> renameGroup({
+  static Future<Group> updateGroup({
     required String newName,
-    required int spaceId,
+    required int groupId,
   }) async {
     var r = await TeamHttpConfig.dio.put(
-      "/group/renameGroup",
+      "/group/updateGroup",
       data: FormData.fromMap({
         "newName": newName,
-        "spaceId": spaceId,
+        "groupId": groupId,
       }),
       options: TeamHttpConfig.options.copyWith(
         extra: {

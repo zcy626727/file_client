@@ -1,7 +1,7 @@
 import 'package:file_client/common/list/common_item_list.dart';
 import 'package:file_client/model/space/group.dart';
 import 'package:file_client/service/team/group_service.dart';
-import 'package:file_client/view/component/space/group/create_group_dialog.dart';
+import 'package:file_client/view/component/space/group/group_edit_dialog.dart';
 import 'package:file_client/view/component/space/group/group_list_item.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +64,7 @@ class _SpaceGroupPageState extends State<SpaceGroupPage> {
                               context: context,
                               barrierDismissible: false,
                               builder: (BuildContext context) {
-                                return CreateGroupDialog(
+                                return GroupEditDialog(
                                   space: widget.space,
                                   onCreateGroup: (group) {
                                     listKey.currentState?.addItem(group);
@@ -92,9 +92,14 @@ class _SpaceGroupPageState extends State<SpaceGroupPage> {
                     isGrip: false,
                     itemBuilder: (ctx, item, itemList, onFresh) {
                       return GroupListItem(
+                        space: widget.space,
                         group: item,
                         onDeleteGroup: (group) {
                           listKey.currentState?.removeItem(group);
+                          listKey.currentState?.setState(() {});
+                        },
+                        onUpdateGroup: (group) {
+                          item.copyGroup(group);
                           listKey.currentState?.setState(() {});
                         },
                       );

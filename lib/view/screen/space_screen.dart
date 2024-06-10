@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../state/screen_state.dart';
 import '../component/space/space_edit_dialog.dart';
+import '../component/space/space_grid_item.dart';
 import '../widget/desktop_nav_button.dart';
 
 class SpaceScreen extends StatefulWidget {
@@ -18,7 +19,8 @@ class SpaceScreen extends StatefulWidget {
 
 class _SpaceScreenState extends State<SpaceScreen> {
   List<Space> _searchSpaceList = <Space>[];
-  GlobalKey<CommonItemListState<Space>> listKey = GlobalKey<CommonItemListState<Space>>();
+  GlobalKey<CommonItemListState<Space>> mySpaceListKey = GlobalKey<CommonItemListState<Space>>();
+  String? _searchKeyword;
 
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                   builder: (BuildContext context) {
                                     return SpaceEditDialog(
                                       onCreateSpace: (space) {
-                                        listKey.currentState?.addItem(space);
+                                        mySpaceListKey.currentState?.addItem(space);
                                         setState(() {});
                                       },
                                     );
@@ -77,7 +79,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                   var list = await SpaceService.getUserSpaceList(pageIndex: page).timeout(const Duration(seconds: 2));
                                   return list;
                                 },
-                                key: listKey,
+                                key: mySpaceListKey,
                                 itemName: "空间",
                                 itemHeight: null,
                                 enableScrollbar: true,
@@ -102,7 +104,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                       );
                                     },
                                     index: SecondNav.workspace,
-                                    selectedIndex: 1,
+                                    selectedIndex: 0,
                                   );
                                 },
                               ),
@@ -115,33 +117,46 @@ class _SpaceScreenState extends State<SpaceScreen> {
                   ),
                 ),
                 Expanded(
+                    child: Container(
+                  margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
                   child: Column(
                     children: [
                       //搜索栏
-                      CommonSearchTextField(height: 65),
+                      CommonSearchTextField(
+                        height: 40,
+                        onSubmitted: (value) {
+                          _searchKeyword = value;
+                          setState(() {});
+                        },
+                      ),
+                      const SizedBox(height: 5),
                       // 搜索到的空间列表，searchSpaceList
-                      // Expanded(
-                      //   child: Container(
-                      //     padding: const EdgeInsets.only(left: 15),
-                      //     child: GridView.builder(
-                      //       padding: const EdgeInsets.only(right: 15),
-                      //       controller: ScrollController(),
-                      //       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      //         maxCrossAxisExtent: 240,
-                      //         childAspectRatio: 2.5,
-                      //         mainAxisSpacing: 5,
-                      //         crossAxisSpacing: 5,
-                      //       ),
-                      //       itemCount: 11,
-                      //       itemBuilder: (context, index) {
-                      //         return SpaceGridItem(space: ,);
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
+                      Expanded(
+                        child: CommonItemList<Space>(
+                          key: ValueKey(_searchKeyword),
+                          onLoad: (int page) async {
+                            if (_searchKeyword == null) return <Space>[];
+                            var list = await SpaceService.searchSpaceList(keyword: _searchKeyword!, pageIndex: page).timeout(const Duration(seconds: 2));
+                            return list;
+                          },
+                          itemName: "",
+                          itemHeight: null,
+                          enableScrollbar: true,
+                          isGrip: true,
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 240,
+                            childAspectRatio: 2.5,
+                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 5,
+                          ),
+                          itemBuilder: (ctx, item, itemList, onFresh) {
+                            return SpaceGridItem(space: item);
+                          },
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                )),
               ],
             );
           },

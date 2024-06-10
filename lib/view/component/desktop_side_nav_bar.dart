@@ -70,6 +70,15 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
                               navState.firstNavIndex = index;
                             },
                           ),
+                          const SizedBox(height: 5.0),
+                          SideMenuListTile(
+                            iconData: Icons.task_alt,
+                            index: FirstNav.task,
+                            selectedIndex: navState.firstNavIndex,
+                            press: (index) {
+                              navState.firstNavIndex = index;
+                            },
+                          ),
                         ],
                       ),
                     ),

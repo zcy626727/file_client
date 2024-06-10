@@ -15,6 +15,12 @@ class Group {
     name = "一个组";
   }
 
+  void copyGroup(Group g) {
+    id = g.id;
+    spaceId = g.spaceId;
+    name = g.name;
+  }
+
   factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$GroupToJson(this);

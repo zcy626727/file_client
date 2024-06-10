@@ -31,7 +31,6 @@ class ScreenNavigatorState extends ChangeNotifier {
     //一级标题
     switch (secondNav) {
       case SecondNav.workspace:
-      case SecondNav.task:
       case SecondNav.trash:
         _firstNav = FirstNav.file;
         break;
@@ -45,16 +44,16 @@ class ScreenNavigatorState extends ChangeNotifier {
 }
 
 class FirstNav {
-  static const int file = 0;
-  static const int share = 1;
+  static const int file = 1;
+  static const int share = 2;
   static const int account = 3;
   static const int space = 4;
+  static const int task = 5;
 }
 
 class SecondNav {
   //file
-  static const int workspace = 0;
-  static const int task = 1;
+  static const int workspace = 1;
   static const int trash = 2;
 
   //share
@@ -67,5 +66,4 @@ class SecondNav {
   static const int topicSubscribe = 7;
   static const int albumSubscribe = 8;
 
-// space
 }

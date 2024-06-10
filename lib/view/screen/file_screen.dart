@@ -1,5 +1,4 @@
 import 'package:file_client/view/page/file/trash_page.dart';
-import 'package:file_client/view/page/task/task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,15 +40,6 @@ class _FileScreenState extends State<FileScreen> {
                       selectedIndex: navState.secondNavIndex,
                     ),
                     NavButton(
-                      title: "任务列表",
-                      iconData: Icons.task,
-                      onPress: () {
-                        navState.secondNavIndex = SecondNav.task;
-                      },
-                      index: SecondNav.task,
-                      selectedIndex: navState.secondNavIndex,
-                    ),
-                    NavButton(
                       title: "回收站",
                       iconData: Icons.delete,
                       onPress: () {
@@ -80,8 +70,6 @@ class _FileScreenState extends State<FileScreen> {
     switch (index) {
       case SecondNav.workspace:
         return const WorkspacePage();
-      case SecondNav.task:
-        return const TaskPage();
       case SecondNav.trash:
         return const TrashPage();
       default:

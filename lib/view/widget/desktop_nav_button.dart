@@ -35,7 +35,17 @@ class NavButton extends StatelessWidget {
                 color: color,
               ),
             ),
-            Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ],
         ),
       ),

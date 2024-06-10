@@ -1,5 +1,6 @@
 import 'package:file_client/view/screen/share_screen.dart';
 import 'package:file_client/view/screen/space_screen.dart';
+import 'package:file_client/view/screen/task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,6 +100,8 @@ class MainScreenState extends State<MainScreen> {
         return const SpaceScreen();
       case FirstNav.file:
         return const FileScreen();
+      case FirstNav.task:
+        return const TaskScreen();
       default:
         return Container();
     }

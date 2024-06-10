@@ -48,7 +48,6 @@ class _SpacePageState extends State<SpacePage> {
             body: Row(
               children: [
                 VerticalDivider(color: Colors.grey.withAlpha(100), width: 1),
-
                 //左侧栏
                 SizedBox(
                   width: 180,
@@ -57,7 +56,7 @@ class _SpacePageState extends State<SpacePage> {
                     children: [
                       // 返回
                       Container(
-                        height: 45,
+                        height: 50,
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: colorScheme.primaryContainer),
                         margin: const EdgeInsets.only(left: 3, top: 3, right: 3, bottom: 3),
                         child: Row(
@@ -65,23 +64,32 @@ class _SpacePageState extends State<SpacePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             //空间介绍
-                            Row(
-                              children: [
-                                Container(
-                                  color: colorScheme.onPrimaryContainer,
-                                  margin: const EdgeInsets.only(left: 5, right: 5),
-                                  child: Image(
-                                    height: 30,
-                                    width: 30,
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(widget.space.avatarUrl ?? errImageUrl),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Container(
+                                    color: colorScheme.onPrimaryContainer,
+                                    margin: const EdgeInsets.only(left: 5, right: 5),
+                                    child: Image(
+                                      height: 30,
+                                      width: 30,
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(widget.space.avatarUrl ?? errImageUrl),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  widget.space.name ?? "",
-                                  style: TextStyle(color: colorScheme.onPrimaryContainer),
-                                ),
-                              ],
+                                  Expanded(
+                                    child: Text(
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      widget.space.name ?? "解析失败",
+                                      style: TextStyle(
+                                        color: colorScheme.onPrimaryContainer,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             //操作
                             Container(

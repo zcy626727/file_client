@@ -34,4 +34,12 @@ class SpaceService {
   }) async {
     return await SpaceApi.getUserSpaceList(pageIndex: pageIndex, pageSize: pageSize);
   }
+
+  static Future<List<Space>> searchSpaceList({
+    required String keyword,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await SpaceApi.searchSpaceList(keyword: keyword, pageIndex: pageIndex, pageSize: pageSize);
+  }
 }

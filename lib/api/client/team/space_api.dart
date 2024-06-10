@@ -86,6 +86,28 @@ class SpaceApi {
     return _parseSpaceList(r);
   }
 
+  static Future<List<Space>> searchSpaceList({
+    required String keyword,
+    required int pageIndex,
+    required int pageSize,
+  }) async {
+    var r = await TeamHttpConfig.dio.get(
+      "/space/searchSpaceList",
+      queryParameters: {
+        "keyword": keyword,
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
+      options: TeamHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+    return _parseSpaceList(r);
+  }
+
   static List<Space> _parseSpaceList(Response<dynamic> r) {
     List<Space> list = [];
     if (r.data["spaceList"] != null) {
