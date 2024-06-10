@@ -1,10 +1,12 @@
+import 'package:file_client/config/net_config.dart';
+
 import '../../api/client/team/space_message_api.dart';
 import '../../model/space/space_message.dart';
 
 class SpaceMessageService {
   static Future<SpaceMessage> createJoin({
     required int spaceId,
-    required String message,
+    String? message,
   }) async {
     var userMsg = await SpaceMessageApi.createJoin(message: message, spaceId: spaceId);
     return userMsg;
@@ -20,5 +22,13 @@ class SpaceMessageService {
     required int msgId,
   }) async {
     await SpaceMessageApi.refuseJoin(msgId: msgId);
+  }
+
+  static Future<List<SpaceMessage>> getJoinMessageBySpace({
+    required int spaceId,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await SpaceMessageApi.getJoinMessageBySpace(spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
   }
 }

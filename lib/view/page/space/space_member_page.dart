@@ -35,13 +35,13 @@ class _SpaceMemberPageState extends State<SpaceMemberPage> {
               backgroundColor: colorScheme.surface,
               body: Column(
                 children: [
-                  CommonSearchTextField(height: 60),
+                  Container(margin: const EdgeInsets.only(top: 5, left: 5, right: 5), child: const CommonSearchTextField(height: 40)),
                   Expanded(
                     child: ListView.builder(
                       itemCount: 20,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
-                          margin: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                          margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
                           child: MemberListItem(user: Global.user),
                         );
                       },

@@ -4,7 +4,6 @@ import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:file_client/view/component/space/join_space_dialog.dart';
 import 'package:flutter/material.dart';
 
-import '../../../config/constants.dart';
 import '../../page/space/space_page.dart';
 
 class SpaceGridItem extends StatelessWidget {
@@ -50,7 +49,7 @@ class SpaceGridItem extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const JoinSpaceDialog();
+                  return JoinSpaceDialog(space: space);
                 },
               );
             }
@@ -65,7 +64,7 @@ class SpaceGridItem extends StatelessWidget {
           leading: CircleAvatar(
             //头像半径
             radius: 30,
-            backgroundImage: const NetworkImage(errImageUrl),
+            backgroundImage: space.avatarUrl == null ? null : NetworkImage(space.avatarUrl!),
             backgroundColor: colorScheme.primary,
           ),
           title: Text(

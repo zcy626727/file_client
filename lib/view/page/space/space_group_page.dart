@@ -45,7 +45,7 @@ class _SpaceGroupPageState extends State<SpaceGroupPage> {
             backgroundColor: colorScheme.surface,
             body: Column(
               children: [
-                const CommonSearchTextField(height: 60),
+                Container(margin: const EdgeInsets.only(top: 5, left: 5, right: 5), child: const CommonSearchTextField(height: 40)),
                 Container(
                   height: 40,
                   margin: const EdgeInsets.only(top: 1, bottom: 1),

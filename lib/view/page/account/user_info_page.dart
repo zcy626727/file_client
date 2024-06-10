@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:file_client/view/page/account/user_profile_page.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../config/global.dart';
 import '../../../model/user/user.dart';
 import '../../../service/user/user_service.dart';
 import '../../../state/download_state.dart';
@@ -22,7 +18,7 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
-    // var colorScheme = Theme.of(context).colorScheme;
+    var colorScheme = Theme.of(context).colorScheme;
     var userState = Provider.of<UserState>(context);
 
     var user = userState.user;
@@ -119,32 +115,30 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           width: 50.0,
                           margin: const EdgeInsets.only(left: 3.0),
                           height: double.infinity,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                           clipBehavior: Clip.hardEdge,
-                          child: Card(
-                            elevation: 0,
-                            margin: const EdgeInsets.all(0),
-                            color: Theme.of(context).colorScheme.surface,
-                            child: TextButton(
-                              onPressed: () async {
-                                //退出登录
-                                await UserService.signOut();
-                                //清空用户残留信息
-                                if (context.mounted) {
-                                  var uploadState = Provider.of<UploadState>(context, listen: false);
-                                  uploadState.clearUploadTask();
-                                  var downloadState = Provider.of<DownloadState>(context, listen: false);
-                                  downloadState.clearDownloadTask();
-                                }
-                                userState.user = User();
-                              },
-                              clipBehavior: Clip.hardEdge,
-                              child: Icon(
-                                Icons.logout_outlined,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                          child: TextButton(
+                            onPressed: () async {
+                              //退出登录
+                              await UserService.signOut();
+                              //清空用户残留信息
+                              if (context.mounted) {
+                                var uploadState = Provider.of<UploadState>(context, listen: false);
+                                uploadState.clearUploadTask();
+                                var downloadState = Provider.of<DownloadState>(context, listen: false);
+                                downloadState.clearDownloadTask();
+                              }
+                              userState.user = User();
+                            },
+                            clipBehavior: Clip.hardEdge,
+                            style: ButtonStyle(shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(1.0))))),
+                            child: Icon(
+                              Icons.logout_outlined,
+                              shadows: [],
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         )
