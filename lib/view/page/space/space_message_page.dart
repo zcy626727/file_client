@@ -60,7 +60,13 @@ class _SpaceMessagePageState extends State<SpaceMessagePage> {
                       enableScrollbar: true,
                       isGrip: false,
                       itemBuilder: (ctx, item, itemList, onFresh) {
-                        return SpaceMessageListItem(message: item);
+                        return SpaceMessageListItem(
+                          message: item,
+                          onDelete: (sm) {
+                            itemList?.remove(item);
+                            onFresh();
+                          },
+                        );
                       },
                     ),
                   ),

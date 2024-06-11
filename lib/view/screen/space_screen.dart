@@ -125,6 +125,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                       CommonSearchTextField(
                         height: 40,
                         onSubmitted: (value) {
+                          if (value.isEmpty) return;
                           _searchKeyword = value;
                           setState(() {});
                         },

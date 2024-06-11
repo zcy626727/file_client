@@ -1,22 +1,23 @@
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:dio/dio.dart';
 import 'package:file_client/model/space/group.dart';
+import 'package:file_client/service/team/group_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../common/list/common_item_list.dart';
 import '../../../../constant/ui.dart';
 
 class SelectGroupDialog extends StatefulWidget {
-  const SelectGroupDialog({super.key});
+  const SelectGroupDialog({super.key, required this.spaceId, required this.selectGroup});
+
+  final int spaceId;
+  final Function(Group) selectGroup;
 
   @override
   State<SelectGroupDialog> createState() => _SelectGroupDialogState();
 }
 
 class _SelectGroupDialogState extends State<SelectGroupDialog> {
-  final List<Group> _groupList = <Group>[];
+  String? _searchKeyword;
 
   @override
   void initState() {
@@ -33,9 +34,7 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
     return AlertDialog(
       backgroundColor: colorScheme.surface,
       contentPadding: dialogContentPadding,
-      title: Text("选择组",
-          style: TextStyle(
-              color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
+      title: Text("选择组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: SizedBox(
         height: 200,
         width: 100,
@@ -50,38 +49,38 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
                   color: colorScheme.onSurface,
                 ),
                 onSubmitted: (value) async {
-                  if (value.isEmpty) {
-                    return;
-                  }
-                  try {
-                    setState(() {});
-                  } on DioException catch (e) {
-                    log(e.toString());
-                  } catch (e) {
-                    log(e.toString());
-                  }
+                  if (value.isEmpty) return;
+                  _searchKeyword = value;
+                  setState(() {});
                 },
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: _groupList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var group = _groupList[index];
-                  //点击后返回当前group
+              child: CommonItemList<Group>(
+                onLoad: (int page) async {
+                  if (_searchKeyword == null) return <Group>[];
+                  var list = await GroupService.searchSpaceGroupList(keyword: _searchKeyword!, spaceId: widget.spaceId, pageIndex: page).timeout(const Duration(seconds: 2));
+                  return list;
+                },
+                key: ValueKey(_searchKeyword),
+                itemName: "空间",
+                itemHeight: null,
+                enableScrollbar: true,
+                itemBuilder: (ctx, item, itemList, onFresh) {
                   return ListTile(
-                    key: ValueKey(group.id),
+                    key: ValueKey(item.id),
                     onTap: () {
-                      Navigator.pop(context, json.encode(group));
+                      widget.selectGroup(item);
+                      Navigator.pop(context);
                     },
                     title: Text(
-                      group.name ?? "",
+                      item.name ?? "——",
                       style: TextStyle(color: colorScheme.onSurface),
                     ),
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),

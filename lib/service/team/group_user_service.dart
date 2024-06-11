@@ -3,16 +3,17 @@ import '../../model/space/group_user.dart';
 
 class GroupUserService {
   static Future<GroupUser> addGroup({
-    required int spaceId,
+    required int groupId,
     required int targetUserId,
   }) async {
-    var group = await GroupUserApi.addGroup(spaceId: spaceId, targetUserId: targetUserId);
+    var group = await GroupUserApi.addGroup(groupId: groupId, targetUserId: targetUserId);
     return group;
   }
 
-  static Future<void> deleteGroup({
-    required int groupUserId,
+  static Future<void> removeGroup({
+    required int groupId,
+    required int targetUserId,
   }) async {
-    await GroupUserApi.removeGroup(groupUserId: groupUserId);
+    await GroupUserApi.removeGroup(groupId: groupId, targetUserId: targetUserId);
   }
 }

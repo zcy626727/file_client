@@ -493,7 +493,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) {
-                return ResourceDetailDialog(resource: res);
+                return ResourceDetailDialog(resource: res, space: widget.space);
               },
             );
             break;

@@ -28,10 +28,11 @@ class GroupService {
 
   static Future<List<Group>> getSpaceGroupListByUser({
     required int spaceId,
+    required int targetUserId,
     int pageIndex = 0,
     int pageSize = NetConfig.commonPageSize,
   }) async {
-    return await GroupApi.getSpaceGroupListByUser(spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
+    return await GroupApi.getSpaceGroupListByUser(targetUserId: targetUserId, spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
   }
 
   static Future<List<Group>> getSpaceGroupList({
@@ -40,5 +41,14 @@ class GroupService {
     int pageSize = NetConfig.commonPageSize,
   }) async {
     return await GroupApi.getSpaceGroupList(spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
+  }
+
+  static Future<List<Group>> searchSpaceGroupList({
+    required String keyword,
+    required int spaceId,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await GroupApi.searchSpaceGroupList(keyword: keyword, spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
   }
 }

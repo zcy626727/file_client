@@ -1,5 +1,6 @@
 import 'package:file_client/model/common/common_resource.dart';
 import 'package:file_client/model/space/group.dart';
+import 'package:file_client/model/space/space.dart';
 import 'package:file_client/model/space/space_file.dart';
 import 'package:file_client/model/space/space_folder.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,10 @@ import '../../widget/common_action_two_button.dart';
 import '../space/member/select_group_dialog.dart';
 
 class ResourceDetailDialog extends StatefulWidget {
-  const ResourceDetailDialog({super.key, required this.resource});
+  const ResourceDetailDialog({super.key, required this.resource, required this.space});
 
   final CommonResource resource;
+  final Space space;
 
   @override
   State<ResourceDetailDialog> createState() => _ResourceDetailDialogState();
@@ -92,7 +94,11 @@ class _ResourceDetailDialogState extends State<ResourceDetailDialog> {
                               barrierDismissible: true,
                               context: context,
                               builder: (BuildContext context) {
-                                return SelectGroupDialog();
+                                return SelectGroupDialog(
+                                    spaceId: widget.space.id!,
+                                    selectGroup: (g) {
+                                      // todo 选择组
+                                    });
                               },
                             );
                           },

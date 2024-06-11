@@ -1,20 +1,27 @@
+import 'package:file_client/model/space/space_user.dart';
+import 'package:file_client/service/team/group_service.dart';
+import 'package:file_client/service/team/group_user_service.dart';
+import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:file_client/view/component/space/member/select_group_dialog.dart';
+import 'package:file_client/view/component/space/member/user_group_list_item.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../common/list/common_item_list.dart';
 import '../../../../constant/ui.dart';
 import '../../../../model/space/group.dart';
-import '../../../widget/confirm_alert_dialog.dart';
 
 class MemberEditGroupDialog extends StatefulWidget {
-  const MemberEditGroupDialog({super.key, required this.groupList});
+  const MemberEditGroupDialog({super.key, required this.spaceUser});
 
-  final List<Group> groupList;
+  final SpaceUser spaceUser;
 
   @override
   State<MemberEditGroupDialog> createState() => _MemberEditGroupDialogState();
 }
 
 class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
+  GlobalKey<CommonItemListState<Group>> _groupListKey = GlobalKey<CommonItemListState<Group>>();
+
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
@@ -22,7 +29,7 @@ class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
       backgroundColor: colorScheme.surface,
       surfaceTintColor: Theme.of(context).colorScheme.surface,
       contentPadding: dialogContentPadding,
-      title: Text("编辑分组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
+      title: Text("编辑组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: SizedBox(
         width: 300,
         height: 400,
@@ -34,8 +41,20 @@ class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
                 showDialog(
                   barrierDismissible: true,
                   context: context,
-                  builder: (BuildContext context) {
-                    return SelectGroupDialog();
+                  builder: (BuildContext dialogContext) {
+                    return SelectGroupDialog(
+                      spaceId: widget.spaceUser.spaceId!,
+                      selectGroup: (g) async {
+                        //添加组
+                        try {
+                          await GroupUserService.addGroup(groupId: g.id!, targetUserId: widget.spaceUser.userId!);
+                          _groupListKey.currentState?.addItem(g);
+                          _groupListKey.currentState?.setState(() {});
+                        } on Exception catch (e) {
+                          if (context.mounted) ShowSnackBar.exception(context: context, e: e);
+                        }
+                      },
+                    );
                   },
                 );
               },
@@ -53,60 +72,32 @@ class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
                 ),
               ),
             ),
-            // 分组列表
+            //用户已有组列表
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 5, bottom: 5),
-                child: ListView.builder(
-                  itemCount: widget.groupList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var group = widget.groupList[index];
-                    //点击后返回当前group
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                        key: ValueKey(group.id),
-                        title: Text(
-                          group.name ?? "111",
-                          style: TextStyle(color: colorScheme.onSurface),
-                        ),
-                        trailing: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            tooltip: "移除成员",
-                            onPressed: () {
-                              //弹出对话框
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext dialogContext) {
-                                  return ConfirmAlertDialog(
-                                    text: "是否移除分组？",
-                                    onConfirm: () async {},
-                                    onCancel: () {
-                                      Navigator.pop(dialogContext);
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            icon: const Icon(Icons.delete, size: 20),
-                            color: colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              child: CommonItemList<Group>(
+                onLoad: (int page) async {
+                  if (widget.spaceUser.spaceId == null || widget.spaceUser.userId == null) return <Group>[];
+                  var list = await GroupService.getSpaceGroupListByUser(spaceId: widget.spaceUser.spaceId!, targetUserId: widget.spaceUser.userId!, pageIndex: page);
+                  return list;
+                },
+                key: _groupListKey,
+                itemName: "组",
+                itemHeight: 40,
+                enableScrollbar: true,
+                isGrip: false,
+                itemBuilder: (ctx, item, itemList, onFresh) {
+                  return Container(
+                    margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                    child: UserGroupListItem(
+                      group: item,
+                      userId: widget.spaceUser.userId!,
+                      onDelete: (_) {
+                        itemList?.remove(item);
+                        onFresh();
+                      },
+                    ),
+                  );
+                },
               ),
             ),
           ],

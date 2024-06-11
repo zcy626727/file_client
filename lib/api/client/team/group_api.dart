@@ -66,13 +66,15 @@ class GroupApi {
   //获取空间中该用户的组列表
   static Future<List<Group>> getSpaceGroupListByUser({
     required int spaceId,
+    required int targetUserId,
     required int pageIndex,
     required int pageSize,
   }) async {
     var r = await TeamHttpConfig.dio.get(
-      "/group/getUserSpaceGroupList",
+      "/group/getSpaceGroupListByUser",
       queryParameters: {
         "spaceId": spaceId,
+        "targetUserId": targetUserId,
         "pageIndex": pageIndex,
         "pageSize": pageSize,
       },
@@ -96,6 +98,31 @@ class GroupApi {
     var r = await TeamHttpConfig.dio.get(
       "/group/getSpaceGroupList",
       queryParameters: {
+        "spaceId": spaceId,
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
+      },
+      options: TeamHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+
+    return _parseGroupList(r);
+  }
+
+  static Future<List<Group>> searchSpaceGroupList({
+    required String keyword,
+    required int spaceId,
+    required int pageIndex,
+    required int pageSize,
+  }) async {
+    var r = await TeamHttpConfig.dio.get(
+      "/group/searchSpaceGroupList",
+      queryParameters: {
+        "keyword": keyword,
         "spaceId": spaceId,
         "pageIndex": pageIndex,
         "pageSize": pageSize,

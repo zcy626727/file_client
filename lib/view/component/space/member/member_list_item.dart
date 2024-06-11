@@ -1,15 +1,18 @@
-import 'package:file_client/model/space/group.dart';
-import 'package:file_client/model/user/user.dart';
+import 'package:file_client/constant/space.dart';
+import 'package:file_client/model/space/space_user.dart';
+import 'package:file_client/service/team/space_user_service.dart';
 import 'package:file_client/view/component/space/member/member_edit_group_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constant/ui.dart';
 import '../../../widget/confirm_alert_dialog.dart';
+import '../../show/show_snack_bar.dart';
 
 class MemberListItem extends StatelessWidget {
-  const MemberListItem({super.key, required this.user});
+  const MemberListItem({super.key, required this.spaceUser, this.onDelete});
 
-  final User user;
+  final SpaceUser spaceUser;
+  final Function(SpaceUser)? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +28,13 @@ class MemberListItem extends StatelessWidget {
         leading: CircleAvatar(
           //头像半径
           radius: 30,
-          backgroundImage: user.avatarUrl == null ? null : NetworkImage(user.avatarUrl!),
+          backgroundImage: spaceUser.user?.avatarUrl == null ? null : NetworkImage(spaceUser.user!.avatarUrl!),
           backgroundColor: colorScheme.primary,
         ),
         title: Row(
           children: [
             Text(
-              user.name ?? "",
+              spaceUser.user?.name ?? "————",
               style: TextStyle(color: colorScheme.onPrimaryContainer, fontSize: 15),
               overflow: TextOverflow.ellipsis,
             )
@@ -39,11 +42,11 @@ class MemberListItem extends StatelessWidget {
           ],
         ),
         subtitle: Text(
-          "组列表",
+          SpaceUserPermission.getRole(spaceUser.userPermission),
           style: TextStyle(color: colorScheme.onPrimaryContainer.withAlpha(100), fontSize: 12),
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: Container(
+        trailing: SizedBox(
           width: 150,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -59,9 +62,7 @@ class MemberListItem extends StatelessWidget {
                       context: context,
                       barrierDismissible: true,
                       builder: (BuildContext context) {
-                        return MemberEditGroupDialog(
-                          groupList: [Group(), Group()],
-                        );
+                        return MemberEditGroupDialog(spaceUser: spaceUser);
                       },
                     );
                   },
@@ -81,9 +82,19 @@ class MemberListItem extends StatelessWidget {
                       builder: (BuildContext dialogContext) {
                         return ConfirmAlertDialog(
                           text: "是否确定移除成员？",
-                          onConfirm: () async {},
                           onCancel: () {
                             Navigator.pop(dialogContext);
+                          },
+                          onConfirm: () async {
+                            try {
+                              if (spaceUser.id == null) throw const FormatException("成员信息异常");
+                              await SpaceUserService.removeUser(spaceUserId: spaceUser.id!);
+                              if (dialogContext.mounted) Navigator.pop(dialogContext);
+                              if (dialogContext.mounted) ShowSnackBar.info(context: context, message: "处理成功");
+                              if (onDelete != null) onDelete!(spaceUser);
+                            } on Exception catch (e) {
+                              if (dialogContext.mounted) ShowSnackBar.exception(context: dialogContext, e: e);
+                            }
                           },
                         );
                       },

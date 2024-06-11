@@ -1,12 +1,15 @@
 import 'package:file_client/model/space/space_message.dart';
+import 'package:file_client/service/team/space_message_service.dart';
+import 'package:file_client/view/component/show/show_snack_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widget/confirm_alert_dialog.dart';
 
 class SpaceMessageListItem extends StatefulWidget {
-  const SpaceMessageListItem({super.key, required this.message});
+  const SpaceMessageListItem({super.key, required this.message, this.onDelete});
 
   final SpaceMessage message;
+  final Function(SpaceMessage)? onDelete;
 
   @override
   State<SpaceMessageListItem> createState() => _SpaceMessageListItemState();
@@ -59,9 +62,19 @@ class _SpaceMessageListItemState extends State<SpaceMessageListItem> {
                     builder: (BuildContext dialogContext) {
                       return ConfirmAlertDialog(
                         text: "是否同意？",
-                        onConfirm: () async {},
                         onCancel: () {
                           Navigator.pop(dialogContext);
+                        },
+                        onConfirm: () async {
+                          try {
+                            if (widget.message.id == null) throw const FormatException("申请信息异常");
+                            await SpaceMessageService.acceptJoin(msgId: widget.message.id!);
+                            if (dialogContext.mounted) Navigator.pop(dialogContext);
+                            if (dialogContext.mounted) ShowSnackBar.info(context: context, message: "处理成功");
+                            if (widget.onDelete != null) widget.onDelete!(widget.message);
+                          } on Exception catch (e) {
+                            if (dialogContext.mounted) ShowSnackBar.exception(context: dialogContext, e: e);
+                          }
                         },
                       );
                     },
@@ -80,9 +93,19 @@ class _SpaceMessageListItemState extends State<SpaceMessageListItem> {
                     builder: (BuildContext dialogContext) {
                       return ConfirmAlertDialog(
                         text: "是否拒绝？",
-                        onConfirm: () async {},
                         onCancel: () {
                           Navigator.pop(dialogContext);
+                        },
+                        onConfirm: () async {
+                          try {
+                            if (widget.message.id == null) throw const FormatException("申请信息异常");
+                            await SpaceMessageService.refuseJoin(msgId: widget.message.id!);
+                            if (dialogContext.mounted) Navigator.pop(dialogContext);
+                            if (dialogContext.mounted) ShowSnackBar.info(context: context, message: "处理成功");
+                            if (widget.onDelete != null) widget.onDelete!(widget.message);
+                          } on Exception catch (e) {
+                            if (dialogContext.mounted) ShowSnackBar.exception(context: dialogContext, e: e);
+                          }
                         },
                       );
                     },

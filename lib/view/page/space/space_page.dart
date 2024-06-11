@@ -233,7 +233,7 @@ class _SpacePageState extends State<SpacePage> {
   Widget _getPage() {
     switch (_pageIndex) {
       case SpaceNav.member:
-        return SpaceMemberPage();
+        return SpaceMemberPage(space: widget.space);
       case SpaceNav.message:
         return SpaceMessagePage(space: widget.space);
       case SpaceNav.group:

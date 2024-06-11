@@ -5,14 +5,14 @@ import '../team_http_config.dart';
 
 class GroupUserApi {
   static Future<GroupUser> addGroup({
-    required int spaceId,
+    required int groupId,
     required int targetUserId,
   }) async {
     var r = await TeamHttpConfig.dio.post(
       "/groupUser/addGroup",
       data: FormData.fromMap({
         "targetUserId": targetUserId,
-        "spaceId": spaceId,
+        "groupId": groupId,
       }),
       options: TeamHttpConfig.options.copyWith(
         extra: {
@@ -25,12 +25,14 @@ class GroupUserApi {
   }
 
   static Future<void> removeGroup({
-    required int groupUserId,
+    required int groupId,
+    required int targetUserId,
   }) async {
     await TeamHttpConfig.dio.delete(
       "/groupUser/removeGroup",
       queryParameters: {
-        "groupUserId": groupUserId,
+        "groupId": groupId,
+        "targetUserId": targetUserId,
       },
       options: TeamHttpConfig.options.copyWith(
         extra: {

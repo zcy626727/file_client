@@ -79,7 +79,6 @@ class SpaceMessageApi {
         },
       ),
     );
-    print("object");
     return _parseSpaceMessageList(r);
   }
 
