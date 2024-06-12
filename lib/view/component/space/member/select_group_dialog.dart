@@ -43,6 +43,7 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
             Container(
               margin: const EdgeInsets.all(5),
               child: CupertinoSearchTextField(
+                autofocus: true,
                 style: TextStyle(color: colorScheme.onSurface),
                 prefixIcon: Icon(
                   CupertinoIcons.search,
@@ -65,17 +66,30 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
                 key: ValueKey(_searchKeyword),
                 itemName: "空间",
                 itemHeight: null,
-                enableScrollbar: true,
+                enableScrollbar: false,
                 itemBuilder: (ctx, item, itemList, onFresh) {
-                  return ListTile(
-                    key: ValueKey(item.id),
-                    onTap: () {
-                      widget.selectGroup(item);
-                      Navigator.pop(context);
-                    },
-                    title: Text(
-                      item.name ?? "——",
-                      style: TextStyle(color: colorScheme.onSurface),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(colorScheme.primaryContainer),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        widget.selectGroup(item);
+                        Navigator.pop(context);
+                      },
+                      child: ListTile(
+                        key: ValueKey(item.id),
+                        title: Text(
+                          item.name ?? "——",
+                          style: TextStyle(color: colorScheme.onSurface),
+                        ),
+                      ),
                     ),
                   );
                 },
