@@ -281,7 +281,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           key: listKey,
           onLoad: (int page) async {
             if (widget.space.id == null) return <CommonResource>[];
-            var list = await SpaceFileService.getNormalFileList(parentId: 0, spaceId: widget.space.id!, pageIndex: page);
+            var list = await SpaceFileService.getNormalFileList(parentId: _currentFolder.id ?? 0, spaceId: widget.space.id!, pageIndex: page);
             return list;
           },
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
