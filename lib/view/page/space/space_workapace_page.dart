@@ -17,12 +17,12 @@ import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/space/space_file.dart';
+import '../../../service/file/user_file_service.dart';
 import '../../../service/team/space_file_service.dart';
 import '../../../state/upload_state.dart';
 import '../../../util/mime_util.dart';
-import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
-import '../../component/file/select_user_file_dialog.dart';
+import '../../component/file/resource_list_item.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../../widget/input_alert_dialog.dart';
@@ -375,42 +375,8 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                   children: [
                     IconButton(
                       splashRadius: 18,
-                      onPressed: () async {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ConfirmAlertDialog(
-                              text: "是否确定删除？",
-                              onConfirm: () async {
-                                try {
-                                  if (_selectedResourceList.isEmpty) {
-                                    return;
-                                  }
-                                  List<int> spaceFileIdList = <int>[];
-
-                                  for (var res in _selectedResourceList) {
-                                    if (res.id != null) {
-                                      spaceFileIdList.add(res.id!);
-                                    }
-                                  }
-                                  await SpaceFileService.deleteFileList(spaceFileIdList: spaceFileIdList);
-                                  for (var res in _selectedResourceList) {
-                                    listKey.currentState?.removeItem(res);
-                                  }
-                                  cancelCheck();
-                                  setState(() {});
-                                } on DioException catch (e) {
-                                  if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
-                                } finally {
-                                  if (context.mounted) Navigator.pop(context);
-                                }
-                              },
-                              onCancel: () {
-                                Navigator.pop(context);
-                              },
-                            );
-                          },
-                        );
+                      onPressed: () {
+                        deleteFileList();
                       },
                       icon: Icon(
                         Icons.delete,
@@ -597,9 +563,9 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           title: "移动到",
           onConfirm: (targetFolder) async {
             try {
-              if (_currentFolder.id == targetFolder?.id) throw const FormatException("文件夹已存在于该路径");
+              if (_currentFolder.id == targetFolder.id) throw const FormatException("文件夹已存在于该路径");
 
-              if (targetFolder?.id == null) throw const FormatException("获取目标文件夹失败");
+              if (targetFolder.id == null) throw const FormatException("获取目标文件夹失败");
               if (selectedRes.id == null) throw const FormatException("文件状态异常");
 
               await SpaceFileService.moveFile(spaceFileId: selectedRes.id!, newParentId: targetFolder!.id!);
@@ -613,9 +579,9 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               if (context.mounted) Navigator.pop(context);
             }
           },
-          onLoad: (int parentId) async {
+          onLoad: (int parentId, int page) async {
             if (widget.space.id == null) return <CommonResource>[];
-            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!);
+            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!, pageIndex: page);
             return list;
           },
         );
@@ -655,10 +621,48 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               if (context.mounted) Navigator.pop(context);
             }
           },
-          onLoad: (int parentId) async {
+          onLoad: (int parentId, int page) async {
             if (widget.space.id == null) return <CommonResource>[];
-            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!);
+            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!, pageIndex: page);
             return list;
+          },
+        );
+      },
+    );
+  }
+
+  void deleteFileList() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmAlertDialog(
+          text: "是否确定删除？",
+          onConfirm: () async {
+            try {
+              if (_selectedResourceList.isEmpty) {
+                return;
+              }
+              List<int> spaceFileIdList = <int>[];
+
+              for (var res in _selectedResourceList) {
+                if (res.id != null) {
+                  spaceFileIdList.add(res.id!);
+                }
+              }
+              await SpaceFileService.deleteFileList(spaceFileIdList: spaceFileIdList);
+              for (var res in _selectedResourceList) {
+                listKey.currentState?.removeItem(res);
+              }
+              cancelCheck();
+              setState(() {});
+            } on DioException catch (e) {
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+            } finally {
+              if (context.mounted) Navigator.pop(context);
+            }
+          },
+          onCancel: () {
+            Navigator.pop(context);
           },
         );
       },
@@ -677,7 +681,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SelectUserFileDialog(
+        return SelectResourceDialog(
           title: "选择文件",
           fileType: FileType.any,
           onConfirm: (res) async {
@@ -697,6 +701,10 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
             } finally {
               if (context.mounted) Navigator.pop(context);
             }
+          },
+          onLoad: (int parentId, int page) async {
+            var list = await UserFileService.getFolderList(parentId: parentId, pageIndex: page);
+            return list;
           },
         );
       },

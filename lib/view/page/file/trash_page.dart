@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../model/file/trash.dart';
 import '../../../service/file/trash_service.dart';
-import '../../component/file/file_list_tile.dart';
+import '../../component/file/resource_list_item.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 

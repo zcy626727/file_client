@@ -7,9 +7,10 @@ import '../../../model/common/common_resource.dart';
 import '../../../model/file/share.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../service/file/share_service.dart';
-import '../../component/file/file_list_tile.dart';
+import '../../../service/file/user_file_service.dart';
 import '../../component/file/folder_path_list.dart';
-import '../../component/file/select_folder_dialog.dart';
+import '../../component/file/resource_list_item.dart';
+import '../../component/file/select_resource_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_one_button.dart';
 import '../../widget/input_text_field.dart';
@@ -293,7 +294,7 @@ class _AccessSharePageState extends State<AccessSharePage> {
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return SelectFolderDialog(
+              return SelectResourceDialog(
                 title: "保存到",
                 filterIdSet: <int?>{res.id},
                 onConfirm: (targetFolder) async {
@@ -306,6 +307,10 @@ class _AccessSharePageState extends State<AccessSharePage> {
                     if (context.mounted) ShowSnackBar.exception(context: context, e: e);
                   }
                   if (context.mounted) Navigator.pop(context);
+                },
+                onLoad: (int parentId, int page) async {
+                  var list = await UserFileService.getFolderList(parentId: parentId, pageIndex: page);
+                  return list;
                 },
               );
             },

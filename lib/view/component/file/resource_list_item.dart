@@ -131,22 +131,20 @@ class _ResourceListItemState extends State<ResourceListItem> {
                     ],
                   )
                 : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         iconData,
                         size: 35,
                         color: Colors.orange,
                       ),
+                      const SizedBox(width: 5),
                       Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 5, right: 5, top: 10),
-                          child: Text(
-                            name,
-                            style: const TextStyle(color: Colors.grey),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        child: Text(
+                          name,
+                          style: const TextStyle(color: Colors.grey, fontSize: 15),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

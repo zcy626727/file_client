@@ -1,25 +1,36 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:file_client/model/common/common_file.dart';
 import 'package:file_client/model/common/common_folder.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/list/common_item_list.dart';
 import '../../../model/common/common_resource.dart';
 import '../../widget/common_action_two_button.dart';
-import 'file_list_tile.dart';
 import 'folder_path_list.dart';
+import 'resource_list_item.dart';
 
 class SelectResourceDialog extends StatefulWidget {
-  const SelectResourceDialog({Key? key, this.folderId, required this.title, required this.onConfirm, this.fileType = 0, required this.onLoad}) : super(key: key);
+  const SelectResourceDialog({
+    Key? key,
+    this.folderId,
+    required this.title,
+    required this.onConfirm,
+    this.fileType = 0,
+    required this.onLoad,
+    this.filterIdSet,
+  }) : super(key: key);
 
   //初始文件夹，默认为用户根目录
   final int? folderId;
   final int fileType;
   final String title;
-  final Function(CommonResource?) onConfirm;
+  final Set<int?>? filterIdSet;
+  final Function(CommonResource) onConfirm;
 
   // 获取文件列表，给定parentId
-  final Future<List<CommonResource>> Function(int) onLoad;
+  final Future<List<CommonResource>> Function(int parentId, int page) onLoad;
 
   @override
   State<SelectResourceDialog> createState() => _SelectUserFileDialogState();
@@ -31,20 +42,12 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
   //移动文件路径
   final List<CommonFolder> _folderPath = <CommonFolder>[CommonFolder.rootFolder()];
 
-  //当前路径的文件夹列表
-  final List<CommonResource> _resourceList = <CommonResource>[];
-
   late CommonResource _selectedResource;
 
-  bool _loadingMoveFolderList = false;
+  GlobalKey<CommonItemListState<CommonResource>> listKey = GlobalKey<CommonItemListState<CommonResource>>();
 
   Future<void> loadFileList(int parentId) async {
-    try {
-      _resourceList.clear();
-      // 第一次获取
-      var list = await widget.onLoad(parentId);
-      _resourceList.addAll(list);
-    } on DioException catch (e) {
+    try {} on DioException catch (e) {
       log(e.toString());
     } catch (e) {
       log(e.toString());
@@ -111,79 +114,75 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
                 child: FolderPathList(
                   margin: const EdgeInsets.only(),
                   folderList: _folderPath,
-                  onTap: (userFolder) async {
-                    setState(() {
-                      _loadingMoveFolderList = true;
-                    });
-                    _selectedResource = userFolder;
-                    //更新路径和列表
-                    while (_folderPath.last.id != userFolder.id) {
+                  onTap: (folder) async {
+                    //点击路径文件夹
+                    //移除后面的路径文件夹
+                    while (_folderPath.last.id != folder.id) {
                       _folderPath.removeLast();
                     }
-                    _resourceList.clear();
-                    var list = await widget.onLoad(userFolder.id!);
-                    _resourceList.addAll(list);
-                    setState(() {
-                      _loadingMoveFolderList = false;
-                    });
+                    //更改选择的文件夹
+                    _selectedResource = folder;
+                    resetFileListKey();
+                    setState(() {});
                   },
                   onCurrentTap: (userFolder) {
                     //点击当前的路径文件夹不需要重新获取数据
-                    setState(() {
-                      _loadingMoveFolderList = true;
-                    });
                     _selectedResource = userFolder;
-                    setState(() {
-                      _loadingMoveFolderList = false;
-                    });
+                    setState(() {});
                   },
                 ),
               ),
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 3),
-                  child: _loadingMoveFolderList
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : ListView.builder(
-                          itemCount: _resourceList.length,
-                          itemExtent: 45,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ResourceListItem(
-                              isGrid: false,
-                              onPreTap: () {
-                                setState(() {
-                                  _selectedResource = _resourceList[index];
-                                });
-                              },
-                              onDoubleTap: () async {
-                                var res = _resourceList[index];
-                                if (res is CommonFolder) {
-                                  //双击文件夹
-                                  setState(() {
-                                    _loadingMoveFolderList = true;
-                                  });
-                                  //双击文件夹
-                                  var folder = res;
-                                  //选择当前文件夹
-                                  _selectedResource = folder;
-                                  //更新路径
-                                  _folderPath.add(folder);
-                                  //更新列表
-                                  _resourceList.clear();
-                                  var list = await widget.onLoad(folder.id!);
-                                  _resourceList.addAll(list);
-                                  setState(() {
-                                    _loadingMoveFolderList = false;
-                                  });
-                                }
-                              },
-                              resource: _resourceList[index],
-                              selected: _selectedResource?.id == _resourceList[index].id,
-                            );
+                  child: CommonItemList<CommonResource>(
+                    key: listKey,
+                    onLoad: (int page) async {
+                      var list = await widget.onLoad(_folderPath.last.id!, page);
+                      // 移除不希望出现的资源
+                      if (widget.filterIdSet != null) {
+                        for (var value in list) {
+                          if (widget.filterIdSet!.contains(value.id)) {
+                            list.remove(value);
+                          }
+                        }
+                      }
+                      return list;
+                    },
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
+                    itemName: "",
+                    itemHeight: null,
+                    isGrip: false,
+                    enableScrollbar: true,
+                    itemBuilder: (ctx, item, itemList, onFresh) {
+                      return SizedBox(
+                        height: 50,
+                        child: ResourceListItem(
+                          isGrid: false,
+                          onPreTap: () {
+                            _selectedResource = item;
+                            setState(() {});
                           },
+                          onDoubleTap: () async {
+                            if (item is CommonFolder) {
+                              //双击文件夹，进入文件夹
+                              //选择当前文件夹
+                              _selectedResource = item;
+                              //更新路径
+                              _folderPath.add(item);
+                              resetFileListKey();
+                              setState(() {});
+                            } else if (item is CommonFile) {
+                              _selectedResource = item;
+                              setState(() {});
+                            }
+                          },
+                          resource: item,
+                          selected: _selectedResource.id == item.id,
                         ),
+                      );
+                    },
+                  ),
                 ),
               )
             ],
@@ -202,5 +201,9 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
         )
       ],
     );
+  }
+
+  void resetFileListKey() {
+    listKey = GlobalKey<CommonItemListState<CommonResource>>();
   }
 }

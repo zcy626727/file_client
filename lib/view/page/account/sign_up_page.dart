@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import '../../../config/constants.dart';
 import '../../../service/user/user_service.dart';
 
-
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key, required this.onSignUpSuccess}) : super(key: key);
 
@@ -22,8 +21,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
-  RegExp phoneExp = RegExp(
-      r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
+  RegExp phoneExp = RegExp(r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
 
   String _phoneNumber = "";
   String _password = "";
@@ -83,24 +81,12 @@ class _SignUpPageState extends State<SignUpPage> {
         }
         return null;
       },
-      style: TextStyle(color: Theme
-          .of(context)
-          .colorScheme
-          .onBackground),
+      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
         labelText: "名字",
-        labelStyle:
-        TextStyle(color: Theme
-            .of(context)
-            .colorScheme
-            .onBackground),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
         hintText: "名字",
-        hintStyle: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground
-                .withAlpha(150)),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground.withAlpha(150)),
         border: OutlineInputBorder(
           //添加边框
           borderRadius: BorderRadius.circular(30.0),
@@ -108,10 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
           Icons.person,
-          color: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
       keyboardType: TextInputType.number,
@@ -129,24 +112,12 @@ class _SignUpPageState extends State<SignUpPage> {
         }
         return null;
       },
-      style: TextStyle(color: Theme
-          .of(context)
-          .colorScheme
-          .onBackground),
+      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
         labelText: "账号",
-        labelStyle:
-        TextStyle(color: Theme
-            .of(context)
-            .colorScheme
-            .onBackground),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
         hintText: "手机号",
-        hintStyle: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground
-                .withAlpha(150)),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground.withAlpha(150)),
         border: OutlineInputBorder(
           //添加边框
           borderRadius: BorderRadius.circular(30.0),
@@ -154,10 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
           Icons.person,
-          color: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
       keyboardType: TextInputType.number,
@@ -176,24 +144,12 @@ class _SignUpPageState extends State<SignUpPage> {
         }
         return null;
       },
-      style: TextStyle(color: Theme
-          .of(context)
-          .colorScheme
-          .onBackground),
+      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
         labelText: "密码",
-        labelStyle:
-        TextStyle(color: Theme
-            .of(context)
-            .colorScheme
-            .onBackground),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
         hintText: "密码",
-        hintStyle: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground
-                .withAlpha(150)),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground.withAlpha(150)),
         border: OutlineInputBorder(
           //添加边框
           borderRadius: BorderRadius.circular(30.0),
@@ -201,10 +157,7 @@ class _SignUpPageState extends State<SignUpPage> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
           Icons.password,
-          color: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
       keyboardType: TextInputType.number,
@@ -221,28 +174,13 @@ class _SignUpPageState extends State<SignUpPage> {
         }
         return null;
       },
-      style: TextStyle(color: Theme
-          .of(context)
-          .colorScheme
-          .onBackground),
-      cursorColor: Theme
-          .of(context)
-          .colorScheme
-          .onBackground,
+      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+      cursorColor: Theme.of(context).colorScheme.onBackground,
       decoration: InputDecoration(
         labelText: "确认密码",
-        labelStyle:
-        TextStyle(color: Theme
-            .of(context)
-            .colorScheme
-            .onBackground),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
         hintText: "确认密码",
-        hintStyle: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground
-                .withAlpha(150)),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground.withAlpha(150)),
         border: OutlineInputBorder(
           //添加边框
           borderRadius: BorderRadius.circular(30.0),
@@ -250,10 +188,7 @@ class _SignUpPageState extends State<SignUpPage> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
           Icons.confirmation_number,
-          color: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
       keyboardType: TextInputType.number,
@@ -261,9 +196,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   signUpButtonBuild() {
-    ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
         height: 46,
         width: loginInputWidth,
@@ -272,31 +205,30 @@ class _SignUpPageState extends State<SignUpPage> {
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               )),
-              backgroundColor: MaterialStateProperty.all(
-                  _signUpIng ? Colors.blue.withAlpha(150) : Colors.blue)),
+              backgroundColor: MaterialStateProperty.all(_signUpIng ? Colors.blue.withAlpha(150) : Colors.blue)),
           onPressed: _signUpIng
               ? null
               : () {
-            _formKey.currentState?.save();
-            //执行验证
-            if (_formKey.currentState!.validate()) {
-              //加载
-              setState(() {
-                _signUpIng = true;
-              });
-              //执行验证
-              signUp();
-            }
-          },
+                  _formKey.currentState?.save();
+                  //执行验证
+                  if (_formKey.currentState!.validate()) {
+                    //加载
+                    setState(() {
+                      _signUpIng = true;
+                    });
+                    //执行验证
+                    signUp();
+                  }
+                },
           child: _signUpIng
               ? CupertinoActivityIndicator(color: colorScheme.onSurface)
               : const Text(
-            "注册",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-            ),
-          ),
+                  "注册",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
         ));
   }
 
@@ -306,10 +238,10 @@ class _SignUpPageState extends State<SignUpPage> {
       await UserService.signUp(_phoneNumber, _password, _alias);
       widget.onSignUpSuccess();
       log("注册成功");
-    } on TimeoutException catch (e) {
-      ShowSnackBar.error(context: context, message: "请求超时");
+    } on TimeoutException catch (_) {
+      if (mounted) ShowSnackBar.error(context: context, message: "请求超时");
     } on Exception catch (e) {
-      ShowSnackBar.exception(context: context, e: e, defaultValue: "注册失败");
+      if (mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "注册失败");
     } finally {
       setState(() {
         _signUpIng = false;

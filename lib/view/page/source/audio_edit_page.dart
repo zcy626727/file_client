@@ -14,7 +14,8 @@ import '../../../common/file/service/file_url_service.dart';
 import '../../../common/file/task/single_upload_task.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
-import '../../component/file/select_user_file_dialog.dart';
+import '../../../service/file/user_file_service.dart';
+import '../../component/file/select_resource_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_media_player.dart';
@@ -149,9 +150,9 @@ class _AudioEditPageState extends State<AudioEditPage> {
                             throw const FormatException("序号类型不正确");
                           }
                           await widget.onCreate(title, coverUploadImage.coverUrl, fileId, order);
-                          if (mounted) Navigator.pop(context);
+                          if (context.mounted) Navigator.pop(context);
                         } on Exception catch (e) {
-                          ShowSnackBar.exception(context: context, e: e);
+                          if (context.mounted) ShowSnackBar.exception(context: context, e: e);
                         }
                         return false;
                       },
@@ -177,7 +178,7 @@ class _AudioEditPageState extends State<AudioEditPage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SelectUserFileDialog(
+        return SelectResourceDialog(
           title: "选择文件",
           fileType: FileType.audio,
           onConfirm: (res) async {
@@ -196,6 +197,10 @@ class _AudioEditPageState extends State<AudioEditPage> {
             } finally {
               Navigator.pop(context);
             }
+          },
+          onLoad: (int parentId, int page) async {
+            var list = await UserFileService.getNormalFileList(parentId: parentId, pageIndex: page).timeout(const Duration(seconds: 2));
+            return list;
           },
         );
       },

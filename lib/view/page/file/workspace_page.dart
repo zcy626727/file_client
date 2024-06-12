@@ -20,9 +20,9 @@ import '../../../model/file/user_folder.dart';
 import '../../../service/file/user_file_service.dart';
 import '../../../state/download_state.dart';
 import '../../../state/upload_state.dart';
-import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
-import '../../component/file/select_folder_dialog.dart';
+import '../../component/file/resource_list_item.dart';
+import '../../component/file/select_resource_dialog.dart';
 import '../../component/share/create_share_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
@@ -523,7 +523,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       color: colorScheme.surface,
       context: context,
       position: RelativeRect.fromLTRB(
-        globalPosition.dx - 240,
+        globalPosition.dx - 110,
         globalPosition.dy,
         globalPosition.dx,
         globalPosition.dy,
@@ -689,7 +689,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SelectFolderDialog(
+        return SelectResourceDialog(
           filterIdSet: selectedRes.id != null ? <int>{selectedRes.id!} : null,
           title: "移动到",
           onConfirm: (targetFolder) async {
@@ -707,6 +707,10 @@ class _WorkspacePageState extends State<WorkspacePage> {
               if (context.mounted) Navigator.pop(context);
             }
           },
+          onLoad: (int parentId, int page) async {
+            var list = await UserFileService.getFolderList(parentId: parentId, pageIndex: page);
+            return list;
+          },
         );
       },
     );
@@ -717,7 +721,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SelectFolderDialog(
+        return SelectResourceDialog(
           title: "移动到",
           onConfirm: (targetFolder) async {
             try {
@@ -738,11 +742,16 @@ class _WorkspacePageState extends State<WorkspacePage> {
               }
               cancelCheck();
               setState(() {});
+              setState(() {});
             } on Exception catch (e) {
               if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
             } finally {
               if (context.mounted) Navigator.pop(context);
             }
+          },
+          onLoad: (int parentId, int page) async {
+            var list = await UserFileService.getFolderList(parentId: parentId, pageIndex: page);
+            return list;
           },
         );
       },
