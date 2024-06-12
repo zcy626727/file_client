@@ -31,13 +31,13 @@ class UploadState extends ChangeNotifier {
   List<MultipartUploadTask> finishedTaskList = [];
 
   //通知
-  List<UploadNotion> uploadNotionList = [];
+  List<UploadTaskNotion> uploadNotionList = [];
 
   //totalList
   List<MultipartUploadTask> totalTaskList = [];
 
   //发送上传提示，上传开始和上传完成
-  void sendUploadNotion(UploadNotion notion) {
+  void sendUploadNotion(UploadTaskNotion notion) {
     uploadNotionList.add(notion);
     notifyListeners();
   }
@@ -60,7 +60,7 @@ class UploadState extends ChangeNotifier {
     errorTaskList = <MultipartUploadTask>[];
     finishedTaskList = <MultipartUploadTask>[];
     totalTaskList = <MultipartUploadTask>[];
-    uploadNotionList = <UploadNotion>[];
+    uploadNotionList = <UploadTaskNotion>[];
   }
 
   void initUploadTask() async {
@@ -192,9 +192,11 @@ class UploadState extends ChangeNotifier {
         // 创建文件
         switch (task.targetType) {
           case UploadTaskTargetType.user:
-            await UserFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!);
+            var userFile = await UserFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!);
+            sendUploadNotion(UploadTaskNotion(resource: userFile, type: UploadNotionType.completeUpload));
           case UploadTaskTargetType.space:
-            await SpaceFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!, spaceId: task.spaceId!);
+            var spaceFile = await SpaceFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!, spaceId: task.spaceId!);
+            sendUploadNotion(UploadTaskNotion(resource: spaceFile, type: UploadNotionType.completeUpload));
         }
 
         notifyListeners();

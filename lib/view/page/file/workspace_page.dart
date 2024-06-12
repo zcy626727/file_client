@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:file_client/domain/upload_notion.dart';
 import 'package:file_client/util/mime_util.dart';
 import 'package:file_client/view/page/preview/image_preview_page.dart';
 import 'package:file_client/view/page/preview/video_preview_page.dart';
@@ -77,7 +78,6 @@ class _WorkspacePageState extends State<WorkspacePage> {
 
   Widget _operaList(BuildContext pageContext) {
     var colorScheme = Theme.of(context).colorScheme;
-    var uploadState = Provider.of<UploadState>(context, listen: false);
     return Container(
       padding: const EdgeInsets.only(left: 10.0, right: 5.0, top: 6.0),
       height: 45,
@@ -88,21 +88,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
             height: 25,
             child: ElevatedButton(
               onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.any,
-                );
-                if (result != null) {
-                  var f = result.files.single;
-                  uploadState.addUploadTask(
-                    MultipartUploadTask.userFile(
-                      fileName: f.name,
-                      srcPath: f.path,
-                      userId: Global.user.id,
-                      parentId: _currentFolder.id,
-                      status: UploadTaskStatus.uploading,
-                    ),
-                  );
-                }
+                createFile();
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
@@ -306,92 +292,114 @@ class _WorkspacePageState extends State<WorkspacePage> {
       fit: StackFit.expand,
       alignment: AlignmentDirectional.bottomCenter,
       children: [
-        CommonItemList<CommonResource>(
-          key: listKey,
-          onLoad: (int page) async {
-            if (_currentFolder.id == null) return <CommonResource>[];
-            var list = await UserFileService.getNormalFileList(parentId: _currentFolder.id!).timeout(const Duration(seconds: 2));
-            return list;
-          },
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
-          itemName: "文件",
-          itemHeight: null,
-          isGrip: true,
-          enableScrollbar: true,
-          itemBuilder: (ctx, item, itemList, onFresh) {
-            return Container(
-              key: ValueKey(item.id),
-              margin: const EdgeInsets.all(2.0),
-              child: ResourceListItem(
-                onPreTap: () async {
-                  setState(() {
-                    _selectedIndex = item.id;
-                  });
-                },
-                onTap: () {
-                  log("单击");
-                },
-                onSecondaryTap: (TapDownDetails details) {
-                  setState(() {
-                    _selectedIndex = item.id;
-                  });
-                  moreOpera(context, details, item);
-                },
-                onDoubleTap: () async {
-                  //是文件夹
-                  if (item is UserFolder) {
-                    try {
-                      //双击进入文件夹
-                      if (item.id == _currentFolder.id) return;
-                      if (item.id == null) throw const FormatException("文件夹异常，请刷新后重试");
-                      _currentFolder = item;
-                      _folderPath.add(item);
-                      listKey = GlobalKey<CommonItemListState<CommonResource>>();
-                      cancelCheck();
-                      resetFileListKey();
-                      setState(() {});
-                    } on Exception catch (e) {
-                      if (context.mounted) ShowSnackBar.exception(context: context, e: e);
-                    }
-                  } else if (item is UserFile) {
-                    //预览文件
-                    var mimeType = item.mimeType;
-                    if (mimeType != null) {
-                      if (MimeUtil.isMedia(mimeType)) {
-                        Navigator.push(
-                          nContext,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return VideoPreviewPage(fileId: item.fileId!);
-                            },
-                          ),
-                        );
-                      } else if (MimeUtil.isImage(mimeType)) {
-                        Navigator.push(
-                          nContext,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ImagePreviewPage(fileId: item.fileId!);
-                            },
-                          ),
-                        );
-                      }
-                    }
-                  }
+        Selector<UploadState, List<UploadTaskNotion>>(
+          selector: (context, uploadState) => uploadState.uploadNotionList,
+          shouldRebuild: (pre, next) => next.isNotEmpty,
+          builder: (context, notionList, child) {
+            var needRemoveNotion = <UploadTaskNotion>[];
+            for (var notion in notionList) {
+              var res = notion.resource;
+              if (notion.type == UploadNotionType.completeUpload && res is UserFile) {
+                if (res.parentId == _currentFolder.id) {
+                  //文件上传完成
+                  listKey.currentState?.addItem(notion.resource);
+                  listKey.currentState?.setState(() {});
+                  needRemoveNotion.add(notion);
+                }
+              }
+            }
+            for (var value in needRemoveNotion) {
+              notionList.remove(value);
+            }
 
-                  setState(() {});
-                },
-                onCheck: (b) {
-                  if (b) {
-                    _selectedResourceList.add(item);
-                  } else {
-                    _selectedResourceList.remove(item);
-                  }
-                },
-                isCheckMode: _checkMode,
-                resource: item,
-                selected: _selectedIndex != null && _selectedIndex == item.id,
-              ),
+            return CommonItemList<CommonResource>(
+              key: listKey,
+              onLoad: (int page) async {
+                if (_currentFolder.id == null) return <CommonResource>[];
+                var list = await UserFileService.getNormalFileList(parentId: _currentFolder.id!).timeout(const Duration(seconds: 2));
+                return list;
+              },
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
+              itemName: "文件",
+              itemHeight: null,
+              isGrip: true,
+              enableScrollbar: true,
+              itemBuilder: (ctx, item, itemList, onFresh) {
+                return Container(
+                  key: ValueKey(item.id),
+                  margin: const EdgeInsets.all(2.0),
+                  child: ResourceListItem(
+                    onPreTap: () async {
+                      setState(() {
+                        _selectedIndex = item.id;
+                      });
+                    },
+                    onTap: () {
+                      log("单击");
+                    },
+                    onSecondaryTap: (TapDownDetails details) {
+                      setState(() {
+                        _selectedIndex = item.id;
+                      });
+                      moreOpera(context, details, item);
+                    },
+                    onDoubleTap: () async {
+                      //是文件夹
+                      if (item is UserFolder) {
+                        try {
+                          //双击进入文件夹
+                          if (item.id == _currentFolder.id) return;
+                          if (item.id == null) throw const FormatException("文件夹异常，请刷新后重试");
+                          _currentFolder = item;
+                          _folderPath.add(item);
+                          listKey = GlobalKey<CommonItemListState<CommonResource>>();
+                          cancelCheck();
+                          resetFileListKey();
+                          setState(() {});
+                        } on Exception catch (e) {
+                          if (context.mounted) ShowSnackBar.exception(context: context, e: e);
+                        }
+                      } else if (item is UserFile) {
+                        //预览文件
+                        var mimeType = item.mimeType;
+                        if (mimeType != null) {
+                          if (MimeUtil.isMedia(mimeType)) {
+                            Navigator.push(
+                              nContext,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return VideoPreviewPage(fileId: item.fileId!);
+                                },
+                              ),
+                            );
+                          } else if (MimeUtil.isImage(mimeType)) {
+                            Navigator.push(
+                              nContext,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ImagePreviewPage(fileId: item.fileId!);
+                                },
+                              ),
+                            );
+                          }
+                        }
+                      }
+
+                      setState(() {});
+                    },
+                    onCheck: (b) {
+                      if (b) {
+                        _selectedResourceList.add(item);
+                      } else {
+                        _selectedResourceList.remove(item);
+                      }
+                    },
+                    isCheckMode: _checkMode,
+                    resource: item,
+                    selected: _selectedIndex != null && _selectedIndex == item.id,
+                  ),
+                );
+              },
             );
           },
         ),
@@ -642,6 +650,27 @@ class _WorkspacePageState extends State<WorkspacePage> {
             iconData: res is UserFile ? Icons.insert_drive_file : Icons.folder,
           );
         });
+  }
+
+  void createFile() async {
+    var uploadState = Provider.of<UploadState>(context, listen: false);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+    );
+    if (result != null) {
+      var f = result.files.single;
+      uploadState.addUploadTask(
+        MultipartUploadTask.userFile(
+          fileName: f.name,
+          srcPath: f.path,
+          userId: Global.user.id,
+          parentId: _currentFolder.id,
+          status: UploadTaskStatus.uploading,
+        ),
+      );
+    }
+    if (mounted) ShowSnackBar.info(context: context, message: "上传任务已创建");
   }
 
   Future<void> createShare(List<int> userFileIdList, String shareName) async {

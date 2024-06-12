@@ -66,15 +66,15 @@ class _SpacePageState extends State<SpacePage> {
                             //空间介绍
                             Expanded(
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    color: colorScheme.onPrimaryContainer,
                                     margin: const EdgeInsets.only(left: 5, right: 5),
-                                    child: Image(
-                                      height: 30,
-                                      width: 30,
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(widget.space.avatarUrl ?? errImageUrl),
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      foregroundImage: NetworkImage(
+                                        widget.space.avatarUrl ?? errImageUrl,
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -111,7 +111,7 @@ class _SpacePageState extends State<SpacePage> {
                           ],
                         ),
                       ),
-
+                      const CommonSideTitle(value: "空间管理"),
                       // 成员
                       NavButton(
                         title: "空间设置",
@@ -144,8 +144,8 @@ class _SpacePageState extends State<SpacePage> {
                           });
                         },
                         height: 30,
-                        index: 0,
-                        selectedIndex: 1,
+                        index: SpaceNav.member,
+                        selectedIndex: _pageIndex,
                       ),
                       NavButton(
                         title: "分组管理",
@@ -156,8 +156,8 @@ class _SpacePageState extends State<SpacePage> {
                           });
                         },
                         height: 30,
-                        index: 0,
-                        selectedIndex: 1,
+                        index: SpaceNav.group,
+                        selectedIndex: _pageIndex,
                       ),
                       NavButton(
                         title: "消息管理",
@@ -168,8 +168,8 @@ class _SpacePageState extends State<SpacePage> {
                           });
                         },
                         height: 30,
-                        index: 0,
-                        selectedIndex: 1,
+                        index: SpaceNav.message,
+                        selectedIndex: _pageIndex,
                       ),
                       NavButton(
                         title: "文件列表",
@@ -180,41 +180,15 @@ class _SpacePageState extends State<SpacePage> {
                           });
                         },
                         height: 30,
-                        index: 0,
-                        selectedIndex: 1,
-                      ),
-                      const CommonSideTitle(value: "空间"),
-                      NavButton(
-                        title: "文件夹1",
-                        iconData: Icons.folder,
-                        onPress: () {
-                          setState(() {
-                            _pageIndex = SpaceNav.workspace;
-                          });
-                        },
-                        height: 30,
-                        index: 0,
-                        selectedIndex: 1,
-                      ),
-                      const CommonSideTitle(value: "我的"),
-                      NavButton(
-                        title: "文件夹2",
-                        iconData: Icons.folder,
-                        onPress: () {
-                          setState(() {
-                            _pageIndex = SpaceNav.workspace;
-                          });
-                        },
-                        height: 30,
-                        index: 0,
-                        selectedIndex: 1,
+                        index: SpaceNav.workspace,
+                        selectedIndex: _pageIndex,
                       ),
                       // 收藏文件夹
+                      const CommonSideTitle(value: "置顶目录"),
                     ],
                   ),
                 ),
                 VerticalDivider(color: Colors.grey.withAlpha(100), width: 1),
-
                 //文件
                 Expanded(child: _getPage())
               ],

@@ -1,24 +1,13 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:file_client/model/common/common_resource.dart';
 
-import '../model/file/user_file.dart';
+class UploadTaskNotion {
+  CommonResource resource;
+  int type;
 
-
-
-part 'upload_notion.g.dart';
-
-@JsonSerializable(explicitToJson: true)
-class UploadNotion{
-  UserFile userFile;
-  UploadNotionType type;
-
-  UploadNotion(this.userFile, this.type);
-
-  factory UploadNotion.fromJson(Map<String, dynamic> json) => _$UploadNotionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UploadNotionToJson(this);
+  UploadTaskNotion({required this.resource, required this.type});
 }
 
-enum UploadNotionType{
-  createUpload,
-  completeUpload,
+class UploadNotionType {
+  static const int createUpload = 1;
+  static const int completeUpload = 2;
 }
