@@ -2,6 +2,8 @@ import 'package:file_client/config/net_config.dart';
 import 'package:file_client/model/space/space_file.dart';
 
 import '../../api/client/team/space_file_api.dart';
+import '../../model/common/common_resource.dart';
+import '../../model/space/space_folder.dart';
 
 class SpaceFileService {
   static Future<SpaceFile> createFile({
@@ -14,7 +16,7 @@ class SpaceFileService {
     return userFile;
   }
 
-  static Future<SpaceFile> createFolder({
+  static Future<SpaceFolder> createFolder({
     required String folderName,
     required int parentId,
     required int spaceId,
@@ -70,15 +72,31 @@ class SpaceFileService {
     );
   }
 
-  static Future<void> getNormalFileList({
+  static Future<List<CommonResource>> getNormalFileList({
     required int parentId,
+    required int spaceId,
     int pageIndex = 0,
     int pageSize = NetConfig.commonPageSize,
   }) async {
-    await SpaceFileApi.getNormalFileList(
+    return await SpaceFileApi.getNormalFileList(
       parentId: parentId,
       pageIndex: pageIndex,
       pageSize: pageSize,
+      spaceId: spaceId,
+    );
+  }
+
+  static Future<List<SpaceFolder>> getNormalFolderList({
+    required int parentId,
+    required int spaceId,
+    int pageIndex = 0,
+    int pageSize = NetConfig.commonPageSize,
+  }) async {
+    return await SpaceFileApi.getNormalFolderList(
+      parentId: parentId,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      spaceId: spaceId,
     );
   }
 }

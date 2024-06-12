@@ -21,7 +21,7 @@ class UserFolder extends CommonFolder {
   UserFolder.rootFolder() {
     id = 0;
     name = "根目录";
-    status = FileStatus.normal.index;
+    status = FileStatus.normal;
     parentId = 0;
     createTime = null;
   }

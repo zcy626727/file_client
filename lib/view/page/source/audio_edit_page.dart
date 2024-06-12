@@ -14,7 +14,7 @@ import '../../../common/file/service/file_url_service.dart';
 import '../../../common/file/task/single_upload_task.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
-import '../../component/file/select_file_dialog.dart';
+import '../../component/file/select_user_file_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_media_player.dart';

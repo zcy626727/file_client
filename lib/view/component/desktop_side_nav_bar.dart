@@ -29,60 +29,55 @@ class _DesktopSideNavBarState extends State<DesktopSideNavBar> {
             children: [
               // Container(),
               Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        children: [
-                          // 头像
-                          Container(
-                            padding: const EdgeInsets.all(4.0),
-                            child: const Center(
-                              child: Icon(Icons.cloud, size: 30, color: Colors.blueAccent),
-                            ),
-                          ),
-
-                          const SizedBox(height: 10.0),
-                          SideMenuListTile(
-                            iconData: Icons.source,
-                            index: FirstNav.file,
-                            selectedIndex: navState.firstNavIndex,
-                            press: (index) {
-                              navState.firstNavIndex = index;
-                            },
-                          ),
-                          const SizedBox(height: 5.0),
-                          SideMenuListTile(
-                            iconData: Icons.screen_share_rounded,
-                            index: FirstNav.share,
-                            selectedIndex: navState.firstNavIndex,
-                            press: (index) {
-                              navState.firstNavIndex = index;
-                            },
-                          ),
-                          const SizedBox(height: 5.0),
-                          SideMenuListTile(
-                            iconData: Icons.window,
-                            index: FirstNav.space,
-                            selectedIndex: navState.firstNavIndex,
-                            press: (index) {
-                              navState.firstNavIndex = index;
-                            },
-                          ),
-                          const SizedBox(height: 5.0),
-                          SideMenuListTile(
-                            iconData: Icons.task_alt,
-                            index: FirstNav.task,
-                            selectedIndex: navState.firstNavIndex,
-                            press: (index) {
-                              navState.firstNavIndex = index;
-                            },
-                          ),
-                        ],
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ListView(
+                    children: [
+                      // 头像
+                      Container(
+                        padding: const EdgeInsets.all(4.0),
+                        child: const Center(
+                          child: Icon(Icons.cloud, size: 30, color: Colors.blueAccent),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10.0),
+                      SideMenuListTile(
+                        iconData: Icons.source,
+                        index: FirstNav.file,
+                        selectedIndex: navState.firstNavIndex,
+                        press: (index) {
+                          navState.firstNavIndex = index;
+                        },
+                      ),
+                      const SizedBox(height: 5.0),
+                      SideMenuListTile(
+                        iconData: Icons.screen_share_rounded,
+                        index: FirstNav.share,
+                        selectedIndex: navState.firstNavIndex,
+                        press: (index) {
+                          navState.firstNavIndex = index;
+                        },
+                      ),
+                      const SizedBox(height: 5.0),
+                      SideMenuListTile(
+                        iconData: Icons.window,
+                        index: FirstNav.space,
+                        selectedIndex: navState.firstNavIndex,
+                        press: (index) {
+                          navState.firstNavIndex = index;
+                        },
+                      ),
+                      const SizedBox(height: 5.0),
+                      SideMenuListTile(
+                        iconData: Icons.task_alt,
+                        index: FirstNav.task,
+                        selectedIndex: navState.firstNavIndex,
+                        press: (index) {
+                          navState.firstNavIndex = index;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               //用户界面和亮暗模式

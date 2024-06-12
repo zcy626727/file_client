@@ -7,7 +7,7 @@ class UploadTaskStatus {
   static const int error = 6;
 }
 
-class TaskType {
-  static const int file = 1;
-  static const int folder = 2;
+class UploadTaskTargetType {
+  static const int user = 1;
+  static const int space = 2;
 }

@@ -1,11 +1,5 @@
-enum FileStatus {
-  normal,
-  deleted,
-  hidden,
-  uploading,
-}
-
-enum ResourceType{
-  folder,
-  file,
+class FileStatus {
+  static const int uploading = 1;
+  static const int deleted = 2;
+  static const int normal = 3;
 }

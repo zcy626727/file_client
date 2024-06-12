@@ -13,7 +13,7 @@ import '../../../constant/file.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/share/video.dart';
-import '../../component/file/select_file_dialog.dart';
+import '../../component/file/select_user_file_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/common_action_two_button.dart';
 import '../../widget/common_media_player.dart';

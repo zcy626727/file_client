@@ -20,7 +20,9 @@ MultipartUploadTask _$MultipartUploadTaskFromJson(Map<String, dynamic> json) => 
   ..private = json['private'] as bool?
   ..mediaType = (json['mediaType'] as num?)?.toInt()
   ..parentId = (json['parentId'] as num?)?.toInt()
-  ..userId = (json['userId'] as num?)?.toInt();
+  ..userId = (json['userId'] as num?)?.toInt()
+  ..targetType = (json['targetType'] as num?)?.toInt()
+  ..spaceId = (json['spaceId'] as num?)?.toInt();
 
 Map<String, dynamic> _$MultipartUploadTaskToJson(
         MultipartUploadTask instance) =>
@@ -39,4 +41,6 @@ Map<String, dynamic> _$MultipartUploadTaskToJson(
       'mediaType': instance.mediaType,
       'parentId': instance.parentId,
       'userId': instance.userId,
+      'targetType': instance.targetType,
+      'spaceId': instance.spaceId,
     };

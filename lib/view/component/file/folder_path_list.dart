@@ -1,8 +1,6 @@
 import 'package:file_client/model/common/common_resource.dart';
 import 'package:flutter/material.dart';
 
-import '../../../model/file/user_folder.dart';
-
 class FolderPathList extends StatelessWidget {
   const FolderPathList({
     Key? key,
@@ -25,20 +23,6 @@ class FolderPathList extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          PathItem(
-            pathName: "根目录",
-            current: folderList.isEmpty,
-            onTap: () async {
-              if (onTap != null) {
-                onTap!(UserFolder.rootFolder());
-              }
-            },
-            onCurrentTap: () {
-              if (onCurrentTap != null) {
-                onCurrentTap!(UserFolder.rootFolder());
-              }
-            },
-          ),
           ...List.generate(
             folderList.length,
                 (index) => PathItem(

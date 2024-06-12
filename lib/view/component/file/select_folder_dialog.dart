@@ -31,7 +31,7 @@ class _SelectFolderDialogState extends State<SelectFolderDialog> {
   final List<CommonResource> _folderPath = <CommonResource>[];
 
   //当前路径的文件夹列表
-  List<CommonResource> _fileList = <UserFile>[];
+  List<CommonResource> _fileList = <CommonResource>[];
 
   CommonResource _selectedFile = UserFile.rootFolder();
 

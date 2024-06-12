@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:file_client/service/file/user_file_service.dart';
+import 'package:file_client/service/team/space_file_service.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../common/file/constant/upload.dart';
@@ -187,9 +188,15 @@ class UploadState extends ChangeNotifier {
         finishedTaskList.add(task);
         //持久化
         await Global.uploadTaskProvider.insertOrUpdate(task);
+
         // 创建文件
-        var userFile = await UserFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!);
-        sendUploadNotion(UploadNotion(userFile, UploadNotionType.completeUpload));
+        switch (task.targetType) {
+          case UploadTaskTargetType.user:
+            await UserFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!);
+          case UploadTaskTargetType.space:
+            await SpaceFileService.createFile(filename: task.fileName!, fileId: task.fileId!, parentId: task.parentId!, spaceId: task.spaceId!);
+        }
+
         notifyListeners();
         //开始下一个任务
         startNextUploadTask();

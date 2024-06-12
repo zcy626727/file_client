@@ -3,23 +3,31 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:file_client/model/space/space.dart';
 import 'package:file_client/model/space/space_folder.dart';
+import 'package:file_client/view/component/file/select_resource_dialog.dart';
 import 'package:file_client/view/component/resource/resource_detail_dialog.dart';
+import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/multipart_upload_task.dart';
+import '../../../common/list/common_item_list.dart';
 import '../../../constant/file.dart';
 import '../../../model/common/common_resource.dart';
 import '../../../model/file/user_file.dart';
 import '../../../model/file/user_folder.dart';
 import '../../../model/space/space_file.dart';
-import '../../../state/path_state.dart';
+import '../../../service/team/space_file_service.dart';
+import '../../../state/upload_state.dart';
+import '../../../util/mime_util.dart';
 import '../../component/file/file_list_tile.dart';
 import '../../component/file/folder_path_list.dart';
-import '../../component/file/select_file_dialog.dart';
-import '../../component/file/select_folder_dialog.dart';
+import '../../component/file/select_user_file_dialog.dart';
 import '../../component/show/show_snack_bar.dart';
 import '../../widget/confirm_alert_dialog.dart';
 import '../../widget/input_alert_dialog.dart';
+import '../preview/image_preview_page.dart';
+import '../preview/video_preview_page.dart';
 
 class SpaceWorkspacePage extends StatefulWidget {
   const SpaceWorkspacePage({super.key, required this.space});
@@ -32,67 +40,40 @@ class SpaceWorkspacePage extends StatefulWidget {
 
 class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
   //可能是文件也可能是文件夹，不能使用id，只能用索引
-  int _selectedIndex = -1;
+  int? _selectedIndex = -1;
   late SpaceFolder _currentFolder;
-  late Future _futureBuilderFuture;
-  bool _loadingResourceList = false;
   bool _checkMode = false;
-  List<SpaceFolder> folderList = <SpaceFolder>[];
+
+  final List<SpaceFolder> _folderPath = <SpaceFolder>[];
 
   final List<CommonResource> _selectedResourceList = [];
 
-  List<CommonResource> _resourceList = <CommonResource>[SpaceFolder.testFolder(), SpaceFolder.testFolder(), SpaceFolder.testFolder(), SpaceFile.testFile(), SpaceFile.testFile()];
-
-  Future<void> loadFileAndFolderList() async {
-    try {
-      //获取当前文件夹的文件和文件夹
-      // _resourceList = await ResourceService.getFileAndFolderList(parentId: parentId, statusList: <int>[ResourceStatus.normal.index, ResourceStatus.uploading.index]).timeout(Duration(seconds: 2));
-    } on DioException catch (e) {
-      log(e.toString());
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Future getData() async {
-    return Future.wait([loadFileAndFolderList()]);
-  }
+  GlobalKey<CommonItemListState<CommonResource>> listKey = GlobalKey<CommonItemListState<CommonResource>>();
 
   @override
   void initState() {
-    _futureBuilderFuture = getData();
     super.initState();
+    _currentFolder = SpaceFolder.rootFolder(spaceId: widget.space.id!);
+    _folderPath.add(_currentFolder);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _futureBuilderFuture,
-      builder: (BuildContext context, AsyncSnapshot snapShot) {
-        if (snapShot.connectionState == ConnectionState.done) {
-          return Navigator(
-            onGenerateRoute: (val) {
-              return PageRouteBuilder(
-                pageBuilder: (BuildContext nContext, Animation<double> animation, Animation<double> secondaryAnimation) {
-                  return Column(
-                    children: [
-                      _operaList(nContext),
-                      _buildPathList(),
-                      Expanded(
-                        child: _fileBody(),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          );
-        } else {
-          // 请求未结束，显示loading
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+    return Navigator(
+      onGenerateRoute: (val) {
+        return PageRouteBuilder(
+          pageBuilder: (BuildContext nContext, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return Column(
+              children: [
+                _operaList(nContext),
+                _buildPathList(),
+                Expanded(
+                  child: _fileBody(nContext),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }
@@ -109,8 +90,50 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           SizedBox(
             height: 25,
             child: ElevatedButton(
-              onPressed: () async {
-                await addFile();
+              onPressed: () {
+                // 选择从哪里获取文件
+                showDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10),
+                      backgroundColor: colorScheme.surface,
+                      titlePadding: const EdgeInsets.only(top: 15.0, left: 10.0),
+                      title: const Text("文件位置"),
+                      content: SizedBox(
+                        height: 110,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              height: 40,
+                              child: OutlinedButton(
+                                onPressed: () async {
+                                  await addFileFromWorkspace();
+                                  if (context.mounted) Navigator.pop(context);
+                                },
+                                child: const Text("个人空间"),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 40,
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: () async {
+                                  await addFileFromLocal();
+                                  if (context.mounted) Navigator.pop(context);
+                                },
+                                child: const Text("本地存储"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
@@ -121,13 +144,13 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               child: Row(
                 children: [
                   Icon(
-                    Icons.upload_file,
+                    Icons.upload,
                     size: 18,
                     color: colorScheme.onPrimary,
                   ),
                   const SizedBox(width: 5.0),
                   Text(
-                    "添加文件",
+                    "上传文件",
                     style: TextStyle(color: colorScheme.onPrimary),
                   )
                 ],
@@ -147,10 +170,18 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                       onConfirm: (String value) async {
                         if (value.isNotEmpty) {
                           try {
+                            if (widget.space.id == null) throw const FormatException("空间信息异常");
+                            var userFolder = await SpaceFileService.createFolder(
+                              folderName: value,
+                              parentId: _currentFolder.id!,
+                              spaceId: widget.space.id!,
+                            );
+                            listKey.currentState?.addItem(userFolder);
+                            listKey.currentState?.setState(() {});
+                            if (context.mounted) Navigator.of(context).pop();
                             setState(() {});
-                            if (mounted) Navigator.of(context).pop();
                           } on Exception catch (e) {
-                            ShowSnackBar.exception(context: context, e: e, defaultValue: "新建文件夹失败");
+                            if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "新建文件夹失败");
                           }
                         }
                       },
@@ -176,7 +207,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                     size: 18,
                     color: colorScheme.onPrimary,
                   ),
-                  SizedBox(width: 5.0),
+                  const SizedBox(width: 5.0),
                   Text(
                     "新建文件夹",
                     style: TextStyle(color: colorScheme.onPrimary),
@@ -222,23 +253,16 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
   }
 
   Widget _buildPathList() {
-    var folderPath = Provider.of<PathState>(context, listen: true);
-    var folderList = folderPath.getSpaceFolder(spaceId: widget.space.id!);
     return FolderPathList(
       margin: const EdgeInsets.only(left: 13.0, top: 1.0),
-      folderList: folderList,
+      folderList: _folderPath,
       onTap: (spaceFolder) async {
         if (spaceFolder is SpaceFolder) {
-          if (spaceFolder.id == 0) {
-            //根目录
-            // folderPath.clearMainPath();
-          } else {
-            // folderPath.turnToMainFolder(spaceFolder);
+          while (_folderPath.last.id != spaceFolder.id) {
+            _folderPath.removeLast();
           }
-          // await loadFileAndFolderList(spaceFolder.id!);
           _currentFolder = spaceFolder;
-          _loadingResourceList = false;
-
+          resetFileListKey();
           cancelCheck();
           setState(() {});
         }
@@ -246,66 +270,98 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
     );
   }
 
-  // 文件/文件夹列表
-  Widget _fileBody() {
+  // 文件列表
+  Widget _fileBody(BuildContext nContext) {
     var colorScheme = Theme.of(context).colorScheme;
     return Stack(
       fit: StackFit.expand,
       alignment: AlignmentDirectional.bottomCenter,
       children: [
-        _loadingResourceList
-            //加载
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            //文件列表
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
-                itemBuilder: (ctx, idx) {
-                  var res = _resourceList[idx];
-                  return Container(
-                    key: ValueKey("${res.id}-$_checkMode"),
-                    margin: const EdgeInsets.all(2.0),
-                    child: ResourceListItem(
-                      onPreTap: () async {
-                        setState(() {
-                          _selectedIndex = idx;
-                        });
-                      },
-                      onTap: () {
-                        log("单击");
-                      },
-                      onSecondaryTap: (TapDownDetails details) {
-                        setState(() {
-                          _selectedIndex = idx;
-                        });
-                        moreOpera(context, details, res);
-                      },
-                      onDoubleTap: () async {
-                        //是文件夹
-                        if (res is SpaceFolder) {
-                          //双击进入文件夹
-                          if (res.id != null) {}
-                        } else if (res is SpaceFile) {}
-                        _loadingResourceList = false;
-
-                        setState(() {});
-                      },
-                      onCheck: (b) {
-                        if (b) {
-                          _selectedResourceList.add(res);
-                        } else {
-                          _selectedResourceList.remove(res);
-                        }
-                      },
-                      isCheckMode: _checkMode,
-                      resource: res,
-                      selected: _selectedIndex == idx,
-                    ),
-                  );
+        CommonItemList<CommonResource>(
+          key: listKey,
+          onLoad: (int page) async {
+            if (widget.space.id == null) return <CommonResource>[];
+            var list = await SpaceFileService.getNormalFileList(parentId: 0, spaceId: widget.space.id!, pageIndex: page);
+            return list;
+          },
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 160, childAspectRatio: 0.9),
+          itemName: "文件",
+          itemHeight: null,
+          isGrip: true,
+          enableScrollbar: true,
+          itemBuilder: (ctx, item, itemList, onFresh) {
+            return Container(
+              key: ValueKey(item.id),
+              margin: const EdgeInsets.all(2.0),
+              child: ResourceListItem(
+                onPreTap: () async {
+                  setState(() {
+                    _selectedIndex = item.id;
+                  });
                 },
-                itemCount: _resourceList.length,
+                onTap: () {
+                  log("单击");
+                },
+                onSecondaryTap: (TapDownDetails details) {
+                  setState(() {
+                    _selectedIndex = item.id;
+                  });
+                  moreOpera(context, details, item);
+                },
+                onDoubleTap: () async {
+                  //是文件夹
+                  if (item is SpaceFolder) {
+                    if (item.id != null) {
+                      //双击进入文件夹
+                      if (item.id == _currentFolder.id) return;
+                      if (item.id == null) throw const FormatException("文件夹异常，请刷新后重试");
+                      _currentFolder = item;
+                      _folderPath.add(item);
+                      cancelCheck();
+                      resetFileListKey();
+                      setState(() {});
+                    }
+                  } else if (item is SpaceFile) {
+                    //预览文件
+                    var mimeType = item.mimeType;
+                    if (mimeType != null) {
+                      if (MimeUtil.isMedia(mimeType)) {
+                        Navigator.push(
+                          nContext,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return VideoPreviewPage(fileId: item.fileId!);
+                            },
+                          ),
+                        );
+                      } else if (MimeUtil.isImage(mimeType)) {
+                        Navigator.push(
+                          nContext,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ImagePreviewPage(fileId: item.fileId!);
+                            },
+                          ),
+                        );
+                      }
+                    }
+                  }
+                  setState(() {});
+                },
+                onCheck: (b) {
+                  if (b) {
+                    _selectedResourceList.add(item);
+                  } else {
+                    _selectedResourceList.remove(item);
+                  }
+                },
+                isCheckMode: _checkMode,
+                resource: item,
+                selected: _selectedIndex != null && _selectedIndex == item.id,
               ),
+            );
+          },
+        ),
         // 批量操作
         if (_checkMode)
           Positioned(
@@ -330,10 +386,23 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                                   if (_selectedResourceList.isEmpty) {
                                     return;
                                   }
+                                  List<int> spaceFileIdList = <int>[];
+
+                                  for (var res in _selectedResourceList) {
+                                    if (res.id != null) {
+                                      spaceFileIdList.add(res.id!);
+                                    }
+                                  }
+                                  await SpaceFileService.deleteFileList(spaceFileIdList: spaceFileIdList);
+                                  for (var res in _selectedResourceList) {
+                                    listKey.currentState?.removeItem(res);
+                                  }
+                                  cancelCheck();
+                                  setState(() {});
                                 } on DioException catch (e) {
-                                  ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+                                  if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
                                 } finally {
-                                  Navigator.pop(context);
+                                  if (context.mounted) Navigator.pop(context);
                                 }
                               },
                               onCancel: () {
@@ -439,52 +508,13 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
       (value) async {
         switch (value) {
           case "rename": //重命名
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  //是文件夹
-                  return InputAlertDialog(
-                    initValue: res.name!,
-                    onConfirm: (value) async {
-                      try {} on DioException catch (e) {
-                        ShowSnackBar.exception(context: context, e: e, defaultValue: "重命名失败");
-                      } finally {
-                        Navigator.pop(context);
-                      }
-                    },
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                    title: "重命名",
-                    iconData: res is UserFile ? Icons.insert_drive_file : Icons.folder,
-                  );
-                });
+            renameFile(res);
             break;
           case "move":
-            moveFileOrFolder(res);
+            moveFile(res);
             break;
           case "delete":
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return ConfirmAlertDialog(
-                    text: "是否确定删除？",
-                    onConfirm: () async {
-                      try {
-                        setState(() {
-                          _resourceList.remove(res);
-                        });
-                      } on DioException catch (e) {
-                        ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
-                      } finally {
-                        Navigator.pop(context);
-                      }
-                    },
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                  );
-                });
+            deleteFile(res);
             break;
           case "download":
             break;
@@ -502,22 +532,98 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
     );
   }
 
-  void moveFileOrFolder(CommonResource selectedRes) {
+  void renameFile(CommonResource res) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          //是文件夹
+          return InputAlertDialog(
+            initValue: res.name!,
+            onConfirm: (value) async {
+              try {
+                if (res.id == null) throw const FormatException("重命名失败");
+                await SpaceFileService.renameFile(spaceFileId: res.id!, newName: value);
+                setState(() {
+                  res.name = value;
+                });
+              } on DioException catch (e) {
+                if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "重命名失败");
+              } finally {
+                if (context.mounted) Navigator.pop(context);
+              }
+            },
+            onCancel: () {
+              Navigator.pop(context);
+            },
+            title: "重命名",
+            iconData: res is UserFile ? Icons.insert_drive_file : Icons.folder,
+          );
+        });
+  }
+
+  void deleteFile(CommonResource selectedRes) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmAlertDialog(
+          text: "是否确定删除？",
+          onConfirm: () async {
+            try {
+              if (selectedRes.id == null) throw const FormatException("删除失败");
+              await SpaceFileService.deleteFile(spaceFileId: selectedRes.id!);
+              setState(() {
+                listKey.currentState?.removeItem(selectedRes);
+              });
+            } on DioException catch (e) {
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "删除失败");
+            } finally {
+              if (context.mounted) Navigator.pop(context);
+            }
+          },
+          onCancel: () {
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+  }
+
+  void moveFile(CommonResource selectedRes) {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SelectFolderDialog(
+        return SelectResourceDialog(
           title: "移动到",
           onConfirm: (targetFolder) async {
             try {
-              _resourceList.remove(selectedRes);
+              if (_currentFolder.id == targetFolder?.id) throw const FormatException("文件夹已存在于该路径");
+              List<int> userFileIdList = <int>[];
+
+              for (var res in _selectedResourceList) {
+                if (res.id != null) {
+                  userFileIdList.add(res.id!);
+                }
+              }
+
+              if (targetFolder?.id == null) throw const FormatException("获取目标文件夹失败");
+
+              await SpaceFileService.moveFileList(spaceFileIdList: userFileIdList, newParentId: targetFolder!.id!);
+              for (var res in _selectedResourceList) {
+                listKey.currentState?.removeItem(res);
+              }
+              cancelCheck();
               setState(() {});
             } on Exception catch (e) {
-              ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
             } finally {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             }
+          },
+          onLoad: (int parentId) async {
+            if (widget.space.id == null) return <CommonResource>[];
+            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!);
+            return list;
           },
         );
       },
@@ -539,7 +645,8 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
     );
   }
 
-  Future<void> addFile() async {
+  //选择个人文件后添加
+  Future<void> addFileFromWorkspace() async {
     //其他类型直接选择文件即可（单资源类型）
     await showDialog(
       barrierDismissible: false,
@@ -553,16 +660,45 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               if (res is UserFolder) {
                 throw const FormatException("请选择文件");
               } else if (res is UserFile) {
+                if (res.name == null || res.fileId == null || res.parentId == null) throw const FormatException("所选文件状态异常");
+                if (widget.space.id == null) throw const FormatException("空间状态异常");
                 //拿到文件后保存到本地目录
+                var spaceFile = await SpaceFileService.createFile(filename: res.name!, fileId: res.fileId!, parentId: res.parentId!, spaceId: widget.space.id!);
+                listKey.currentState?.addItem(spaceFile);
+                listKey.currentState?.setState(() {});
               }
             } on Exception catch (e) {
-              ShowSnackBar.exception(context: context, e: e, defaultValue: "选择文件出错");
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "选择文件出错");
             } finally {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
             }
           },
         );
       },
     );
+  }
+
+  Future<void> addFileFromLocal() async {
+    var uploadState = Provider.of<UploadState>(context, listen: false);
+
+    var result = await file_picker.FilePicker.platform.pickFiles(
+      type: file_picker.FileType.any,
+    );
+    if (result != null) {
+      var f = result.files.single;
+      uploadState.addUploadTask(
+        MultipartUploadTask.spaceFile(
+          fileName: f.name,
+          srcPath: f.path,
+          spaceId: widget.space.id,
+          parentId: _currentFolder.id,
+          status: UploadTaskStatus.uploading,
+        ),
+      );
+    }
+  }
+
+  void resetFileListKey() {
+    listKey = GlobalKey<CommonItemListState<CommonResource>>();
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../constant/resource.dart';
 import '../../../model/common/common_resource.dart';
-import '../../../model/file/user_file.dart';
 import '../../widget/custom_ink_well.dart';
 
 class ResourceListItem extends StatefulWidget {
@@ -53,7 +52,7 @@ class _ResourceListItemState extends State<ResourceListItem> {
     }
   }
 
-  Widget fileBuild(CommonResource file) {
+  Widget fileBuild(CommonFile file) {
     IconData iconData = Icons.insert_drive_file;
     var type = file.name!.split('.').last;
     switch (type) {
@@ -75,21 +74,17 @@ class _ResourceListItemState extends State<ResourceListItem> {
     }
 
     Color iconColor = Colors.orange;
-    if (file.status == FileStatus.uploading.index) {
+    if (file.status == FileStatus.uploading) {
       iconColor = iconColor.withAlpha(100);
     }
 
-    String? coverUrl;
-
-    if (file is UserFile) {
-      coverUrl = file.coverUrl;
-    }
+    String? coverUrl = file.coverUrl;
 
     return buildViewItem(name: file.name!, coverUrl: coverUrl, iconData: iconData, iconColor: iconColor);
   }
 
   //文件夹
-  Widget folderBuild(CommonResource folder) {
+  Widget folderBuild(CommonFolder folder) {
     return buildViewItem(name: folder.name!, iconData: Icons.folder);
   }
 
@@ -137,7 +132,6 @@ class _ResourceListItemState extends State<ResourceListItem> {
                   )
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    //todo 列表视图需要展示的数据更多（文件大小、上传时间等），可能需要再拆分一个方法，判断类型后针对每个类型展示信息
                     children: [
                       Icon(
                         iconData,

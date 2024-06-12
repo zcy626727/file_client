@@ -33,10 +33,10 @@ class SpaceFolder extends CommonFolder {
     createTime = DateTime.now();
   }
 
-  SpaceFolder.rootFolder() {
+  SpaceFolder.rootFolder({required this.spaceId}) {
     id = 0;
     name = "根目录";
-    status = FileStatus.normal.index;
+    status = FileStatus.normal;
     parentId = 0;
     createTime = null;
   }

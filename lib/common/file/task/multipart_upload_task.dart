@@ -8,9 +8,9 @@ import '../constant/upload.dart';
 
 part 'multipart_upload_task.g.dart';
 
-/// 上传任务（文件/文件夹）
-/// 文件：
-/// 文件夹：
+/// 上传任务
+/// 文件：每个任务代表一个文件，上传结束后根据类型调用方法添加userFile或spaceFile
+/// 文件夹：用一个文件任务列表表示，先按照路径顺序创建文件夹，然后再初始化parentId属性，最后上传文件后创建useFile/spaceFile即可
 @JsonSerializable()
 class MultipartUploadTask {
   int? id;
@@ -31,12 +31,15 @@ class MultipartUploadTask {
 
   //额外业务信息
   int? parentId; //上传状态
-  int? userId; //上传状态
+  int? userId;
+  int? targetType; //上传目标位置,user/space
 
+  //space
+  int? spaceId;
 
   MultipartUploadTask();
 
-  MultipartUploadTask.file({
+  MultipartUploadTask.userFile({
     required this.srcPath,
     this.parentId,
     this.fileName,
@@ -44,6 +47,17 @@ class MultipartUploadTask {
     this.private,
     this.status = UploadTaskStatus.uploading,
     this.uploadedSize = 0,
+    this.targetType = UploadTaskTargetType.user,
+  });
+
+  MultipartUploadTask.spaceFile({
+    required this.srcPath,
+    this.parentId,
+    this.fileName,
+    this.spaceId,
+    this.status = UploadTaskStatus.uploading,
+    this.uploadedSize = 0,
+    this.targetType = UploadTaskTargetType.space,
   });
 
   void copy(MultipartUploadTask task) {
@@ -86,6 +100,8 @@ class UploadTaskProvider {
       mediaType text,
       statusMessage text,
       parentId integer,
+      targetType integer,
+      spaceId integer,
       private bool,
       userId integer
     )
