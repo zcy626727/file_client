@@ -99,8 +99,8 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                     return AlertDialog(
                       contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10),
                       backgroundColor: colorScheme.surface,
-                      titlePadding: const EdgeInsets.only(top: 15.0, left: 10.0),
-                      title: const Text("文件位置"),
+                      titlePadding: const EdgeInsets.only(top: 15.0, left: 10.0, bottom: 10),
+                      title: Text("选择文件", style: TextStyle(color: colorScheme.onSurface)),
                       content: SizedBox(
                         height: 110,
                         child: Column(
@@ -660,10 +660,10 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               if (res is UserFolder) {
                 throw const FormatException("请选择文件");
               } else if (res is UserFile) {
-                if (res.name == null || res.fileId == null || res.parentId == null) throw const FormatException("所选文件状态异常");
+                if (res.name == null || res.fileId == null || _currentFolder.id == null) throw const FormatException("所选文件状态异常");
                 if (widget.space.id == null) throw const FormatException("空间状态异常");
                 //拿到文件后保存到本地目录
-                var spaceFile = await SpaceFileService.createFile(filename: res.name!, fileId: res.fileId!, parentId: res.parentId!, spaceId: widget.space.id!);
+                var spaceFile = await SpaceFileService.createFile(filename: res.name!, fileId: res.fileId!, parentId: _currentFolder.id!, spaceId: widget.space.id!);
                 listKey.currentState?.addItem(spaceFile);
                 listKey.currentState?.setState(() {});
               }
