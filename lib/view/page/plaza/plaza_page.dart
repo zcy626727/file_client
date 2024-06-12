@@ -65,20 +65,21 @@ class _PlazaPageState extends State<PlazaPage> {
                         children: [
                           CommonItemList<Topic>(
                             onLoad: (int page) async {
-                              var list = await TopicService.getFeedTopic(pageSize: 20);
-                              return list;
-                            },
-                            itemName: "主题",
-                            itemHeight: null,
-                            isGrip: true,
-                            enableScrollbar: true,
-                            itemBuilder: (ctx, topic, topicList, onFresh) {
-                              return Container(
-                                margin: const EdgeInsets.all(2),
-                                child: TopicItem(
-                                  topic: topic,
-                                  onDeleteTopic: (Topic t) {
-                                    setState(() {
+                            var list = await TopicService.getFeedTopic(pageSize: 20);
+                            return list;
+                          },
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, childAspectRatio: 1),
+                          itemName: "主题",
+                          itemHeight: null,
+                          isGrip: true,
+                          enableScrollbar: true,
+                          itemBuilder: (ctx, topic, topicList, onFresh) {
+                            return Container(
+                              margin: const EdgeInsets.all(2),
+                              child: TopicItem(
+                                topic: topic,
+                                onDeleteTopic: (Topic t) {
+                                  setState(() {
                                       topicList?.remove(t);
                                       setState(() {});
                                     });
