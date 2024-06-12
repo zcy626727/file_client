@@ -424,7 +424,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
                         if (_selectedResourceList.isEmpty) {
                           return;
                         }
-                        moveResourceList();
+                        moveFileList();
                       },
                       icon: Icon(
                         Icons.drive_file_move,
@@ -598,6 +598,41 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           onConfirm: (targetFolder) async {
             try {
               if (_currentFolder.id == targetFolder?.id) throw const FormatException("文件夹已存在于该路径");
+
+              if (targetFolder?.id == null) throw const FormatException("获取目标文件夹失败");
+              if (selectedRes.id == null) throw const FormatException("文件状态异常");
+
+              await SpaceFileService.moveFile(spaceFileId: selectedRes.id!, newParentId: targetFolder!.id!);
+              listKey.currentState?.removeItem(selectedRes);
+              listKey.currentState?.setState(() {});
+              cancelCheck();
+              setState(() {});
+            } on Exception catch (e) {
+              if (context.mounted) ShowSnackBar.exception(context: context, e: e, defaultValue: "移动文件出错");
+            } finally {
+              if (context.mounted) Navigator.pop(context);
+            }
+          },
+          onLoad: (int parentId) async {
+            if (widget.space.id == null) return <CommonResource>[];
+            var list = await SpaceFileService.getNormalFolderList(parentId: parentId, spaceId: widget.space.id!);
+            return list;
+          },
+        );
+      },
+    );
+  }
+
+  void moveFileList() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SelectResourceDialog(
+          title: "移动到",
+          onConfirm: (targetFolder) async {
+            try {
+              if (_currentFolder.id == targetFolder?.id) throw const FormatException("文件夹已存在于该路径");
               List<int> userFileIdList = <int>[];
 
               for (var res in _selectedResourceList) {
@@ -633,16 +668,6 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
   void cancelCheck() {
     _selectedResourceList.clear();
     _checkMode = false;
-  }
-
-  void moveResourceList() {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return Container();
-      },
-    );
   }
 
   //选择个人文件后添加

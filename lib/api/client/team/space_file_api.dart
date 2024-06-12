@@ -201,7 +201,7 @@ class SpaceFileApi {
     required int pageSize,
   }) async {
     var r = await TeamHttpConfig.dio.get(
-      "/spaceFile/getNormalFileList",
+      "/spaceFile/getNormalFolderList",
       queryParameters: {
         "parentId": parentId,
         "spaceId": spaceId,

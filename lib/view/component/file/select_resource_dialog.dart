@@ -29,12 +29,12 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
   late Future _futureBuilderFuture;
 
   //移动文件路径
-  final List<CommonFolder> _folderPath = <CommonFolder>[];
+  final List<CommonFolder> _folderPath = <CommonFolder>[CommonFolder.rootFolder()];
 
   //当前路径的文件夹列表
   final List<CommonResource> _resourceList = <CommonResource>[];
 
-  CommonResource? _selectedResource;
+  late CommonResource _selectedResource;
 
   bool _loadingMoveFolderList = false;
 
@@ -57,8 +57,9 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
 
   @override
   void initState() {
-    _futureBuilderFuture = getData();
     super.initState();
+    _futureBuilderFuture = getData();
+    _selectedResource = _folderPath[0];
   }
 
   @override
@@ -116,12 +117,8 @@ class _SelectUserFileDialogState extends State<SelectResourceDialog> {
                     });
                     _selectedResource = userFolder;
                     //更新路径和列表
-                    if (userFolder.id == 0) {
-                      _folderPath.clear();
-                    } else {
-                      while (_folderPath.last.id != userFolder.id) {
-                        _folderPath.removeLast();
-                      }
+                    while (_folderPath.last.id != userFolder.id) {
+                      _folderPath.removeLast();
                     }
                     _resourceList.clear();
                     var list = await widget.onLoad(userFolder.id!);
