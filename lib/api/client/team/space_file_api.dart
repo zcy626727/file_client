@@ -149,17 +149,17 @@ class SpaceFileApi {
 
   static Future<void> updatePermission({
     required int spaceFileId,
-    required int newGroupId,
-    required int newGroupPermission,
-    required int newOtherPermission,
+    int? newGroupId,
+    int? newGroupPermission,
+    int? newOtherPermission,
   }) async {
     await TeamHttpConfig.dio.put(
       "/spaceFile/updatePermission",
       data: FormData.fromMap({
         "spaceFileId": spaceFileId,
-        "newGroupId": newGroupId,
-        "newGroupPermission": newGroupPermission,
-        "newOtherPermission": newOtherPermission,
+        "newGroupId": newGroupId ?? 0,
+        "newGroupPermission": newGroupPermission ?? 0,
+        "newOtherPermission": newOtherPermission ?? 0,
       }),
       options: TeamHttpConfig.options.copyWith(
         extra: {

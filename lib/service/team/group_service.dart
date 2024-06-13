@@ -43,6 +43,12 @@ class GroupService {
     return await GroupApi.getSpaceGroupList(spaceId: spaceId, pageIndex: pageIndex, pageSize: pageSize);
   }
 
+  static Future<Group?> getGroupById({
+    required int groupId,
+  }) async {
+    return await GroupApi.getGroupById(groupId: groupId);
+  }
+
   static Future<List<Group>> searchSpaceGroupList({
     required String keyword,
     required int spaceId,

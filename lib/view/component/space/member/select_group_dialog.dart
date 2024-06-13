@@ -1,5 +1,6 @@
 import 'package:file_client/model/space/group.dart';
 import 'package:file_client/service/team/group_service.dart';
+import 'package:file_client/view/widget/common_action_one_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,10 +8,11 @@ import '../../../../common/list/common_item_list.dart';
 import '../../../../constant/ui.dart';
 
 class SelectGroupDialog extends StatefulWidget {
-  const SelectGroupDialog({super.key, required this.spaceId, required this.selectGroup});
+  const SelectGroupDialog({super.key, required this.spaceId, required this.selectGroup, this.buttonTitle = "返回"});
 
   final int spaceId;
-  final Function(Group) selectGroup;
+  final String buttonTitle;
+  final Function(Group?) selectGroup;
 
   @override
   State<SelectGroupDialog> createState() => _SelectGroupDialogState();
@@ -33,6 +35,7 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
     var colorScheme = Theme.of(context).colorScheme;
     return AlertDialog(
       backgroundColor: colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
       contentPadding: dialogContentPadding,
       title: Text("选择组", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
       content: SizedBox(
@@ -98,6 +101,15 @@ class _SelectGroupDialogState extends State<SelectGroupDialog> {
           ],
         ),
       ),
+      actions: [
+        CommonActionOneButton(
+          onTap: () {
+            Navigator.pop(context);
+            widget.selectGroup(null);
+          },
+          title: "选择空组",
+        )
+      ],
     );
   }
 }

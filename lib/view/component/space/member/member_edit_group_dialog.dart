@@ -46,11 +46,13 @@ class _MemberEditGroupDialogState extends State<MemberEditGroupDialog> {
                     context: context,
                     builder: (BuildContext dialogContext) {
                       return SelectGroupDialog(
+                        buttonTitle: "取消",
                         spaceId: widget.spaceUser.spaceId!,
                         selectGroup: (g) async {
                           //添加组
                           try {
-                            await GroupUserService.addGroup(groupId: g.id!, targetUserId: widget.spaceUser.userId!);
+                            if (g?.id == null) return;
+                            await GroupUserService.addGroup(groupId: g!.id!, targetUserId: widget.spaceUser.userId!);
                             _groupListKey.currentState?.addItem(g);
                             _groupListKey.currentState?.setState(() {});
                           } on Exception catch (e) {

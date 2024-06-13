@@ -58,7 +58,6 @@ class _TrashPageState extends State<TrashPage> {
         if (snapShot.connectionState == ConnectionState.done) {
           return Column(
             children: [
-              //todo 这里回收站可能有不同类型，比如图片、文件等
               _operaList(),
               // _navBar(),
               Expanded(

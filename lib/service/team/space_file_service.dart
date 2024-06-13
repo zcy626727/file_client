@@ -60,9 +60,9 @@ class SpaceFileService {
 
   static Future<void> updatePermission({
     required int spaceFileId,
-    required int newGroupId,
-    required int newGroupPermission,
-    required int newOtherPermission,
+    int? newGroupId,
+    int? newGroupPermission,
+    int? newOtherPermission,
   }) async {
     await SpaceFileApi.updatePermission(
       spaceFileId: spaceFileId,

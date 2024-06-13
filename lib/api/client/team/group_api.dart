@@ -113,6 +113,26 @@ class GroupApi {
     return _parseGroupList(r);
   }
 
+  static Future<Group?> getGroupById({
+    required int groupId,
+  }) async {
+    var r = await TeamHttpConfig.dio.get(
+      "/group/getGroupById",
+      queryParameters: {
+        "groupId": groupId,
+      },
+      options: TeamHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+
+    if (r.data['group'] == null) return null;
+    return Group.fromJson(r.data['group']);
+  }
+
   static Future<List<Group>> searchSpaceGroupList({
     required String keyword,
     required int spaceId,

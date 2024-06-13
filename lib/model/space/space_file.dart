@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../config/constants.dart';
+import '../../constant/space.dart';
 import '../common/common_file.dart';
 
 part 'space_file.g.dart';
@@ -24,7 +25,7 @@ class SpaceFile extends CommonFile {
   SpaceFile.testFile() {
     spaceId = 1;
     groupId = 1;
-    otherPermission = SpaceFilePermission.readonly;
+    otherPermission = SpaceFilePermission.read;
     groupPermission = SpaceFilePermission.write;
     id = 1;
     name = "名字.txt";
@@ -47,10 +48,4 @@ class SpaceFile extends CommonFile {
   }
 }
 
-class SpaceFilePermission {
-  // 可预览
-  static const int readonly = 1;
 
-  // 可编辑/删除/修改信息
-  static const int write = 2;
-}

@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:file_client/service/file/user_file_service.dart';
-import 'package:file_client/service/team/space_file_service.dart';
 import 'package:flutter/services.dart';
 
+import '../../../api/client/file/user_file_api.dart';
+import '../../../api/client/team/space_file_api.dart';
 import '../../../config/global.dart';
 import '../../../util/file_util.dart';
 import '../constant/download.dart';
@@ -142,11 +142,11 @@ class DownloadService {
 
     switch (task.type) {
       case DownloadTaskType.space:
-        var url = await SpaceFileService.getDownloadUrl(spaceFileId: task.spaceFileId!);
+        var url = await SpaceFileApi.getDownloadUrl(spaceFileId: task.spaceFileId!);
         task.downloadUrl = url;
         break;
       case DownloadTaskType.user:
-        var url = await UserFileService.getDownloadUrl(userFileId: task.userFileId!);
+        var url = await UserFileApi.getDownloadUrl(userFileId: task.userFileId!);
         task.downloadUrl = url;
         break;
       default:

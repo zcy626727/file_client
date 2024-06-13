@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:file_client/model/space/space.dart';
 import 'package:file_client/model/space/space_folder.dart';
 import 'package:file_client/view/component/file/select_resource_dialog.dart';
-import 'package:file_client/view/component/resource/resource_detail_dialog.dart';
+import 'package:file_client/view/component/resource/space_detail_dialog.dart';
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -316,7 +316,6 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
               enableScrollbar: true,
               itemBuilder: (ctx, item, itemList, onFresh) {
                 return Container(
-                  key: ValueKey(item.id),
                   margin: const EdgeInsets.all(2.0),
                   child: ResourceListItem(
                     onPreTap: () async {
@@ -516,9 +515,23 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
           case "detail":
             await showDialog(
               context: context,
-              barrierDismissible: true,
+              barrierDismissible: false,
               builder: (BuildContext context) {
-                return ResourceDetailDialog(resource: res, space: widget.space);
+                return SpaceDetailDialog(
+                  spaceResource: res,
+                  onUpdate: (int? newGroupId, int? newGroupPermission, int? newOtherPermission) {
+                    if (res is SpaceFile) {
+                      res.groupId = newGroupId;
+                      res.groupPermission = newGroupPermission;
+                      res.otherPermission = newOtherPermission;
+                    } else if (res is SpaceFolder) {
+                      res.groupId = newGroupId;
+                      res.groupPermission = newGroupPermission;
+                      res.otherPermission = newOtherPermission;
+                    }
+                    if (context.mounted) ShowSnackBar.info(context: context, message: "修改成功");
+                  },
+                );
               },
             );
             break;
