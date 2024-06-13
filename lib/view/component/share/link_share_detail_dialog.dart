@@ -1,3 +1,4 @@
+import 'package:file_client/util/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,10 +31,10 @@ class LinkShareDetailDialog extends StatelessWidget {
               children: [
                 Expanded(
                     child: InputTextField(
-                  controller: TextEditingController(text: share.token!),
-                  title: "链接地址",
-                  enable: false,
-                )),
+                      controller: TextEditingController(text: share.token!),
+                      title: "链接地址",
+                      enable: false,
+                    )),
                 const SizedBox(width: 5),
                 SizedBox(
                   height: 42,
@@ -57,10 +58,10 @@ class LinkShareDetailDialog extends StatelessWidget {
               children: [
                 Expanded(
                     child: InputTextField(
-                  controller: TextEditingController(text: share.code != null && share.code!.isNotEmpty ? share.code : "无提取码"),
-                  title: "提取码",
-                  enable: false,
-                )),
+                      controller: TextEditingController(text: share.code != null && share.code!.isNotEmpty ? share.code : "无提取码"),
+                      title: "提取码",
+                      enable: false,
+                    )),
                 const SizedBox(width: 5),
                 SizedBox(
                   height: 42,
@@ -93,7 +94,7 @@ class LinkShareDetailDialog extends StatelessWidget {
           rightTextColor: colorScheme.onPrimary,
           rightTitle: "复制完整链接",
           onRightTap: () {
-            Clipboard.setData(ClipboardData(text: "${share.token!}${share.code != null && share.code!.isNotEmpty ? '?code=' : ''}${share.code}"));
+            Clipboard.setData(ClipboardData(text: ShareUtil.generateShareUrl(token: share.token!, code: share.code)));
           },
         )
       ],

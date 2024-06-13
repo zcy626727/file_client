@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:file_client/config/net_config.dart';
+
 class ShareUtil {
   // 创建随机数生成器实例
   static final rand = Random();
@@ -11,5 +13,12 @@ class ShareUtil {
     // 生成四位提取码
     final code = List.generate(len, (_) => chars[rand.nextInt(chars.length)]).join('');
     return code;
+  }
+
+  static String generateShareUrl({
+    required String token,
+    String? code,
+  }) {
+    return "${NetConfig.accessShareUrl}?token=$token${code != null && code.isNotEmpty ? '&code=$code' : ''}";
   }
 }

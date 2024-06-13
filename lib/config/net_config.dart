@@ -1,4 +1,4 @@
-class NetConfig{
+class NetConfig {
   NetConfig({this.enable = false, this.maxAge = 3600, this.maxCount = 100});
 
   //是否开启缓存
@@ -12,15 +12,18 @@ class NetConfig{
 
   static const int commonPageSize = 20;
 
-  //用户服务
-  static String userApiUrl = 'http://192.168.200.148:26201';
+  static String baseUrl = "http://192.168.200.148";
 
   //用户服务
-  static String fileApiUrl = 'http://192.168.200.148:26211';
+  static String userApiUrl = '$baseUrl:26201';
+
+  //用户服务
+  static String fileApiUrl = '$baseUrl:26211';
+  static String accessShareUrl = '$baseUrl:26211/share/accessShare';
 
   //分享服务
-  static String shareApiUrl = 'http://192.168.200.148:26221';
+  static String shareApiUrl = '$baseUrl:26221';
 
   //团队服务
-  static String teamApiUrl = 'http://192.168.200.148:26231';
+  static String teamApiUrl = '$baseUrl:26231';
 }
