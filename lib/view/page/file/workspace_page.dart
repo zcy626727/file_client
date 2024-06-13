@@ -601,26 +601,30 @@ class _WorkspacePageState extends State<WorkspacePage> {
             setState(() {});
             break;
           case "download":
-            if (res is UserFile) {
-              var directory = await getDownloadsDirectory();
-              if (directory != null) {
-                if (context.mounted) {
-                  var downloadState = Provider.of<DownloadState>(context, listen: false);
-                  downloadState.addDownloadTask(DownloadTask.all(
-                    userId: Global.user.id,
-                    userFileId: res.id,
-                    targetPath: directory.path,
-                    targetName: res.name,
-                    totalSize: res.fileSize,
-                    createTime: DateTime.now(),
-                  ));
-                }
-              }
-            }
+            downloadFile(res);
             break;
         }
       },
     );
+  }
+
+  void downloadFile(CommonResource res) async {
+    if (res is UserFile) {
+      var directory = await getDownloadsDirectory();
+      if (directory != null) {
+        if (mounted) {
+          var downloadState = Provider.of<DownloadState>(context, listen: false);
+          downloadState.addDownloadTask(DownloadTask.userFile(
+            userId: Global.user.id,
+            userFileId: res.id,
+            targetPath: directory.path,
+            targetName: res.name,
+            totalSize: res.fileSize,
+          ));
+          ShowSnackBar.info(context: context, message: "下载任务已创建");
+        }
+      }
+    }
   }
 
   void renameFile(CommonResource res) {

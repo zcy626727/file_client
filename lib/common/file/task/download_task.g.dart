@@ -10,6 +10,9 @@ DownloadTask _$DownloadTaskFromJson(Map<String, dynamic> json) => DownloadTask()
   ..id = (json['id'] as num?)?.toInt()
   ..userId = (json['userId'] as num?)?.toInt()
   ..userFileId = (json['userFileId'] as num?)?.toInt()
+  ..spaceId = (json['spaceId'] as num?)?.toInt()
+  ..spaceFileId = (json['spaceFileId'] as num?)?.toInt()
+  ..type = (json['type'] as num?)?.toInt()
   ..targetPath = json['targetPath'] as String?
   ..targetName = json['targetName'] as String?
   ..downloadUrl = json['downloadUrl'] as String?
@@ -24,6 +27,9 @@ Map<String, dynamic> _$DownloadTaskToJson(DownloadTask instance) =>
       'id': instance.id,
       'userId': instance.userId,
       'userFileId': instance.userFileId,
+      'spaceId': instance.spaceId,
+      'spaceFileId': instance.spaceFileId,
+      'type': instance.type,
       'targetPath': instance.targetPath,
       'targetName': instance.targetName,
       'downloadUrl': instance.downloadUrl,

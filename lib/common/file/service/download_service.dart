@@ -2,16 +2,16 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:file_client/service/file/user_file_service.dart';
+import 'package:file_client/service/team/space_file_service.dart';
 import 'package:flutter/services.dart';
 
-import '../../../api/client/file/user_file_api.dart';
 import '../../../config/global.dart';
 import '../../../util/file_util.dart';
 import '../constant/download.dart';
 import '../task/download_task.dart';
 
 class DownloadService {
-
   static Future<void> doDownloadFile({
     //下载任务
     required DownloadTask task,
@@ -140,9 +140,18 @@ class DownloadService {
     await Global.downloadTaskProvider.insertOrUpdate(task);
     sendPort.send([1, task.toJson()]);
 
-    //获取url
-    var url = await UserFileApi.getDownloadUrl(task.userFileId!);
-    task.downloadUrl = url;
+    switch (task.type) {
+      case DownloadTaskType.space:
+        var url = await SpaceFileService.getDownloadUrl(spaceFileId: task.spaceFileId!);
+        task.downloadUrl = url;
+        break;
+      case DownloadTaskType.user:
+        var url = await UserFileService.getDownloadUrl(userFileId: task.userFileId!);
+        task.downloadUrl = url;
+        break;
+      default:
+        throw const FormatException("不支持的文件类型");
+    }
   }
 
   static Future<void> doDownload(DownloadTask task, SendPort sendPort) async {

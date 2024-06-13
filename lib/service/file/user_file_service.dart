@@ -74,7 +74,7 @@ class UserFileService {
     return await UserFileApi.getFolderList(parentId: parentId, pageIndex: pageIndex, pageSize: pageSize);
   }
 
-  static Future<String> getDownloadUrl(int userFileId) async {
-    return await UserFileApi.getDownloadUrl(userFileId);
+  static Future<String> getDownloadUrl({required int userFileId}) async {
+    return await UserFileApi.getDownloadUrl(userFileId: userFileId);
   }
 }

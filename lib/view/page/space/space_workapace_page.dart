@@ -7,9 +7,11 @@ import 'package:file_client/view/component/file/select_resource_dialog.dart';
 import 'package:file_client/view/component/resource/resource_detail_dialog.dart';
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/file/constant/upload.dart';
+import '../../../common/file/task/download_task.dart';
 import '../../../common/file/task/multipart_upload_task.dart';
 import '../../../common/list/common_item_list.dart';
 import '../../../constant/file.dart';
@@ -20,6 +22,7 @@ import '../../../model/file/user_folder.dart';
 import '../../../model/space/space_file.dart';
 import '../../../service/file/user_file_service.dart';
 import '../../../service/team/space_file_service.dart';
+import '../../../state/download_state.dart';
 import '../../../state/upload_state.dart';
 import '../../../util/mime_util.dart';
 import '../../component/file/folder_path_list.dart';
@@ -447,7 +450,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
       color: colorScheme.surface,
       context: context,
       position: RelativeRect.fromLTRB(
-        globalPosition.dx - 180,
+        globalPosition.dx - 250,
         globalPosition.dy,
         globalPosition.dx,
         globalPosition.dy,
@@ -508,6 +511,7 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
             deleteFile(res);
             break;
           case "download":
+            downloadFile(res);
             break;
           case "detail":
             await showDialog(
@@ -550,6 +554,25 @@ class _SpaceWorkspacePageState extends State<SpaceWorkspacePage> {
             iconData: res is UserFile ? Icons.insert_drive_file : Icons.folder,
           );
         });
+  }
+
+  void downloadFile(CommonResource res) async {
+    if (res is SpaceFile) {
+      var directory = await getDownloadsDirectory();
+      if (directory != null) {
+        if (mounted) {
+          var downloadState = Provider.of<DownloadState>(context, listen: false);
+          downloadState.addDownloadTask(DownloadTask.spaceFile(
+            spaceId: widget.space.id,
+            spaceFileId: res.id,
+            targetPath: directory.path,
+            targetName: res.name,
+            totalSize: res.fileSize,
+          ));
+          ShowSnackBar.info(context: context, message: "下载任务已创建");
+        }
+      }
+    }
   }
 
   void deleteFile(CommonResource selectedRes) {

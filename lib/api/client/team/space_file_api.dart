@@ -218,6 +218,25 @@ class SpaceFileApi {
     return _parseSpaceFolderList(r);
   }
 
+  //获取getUrl，文件下载
+  static Future<String> getDownloadUrl({required int spaceFileId}) async {
+    var r = await TeamHttpConfig.dio.get(
+      "/spaceFile/getDownloadUrl",
+      queryParameters: {
+        "spaceFileId": spaceFileId,
+      },
+      options: TeamHttpConfig.options.copyWith(
+        extra: {
+          "noCache": true,
+          "withToken": true,
+        },
+      ),
+    );
+
+    //获取数据
+    return r.data["downloadUrl"];
+  }
+
   static List<CommonResource> _parseSpaceFileList(Response<dynamic> r) {
     List<CommonResource> list = [];
     for (var map in r.data["spaceFileList"]) {

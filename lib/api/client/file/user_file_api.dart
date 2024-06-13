@@ -193,7 +193,7 @@ class UserFileApi {
   }
 
   //获取getUrl，文件下载
-  static Future<String> getDownloadUrl(int userFileId) async {
+  static Future<String> getDownloadUrl({required int userFileId}) async {
     var r = await FileHttpConfig.dio.get(
       "/userFile/getDownloadUrl",
       queryParameters: {
@@ -208,7 +208,7 @@ class UserFileApi {
     );
 
     //获取数据
-    return r.data["getFileUrl"];
+    return r.data["downloadUrl"];
   }
 
   //判断文件是否在目标文件夹下存在同名冲突

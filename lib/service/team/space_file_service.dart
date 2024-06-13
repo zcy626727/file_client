@@ -99,4 +99,8 @@ class SpaceFileService {
       spaceId: spaceId,
     );
   }
+
+  static Future<String> getDownloadUrl({required int spaceFileId}) async {
+    return await SpaceFileApi.getDownloadUrl(spaceFileId: spaceFileId);
+  }
 }
