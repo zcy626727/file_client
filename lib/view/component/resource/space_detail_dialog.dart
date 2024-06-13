@@ -81,254 +81,266 @@ class _SpaceDetailDialogState extends State<SpaceDetailDialog> {
       builder: (BuildContext context, AsyncSnapshot snapShot) {
         if (snapShot.connectionState == ConnectionState.done) {
           return Scaffold(
-            backgroundColor: Colors.transparent,
-            body: AlertDialog(
-              insetPadding: const EdgeInsets.all(10),
-              backgroundColor: colorScheme.background,
-              surfaceTintColor: Theme.of(context).colorScheme.surface,
-              title: Text(widget.spaceResource.name ?? "————", style: TextStyle(color: colorScheme.onSurface, fontSize: dialogTitleFontSize)),
-              content: SizedBox(
-                width: 300,
-                height: 330,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // 创建时间
-                    Container(
-                      height: 70,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      ),
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text("创建时间", style: titleStyle),
-                          Text(DateFormat("yyyy-MM-dd").format(widget.spaceResource.createTime!), style: valueStyle),
-                        ],
-                      ),
-                    ),
+              backgroundColor: Colors.transparent,
+              body: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: colorScheme.background,
+                ),
+                child: AlertDialog(
+                  insetPadding: const EdgeInsets.all(10),
+                  backgroundColor: colorScheme.surface,
+                  surfaceTintColor: colorScheme.background,
+                  title: SizedBox(
+                    width: 300,
+                    child: Text(widget.spaceResource.name ?? "未知",
+                        style: TextStyle(
+                          color: colorScheme.onSurface,
+                          fontSize: dialogTitleFontSize,
+                          overflow: TextOverflow.ellipsis,
+                        )),
+                  ),
+                  content: SizedBox(
+                    width: 350,
+                    height: 330,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // 创建时间
+                        Container(
+                          height: 70,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: colorScheme.background,
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text("创建时间", style: titleStyle),
+                              Text(DateFormat("yyyy-MM-dd").format(widget.spaceResource.createTime!), style: valueStyle),
+                            ],
+                          ),
+                        ),
 
-                    // 组
-                    Container(
-                      height: 101,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            height: 50,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("用户组", style: titleStyle),
-                                TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      barrierDismissible: true,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return SelectGroupDialog(
-                                          buttonTitle: "清空用户组",
-                                          spaceId: spaceId!,
-                                          selectGroup: (g) {
-                                            _selectedGroup = g;
-                                            setState(() {});
+                        // 组
+                        Container(
+                          height: 101,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: colorScheme.background,
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                height: 50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("用户组", style: titleStyle),
+                                    TextButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return SelectGroupDialog(
+                                              buttonTitle: "清空用户组",
+                                              spaceId: spaceId!,
+                                              selectGroup: (g) {
+                                                _selectedGroup = g;
+                                                setState(() {});
+                                              },
+                                            );
                                           },
                                         );
                                       },
-                                    );
-                                  },
-                                  style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10))),
-                                  child: SizedBox(
-                                    // width: 70,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(left: 5),
-                                          child: Text(_selectedGroup?.name ?? "未分配", style: valueStyle),
+                                      style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10))),
+                                      child: SizedBox(
+                                        // width: 70,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(left: 5),
+                                              child: Text(_selectedGroup?.name ?? "未分配", style: valueStyle),
+                                            ),
+                                            Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
+                                          ],
                                         ),
-                                        Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Divider(height: 1, color: colorScheme.background),
-                          Container(
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            height: 50,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("权限", style: titleStyle),
-                                DropdownButton<int?>(
-                                  value: _groupPermission,
-                                  alignment: AlignmentDirectional.centerEnd,
-                                  elevation: 16,
-                                  style: valueStyle,
-                                  underline: Container(),
-                                  icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
-                                  onChanged: (int? value) {
-                                    setState(() {
-                                      _groupPermission = value;
-                                    });
-                                  },
-                                  items: [
-                                    const DropdownMenuItem<int?>(
-                                      value: null,
-                                      child: Text("未分配"),
-                                    ),
-                                    // 文件夹
-                                    if (widget.spaceResource.fileType == FileType.direction)
-                                      ...List.generate(
-                                        SpaceFilePermission.folderPermissionList.length,
-                                        (index) {
-                                          var (key, str) = SpaceFilePermission.folderPermissionList[index];
-                                          return DropdownMenuItem<int>(
-                                            value: key,
-                                            child: Text(str),
-                                          );
-                                        },
-                                      ),
-                                    if (widget.spaceResource.fileType != FileType.direction)
-                                      ...List.generate(
-                                        SpaceFilePermission.filePermissionList.length,
-                                        (index) {
-                                          var (key, str) = SpaceFilePermission.filePermissionList[index];
-                                          return DropdownMenuItem<int>(
-                                            value: key,
-                                            child: Text(str),
-                                          );
-                                        },
-                                      ),
+                              ),
+                              Divider(height: 1, color: colorScheme.surface),
+                              Container(
+                                margin: const EdgeInsets.only(left: 10, right: 10),
+                                height: 50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("权限", style: titleStyle),
+                                    DropdownButton<int?>(
+                                      value: _groupPermission,
+                                      alignment: AlignmentDirectional.centerEnd,
+                                      elevation: 16,
+                                      style: valueStyle,
+                                      underline: Container(),
+                                      icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _groupPermission = value;
+                                        });
+                                      },
+                                      items: [
+                                        DropdownMenuItem<int?>(
+                                          value: null,
+                                          child: Text("未分配", style: valueStyle),
+                                        ),
+                                        // 文件夹
+                                        if (widget.spaceResource.fileType == FileType.direction)
+                                          ...List.generate(
+                                            SpaceFilePermission.folderPermissionList.length,
+                                            (index) {
+                                              var (key, str) = SpaceFilePermission.folderPermissionList[index];
+                                              return DropdownMenuItem<int>(
+                                                value: key,
+                                                child: Text(str, style: valueStyle),
+                                              );
+                                            },
+                                          ),
+                                        if (widget.spaceResource.fileType != FileType.direction)
+                                          ...List.generate(
+                                            SpaceFilePermission.filePermissionList.length,
+                                            (index) {
+                                              var (key, str) = SpaceFilePermission.filePermissionList[index];
+                                              return DropdownMenuItem<int>(
+                                                value: key,
+                                                child: Text(str, style: valueStyle),
+                                              );
+                                            },
+                                          ),
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
 
-                    // 其他人权限
-                    Container(
-                      width: double.infinity,
-                      height: 101,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            height: 50,
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text("其他", style: titleStyle),
-                            ),
+                        // 其他人权限
+                        Container(
+                          width: double.infinity,
+                          height: 101,
+                          decoration: BoxDecoration(
+                            color: colorScheme.background,
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
                           ),
-                          Divider(height: 1, color: colorScheme.background),
-                          Container(
-                            height: 50,
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("权限", style: titleStyle),
-                                DropdownButton<int?>(
-                                  value: _otherPermission,
-                                  elevation: 16,
-                                  icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
-                                  alignment: AlignmentDirectional.centerEnd,
-                                  style: valueStyle,
-                                  underline: Container(),
-                                  onChanged: (int? value) {
-                                    setState(() {
-                                      _otherPermission = value;
-                                    });
-                                  },
-                                  items: [
-                                    const DropdownMenuItem<int?>(
-                                      value: null,
-                                      child: Text("未分配"),
-                                    ),
-                                    // 文件夹
-                                    if (widget.spaceResource.fileType == FileType.direction)
-                                      ...List.generate(
-                                        SpaceFilePermission.folderPermissionList.length,
-                                        (index) {
-                                          var (key, str) = SpaceFilePermission.folderPermissionList[index];
-                                          return DropdownMenuItem<int>(
-                                            value: key,
-                                            child: Text(str),
-                                          );
-                                        },
-                                      ),
-                                    if (widget.spaceResource.fileType != FileType.direction)
-                                      ...List.generate(
-                                        SpaceFilePermission.filePermissionList.length,
-                                        (index) {
-                                          var (key, str) = SpaceFilePermission.filePermissionList[index];
-                                          return DropdownMenuItem<int>(
-                                            value: key,
-                                            child: Text(str),
-                                          );
-                                        },
-                                      ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                                height: 50,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("其他", style: titleStyle),
+                                ),
+                              ),
+                              Divider(height: 1, color: colorScheme.surface),
+                              Container(
+                                height: 50,
+                                margin: const EdgeInsets.only(left: 10, right: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("权限", style: titleStyle),
+                                    DropdownButton<int?>(
+                                      value: _otherPermission,
+                                      elevation: 16,
+                                      icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
+                                      alignment: AlignmentDirectional.centerEnd,
+                                      style: valueStyle,
+                                      underline: Container(),
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _otherPermission = value;
+                                        });
+                                      },
+                                      items: [
+                                        DropdownMenuItem<int?>(
+                                          value: null,
+                                          child: Text("未分配", style: valueStyle),
+                                        ),
+                                        // 文件夹
+                                        if (widget.spaceResource.fileType == FileType.direction)
+                                          ...List.generate(
+                                            SpaceFilePermission.folderPermissionList.length,
+                                            (index) {
+                                              var (key, str) = SpaceFilePermission.folderPermissionList[index];
+                                              return DropdownMenuItem<int>(
+                                                value: key,
+                                                child: Text(str, style: valueStyle),
+                                              );
+                                            },
+                                          ),
+                                        if (widget.spaceResource.fileType != FileType.direction)
+                                          ...List.generate(
+                                            SpaceFilePermission.filePermissionList.length,
+                                            (index) {
+                                              var (key, str) = SpaceFilePermission.filePermissionList[index];
+                                              return DropdownMenuItem<int>(
+                                                value: key,
+                                                child: Text(str, style: valueStyle),
+                                              );
+                                            },
+                                          ),
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
+                  actions: <Widget>[
+                    CommonActionTwoButton(
+                      height: 35,
+                      onLeftTap: () {
+                        Navigator.pop(context);
+                      },
+                      rightTitle: "修改",
+                      onRightTap: () async {
+                        try {
+                          if (widget.spaceResource.id == null) throw const FormatException("文件信息错误");
+                          await SpaceFileService.updatePermission(
+                            spaceFileId: widget.spaceResource.id!,
+                            newGroupId: _selectedGroup?.id,
+                            newGroupPermission: _groupPermission,
+                            newOtherPermission: _otherPermission,
+                          );
+                          widget.onUpdate(_selectedGroup?.id, _groupPermission, _otherPermission);
+                          if (context.mounted) Navigator.pop(context);
+                        } on Exception catch (e) {
+                          if (context.mounted) ShowSnackBar.exception(context: context, e: e);
+                        }
+                      },
+                    )
                   ],
                 ),
-              ),
-              actions: <Widget>[
-                CommonActionTwoButton(
-                  height: 35,
-                  onLeftTap: () {
-                    Navigator.pop(context);
-                  },
-                  rightTitle: "修改",
-                  onRightTap: () async {
-                    try {
-                      if (widget.spaceResource.id == null) throw const FormatException("文件信息错误");
-                      await SpaceFileService.updatePermission(
-                        spaceFileId: widget.spaceResource.id!,
-                        newGroupId: _selectedGroup?.id,
-                        newGroupPermission: _groupPermission,
-                        newOtherPermission: _otherPermission,
-                      );
-                      widget.onUpdate(_selectedGroup?.id, _groupPermission, _otherPermission);
-                      if (context.mounted) Navigator.pop(context);
-                    } on Exception catch (e) {
-                      if (context.mounted) ShowSnackBar.exception(context: context, e: e);
-                    }
-                  },
-                )
-              ],
-            ),
-          );
+              ));
         } else {
           // 请求未结束，显示loading
           return const Center(
